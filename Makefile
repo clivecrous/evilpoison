@@ -1,7 +1,7 @@
 # If you don't use CC 
 CC       = gcc
 
-# Edit this line if you don't want evilwm to install under /usr.
+# Edit this line if you don't want evilpoison to install under /usr.
 # Note that $(DESTDIR) is used by the Debian build process.
 prefix = $(DESTDIR)/usr
 
@@ -11,7 +11,7 @@ LDPATH   = -L$(XROOT)/lib
 LIBS     = -lX11
 
 DEFINES  = $(EXTRA_DEFINES)
-# Configure evilwm by editing the following DEFINES lines.  You can also
+# Configure evilpoison by editing the following DEFINES lines.  You can also
 # add options by setting EXTRA_DEFINES on the make(1) command line,
 # e.g., make EXTRA_DEFINES="-DDEBUG".
 
@@ -34,7 +34,7 @@ LIBS	+= -lXext
 DEFINES += -DMOUSE
 
 # Uncomment for snap-to-border support (thanks, Neil Drumm)
-# Start evilwm with -snap num to enable (num is proximity in pixels to snap to)
+# Start evilpoison with -snap num to enable (num is proximity in pixels to snap to)
 DEFINES += -DSNAP
 
 # Uncomment to compile in certain text messages like help.  You want this too
@@ -58,7 +58,7 @@ DEFINES += -DCOLOURMAP
 
 version = 0.99.25
 
-distname = evilwm-$(version)
+distname = evilpoison-$(version)
 
 #DEFINES += -DXDEBUG	# show some X calls
 
@@ -68,26 +68,26 @@ CFLAGS  += $(INCLUDES) $(DEFINES) -Os -Wall
 CFLAGS  += -W -Wstrict-prototypes -Wpointer-arith -Wcast-align -Wcast-qual -Wshadow -Waggregate-return -Wnested-externs -Winline -Wwrite-strings -Wundef -Wsign-compare -Wmissing-prototypes -Wredundant-decls
 LDFLAGS += $(LDPATH) $(LIBS)
 
-HEADERS  = evilwm.h log.h
+HEADERS  = evilpoison.h log.h
 SRCS     = client.c events.c main.c misc.c new.c screen.c ewmh.c
 OBJS     = $(SRCS:.c=.o)
 
 .PHONY: all install dist debuild clean
 
-all: evilwm
+all: evilpoison
 
-evilwm: $(OBJS)
+evilpoison: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $<
 
-install: evilwm
-	if [ -f evilwm.exe ]; then mv evilwm.exe evilwm; fi
+install: evilpoison
+	if [ -f evilpoison.exe ]; then mv evilpoison.exe evilpoison; fi
 	mkdir -p $(prefix)/bin $(prefix)/share/man/man1
-	install -s evilwm $(prefix)/bin
-	install evilwm.1 $(prefix)/share/man/man1
-	#gzip -9 $(prefix)/share/man/man1/evilwm.1
+	install -s evilpoison $(prefix)/bin
+	install evilpoison.1 $(prefix)/share/man/man1
+	#gzip -9 $(prefix)/share/man/man1/evilpoison.1
 
 dist:
 	darcs dist --dist-name $(distname)
@@ -95,11 +95,11 @@ dist:
 
 debuild: dist
 	-cd ..; rm -rf $(distname)/ $(distname).orig/
-	cd ..; mv $(distname).tar.gz evilwm_$(version).orig.tar.gz
-	cd ..; tar xfz evilwm_$(version).orig.tar.gz
+	cd ..; mv $(distname).tar.gz evilpoison$(version).orig.tar.gz
+	cd ..; tar xfz evilpoison$(version).orig.tar.gz
 	cp -a debian ../$(distname)/
 	rm -rf ../$(distname)/debian/_darcs/
 	cd ../$(distname); debuild
 
 clean:
-	rm -f evilwm evilwm.exe $(OBJS)
+	rm -f evilpoison evilpoison.exe $(OBJS)
