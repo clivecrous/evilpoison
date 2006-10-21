@@ -68,7 +68,7 @@ CFLAGS  += $(INCLUDES) $(DEFINES) -Os -Wall
 CFLAGS  += -W -Wstrict-prototypes -Wpointer-arith -Wcast-align -Wcast-qual -Wshadow -Waggregate-return -Wnested-externs -Winline -Wwrite-strings -Wundef -Wsign-compare -Wmissing-prototypes -Wredundant-decls
 LDFLAGS += $(LDPATH) $(LIBS)
 
-HEADERS  = evilpoison.h log.h
+HEADERS  = evilwm.h log.h
 SRCS     = client.c events.c main.c misc.c new.c screen.c ewmh.c
 OBJS     = $(SRCS:.c=.o)
 
