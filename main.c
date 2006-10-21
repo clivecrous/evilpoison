@@ -147,7 +147,7 @@ int main(int argc, char *argv[]) {
 #endif
 #ifdef STDIO
 		} else if (!strcmp(argv[i], "-V")) {
-			LOG_INFO("evilwm version " VERSION "\n");
+			LOG_INFO("evilwm version " VERSION "-paxed\n");
 			exit(0);
 #endif
 		} else {
@@ -305,7 +305,7 @@ static void setup_display(void) {
 		screens[i].screen = i;
 		screens[i].root = RootWindow(dpy, i);
 #ifdef VWM
-		screens[i].vdesk = KEY_TO_VDESK(XK_1);
+		screens[i].vdesk = KEY_TO_VDESK(KEY_DESK1);
 #endif
 
 		XAllocNamedColor(dpy, DefaultColormap(dpy, i), opt_fg, &screens[i].fg, &dummy);
