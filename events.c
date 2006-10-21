@@ -20,137 +20,240 @@ static void current_to_head(void) {
 	}
 }
 
+struct _ksconv {
+    KeySym kfrom;
+    unsigned int kmask;
+    int kto;
+} const key_conversions[] = {
+    {PREFIX_KEY, PREFIX_MOD,	KEY_PREFIX},
+    {XK_m, 0,		KEY_MOVEWIN},
+    {XK_Return, 0,	KEY_NEXT},
+    {XK_Tab, 0,		KEY_NEXT},
+    {XK_c, 0,		KEY_NEW},
+    {XK_y, 0,		KEY_TOPLEFT},
+    {XK_u, 0,		KEY_TOPRIGHT},
+    {XK_b, 0,		KEY_BOTTOMLEFT},
+    {XK_n, 0,		KEY_BOTTOMRIGHT},
+    {XK_h, 0,		KEY_LEFT},
+    {XK_l, 0,		KEY_RIGHT},
+    {XK_j, 0,		KEY_DOWN},
+    {XK_k, 0,		KEY_UP},
+    {XK_Left, 0,	KEY_LEFT},
+    {XK_Right, 0,	KEY_RIGHT},
+    {XK_Up, 0,		KEY_UP},
+    {XK_Down, 0,	KEY_DOWN},
+
+    {XK_a, 0,	KEY_RESIZELEFT},
+    {XK_d, 0,	KEY_RESIZERIGHT},
+    {XK_w, 0,		KEY_RESIZEUP},
+    {XK_s, 0,	KEY_RESIZEDOWN},
+
+    {XK_comma, 0, KEY_MOUSESWEEP},
+    {XK_period, 0, KEY_MOUSEDRAG},
+
+    {XK_Insert, 0,	KEY_LOWER},
+    /*{XK_i, 0,		KEY_INFO},*/ /* FIXME: info causes wm to hang */
+
+    {XK_plus, 0,	KEY_MAXVERT},
+    {XK_minus, 0,	KEY_MAXHORIZ},
+    {XK_x, 0,		KEY_MAX},
+    {XK_v, 0,		KEY_VSPLIT},
+    {XK_g, 0,		KEY_HSPLIT},
+
+
+    {XK_Escape, 0,	KEY_KILL},
+#ifdef VWM
+    {XK_f, 0,		KEY_FIX},
+    {XK_o, 0,	KEY_PREVDESK},
+    {XK_p, 0,	KEY_NEXTDESK},
+    {XK_1, 0,		KEY_DESK1},
+    {XK_2, 0,		KEY_DESK2},
+    {XK_3, 0,		KEY_DESK3},
+    {XK_4, 0,		KEY_DESK4},
+    {XK_5, 0,		KEY_DESK5},
+    {XK_6, 0,		KEY_DESK6},
+    {XK_7, 0,		KEY_DESK7},
+    {XK_8, 0,		KEY_DESK8},
+#endif
+    {0,0,0}
+};
+
+#define ARRSIZE(x) (int)(sizeof(x) / sizeof(x[0]))
+
+static int do_key_conversion(KeySym k, unsigned int mask) {
+    int i;
+
+    for (i = 0; i < ARRSIZE(key_conversions); i++)
+	if (k == key_conversions[i].kfrom &&
+	    ((key_conversions[i].kmask == 0) || (mask == key_conversions[i].kmask)))
+	    return key_conversions[i].kto;
+
+    return KEY_NONE;
+}
+
+static void move_client(Client *c) {
+    moveresize(c);
+    setmouse(c->window, c->width + c->border - 1, c->height + c->border - 1);
+    discard_enter_events();
+}
+
+static void do_move_win(Window root, Client *c) {
+    if (XGrabKeyboard(dpy, root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
+	XEvent ev;
+	int do_move = 1;
+	do {
+	    XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
+	    if (ev.type == KeyPress) {
+		switch (do_key_conversion(XKeycodeToKeysym(dpy,ev.xkey.keycode,0), ev.xkey.state)) {
+		case KEY_LEFT:
+		    c->x -= 16;
+		    break;
+		case KEY_DOWN:
+		    c->y += 16;
+		    break;
+		case KEY_UP:
+		    c->y -= 16;
+		    break;
+		case KEY_RIGHT:
+		    c->x += 16;
+		    break;
+		case KEY_TOPLEFT:
+		    c->x = c->border;
+		    c->y = c->border;
+		    break;
+		case KEY_TOPRIGHT:
+		    c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
+		    c->y = c->border;
+		    break;
+		case KEY_BOTTOMLEFT:
+		    c->x = c->border;
+		    c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
+		    break;
+		case KEY_BOTTOMRIGHT:
+		    c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
+		    c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
+		    break;
+		case KEY_RESIZELEFT:
+		    c->width -= 16;
+		    break;
+		case KEY_RESIZERIGHT:
+		    c->width += 16;
+		    break;
+		case KEY_RESIZEUP:
+		    c->height -= 16;
+		    break;
+		case KEY_RESIZEDOWN:
+		    c->height += 16;
+		    break;
+		default: do_move = 0;
+		}
+		if (do_move) move_client(c);
+	    }
+	} while (do_move);
+	XUngrabKeyboard(dpy, CurrentTime);
+    }
+}
+
 static void handle_key_event(XKeyEvent *e) {
-	KeySym key = XKeycodeToKeysym(dpy,e->keycode,0);
+    int key = do_key_conversion(XKeycodeToKeysym(dpy,e->keycode,0), e->state);
+    KeySym realkey = e->keycode;
 	Client *c;
 	int width_inc, height_inc;
 #ifdef VWM
 	ScreenInfo *current_screen = find_current_screen();
 #endif
 
+	c = current;
+
+	if (c) {
+	    width_inc = (c->width_inc > 1) ? c->width_inc : 16;
+	    height_inc = (c->height_inc > 1) ? c->height_inc : 16;
+	}
+
+	if ((key == KEY_PREFIX) && (e->type == KeyPress)) {
+	    if (XGrabKeyboard(dpy, e->root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
+		XEvent ev;
+
+		do {
+		    XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
+		} while (ev.type != KeyPress);
+
+		XUngrabKeyboard(dpy, CurrentTime);
+		key = do_key_conversion(XKeycodeToKeysym(dpy, ev.xkey.keycode, 0), ev.xkey.state);
+		realkey = ev.xkey.keycode;
+	    } else key = KEY_NONE;
+	} else key = KEY_NONE;
+
 	switch(key) {
+	case KEY_MOUSEDRAG:
+	    if (c) drag(c);
+	    break;
+	case KEY_MOUSESWEEP:
+	    if (c) sweep(c);
+	    break;
 		case KEY_NEW:
 			spawn(opt_term);
 			break;
 		case KEY_NEXT:
 			next();
-			if (XGrabKeyboard(dpy, e->root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
-				XEvent ev;
-				do {
-					XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
-					if (ev.type == KeyPress && XKeycodeToKeysym(dpy,ev.xkey.keycode,0) == KEY_NEXT)
-						next();
-				} while (ev.type == KeyPress || XKeycodeToKeysym(dpy,ev.xkey.keycode,0) == KEY_NEXT);
-				XUngrabKeyboard(dpy, CurrentTime);
-			}
-			current_to_head();
+			/* current_to_head();*/
 			break;
+		case KEY_KILL:
+		    if (c) send_wm_delete(c, e->state & altmask);
+			break;
+		case KEY_LOWER:
+		    if (c) XLowerWindow(dpy, c->parent);
+			break;
+		case KEY_INFO:
+		    if (c) show_info(c, realkey);
+			break;
+		case KEY_MAX:
+		    if (c) maximise_client(c, MAXIMISE_HORZ|MAXIMISE_VERT);
+			break;
+		case KEY_MAXVERT:
+		    if (c) maximise_client(c, MAXIMISE_VERT);
+			break;
+		case KEY_MAXHORIZ:
+		    if (c) maximise_client(c, MAXIMISE_HORZ);
+			break;
+	case KEY_VSPLIT:
+	    if (c) {
+		c->width = c->width / 2;
+		move_client(c);
+	    }
+	    break;
+	case KEY_HSPLIT:
+	    if (c) {
+		c->height = c->height / 2;
+		move_client(c);
+	    }
+	    break;
 #ifdef VWM
-		case XK_1: case XK_2: case XK_3: case XK_4:
-		case XK_5: case XK_6: case XK_7: case XK_8:
+		case KEY_FIX:
+		    if (c) fix_client(c);
+			break;
+		case KEY_DESK1: case KEY_DESK2: case KEY_DESK3: case KEY_DESK4:
+		case KEY_DESK5: case KEY_DESK6: case KEY_DESK7: case KEY_DESK8:
 			switch_vdesk(current_screen, KEY_TO_VDESK(key));
 			break;
 		case KEY_PREVDESK:
-			if (current_screen->vdesk > KEY_TO_VDESK(XK_1)) {
+			if (current_screen->vdesk > KEY_TO_VDESK(KEY_DESK1)) {
 				switch_vdesk(current_screen,
 						current_screen->vdesk - 1);
 			}
 			break;
 		case KEY_NEXTDESK:
-			if (current_screen->vdesk < KEY_TO_VDESK(XK_8)) {
+			if (current_screen->vdesk < KEY_TO_VDESK(KEY_DESK8)) {
 				switch_vdesk(current_screen,
 						current_screen->vdesk + 1);
 			}
 			break;
 #endif
-		default: break;
+	case KEY_MOVEWIN:
+	    if (c) do_move_win(e->root, c);
+	    break;
+	default: break;
 	}
-	c = current;
-	if (c == NULL) return;
-	width_inc = (c->width_inc > 1) ? c->width_inc : 16;
-	height_inc = (c->height_inc > 1) ? c->height_inc : 16;
-	switch (key) {
-		case KEY_LEFT:
-			if (e->state & altmask) {
-				if ((c->width - width_inc) >= c->min_width)
-					c->width -= width_inc;
-			} else {
-				c->x -= 16;
-			}
-			goto move_client;
-		case KEY_DOWN:
-			if (e->state & altmask) {
-				if (!c->max_height || (c->height + height_inc) <= c->max_height)
-					c->height += height_inc;
-			} else {
-				c->y += 16;
-			}
-			goto move_client;
-		case KEY_UP:
-			if (e->state & altmask) {
-				if ((c->height - height_inc) >= c->min_height)
-					c->height -= height_inc;
-			} else {
-				c->y -= 16;
-			}
-			goto move_client;
-		case KEY_RIGHT:
-			if (e->state & altmask) {
-				if (!c->max_width || (c->width + width_inc) <= c->max_width)
-					c->width += width_inc;
-			} else {
-				c->x += 16;
-			}
-			goto move_client;
-		case KEY_TOPLEFT:
-			c->x = c->border;
-			c->y = c->border;
-			goto move_client;
-		case KEY_TOPRIGHT:
-			c->x = DisplayWidth(dpy, c->screen->screen)
-				- c->width-c->border;
-			c->y = c->border;
-			goto move_client;
-		case KEY_BOTTOMLEFT:
-			c->x = c->border;
-			c->y = DisplayHeight(dpy, c->screen->screen)
-				- c->height-c->border;
-			goto move_client;
-		case KEY_BOTTOMRIGHT:
-			c->x = DisplayWidth(dpy, c->screen->screen)
-				- c->width-c->border;
-			c->y = DisplayHeight(dpy, c->screen->screen)
-				- c->height-c->border;
-			goto move_client;
-		case KEY_KILL:
-			send_wm_delete(c, e->state & altmask);
-			break;
-		case KEY_LOWER: case KEY_ALTLOWER:
-			XLowerWindow(dpy, c->parent);
-			break;
-		case KEY_INFO:
-			show_info(c, key);
-			break;
-		case KEY_MAX:
-			maximise_client(c, MAXIMISE_HORZ|MAXIMISE_VERT);
-			break;
-		case KEY_MAXVERT:
-			maximise_client(c, MAXIMISE_VERT);
-			break;
-#ifdef VWM
-		case KEY_FIX:
-			fix_client(c);
-			break;
-#endif
-		default: break;
-	}
-	return;
-move_client:
-	moveresize(c);
-	setmouse(c->window, c->width + c->border - 1,
-			c->height + c->border - 1);
-	discard_enter_events();
-	return;
 }
 
 #ifdef MOUSE

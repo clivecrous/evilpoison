@@ -163,7 +163,7 @@ void show_info(Client *c, KeySym key) {
 	draw_outline(c);
 #endif
 	do {
-		XMaskEvent(dpy, KeyReleaseMask, &ev);
+		XMaskEvent(dpy, KeyReleaseMask|KeyPressMask, &ev);
 	} while (XKeycodeToKeysym(dpy,ev.xkey.keycode,0) != key);
 #ifdef INFOBANNER
 	remove_info_window();
@@ -451,30 +451,8 @@ static void grab_keysym(Window w, unsigned int mask, KeySym keysym) {
 }
 
 void grab_keys_for_screen(ScreenInfo *s) {
-	KeySym *keysym;
-	KeySym keys_to_grab[] = {
-		KEY_NEW, KEY_KILL,
-		KEY_TOPLEFT, KEY_TOPRIGHT, KEY_BOTTOMLEFT, KEY_BOTTOMRIGHT,
-		KEY_LEFT, KEY_RIGHT, KEY_DOWN, KEY_UP,
-		KEY_LOWER, KEY_ALTLOWER, KEY_INFO, KEY_MAXVERT, KEY_MAX,
-#ifdef VWM
-		KEY_FIX, KEY_PREVDESK, KEY_NEXTDESK,
-		XK_1, XK_2, XK_3, XK_4, XK_5, XK_6, XK_7, XK_8,
-#endif
-		0
-	};
-	KeySym alt_keys_to_grab[] = {
-		KEY_KILL, KEY_LEFT, KEY_RIGHT, KEY_DOWN, KEY_UP, 0
-	};
-
 	/* Release any previous grabs */
 	XUngrabKey(dpy, AnyKey, AnyModifier, s->root);
-	/* Grab key combinations we're interested in */
-	for (keysym = keys_to_grab; *keysym; keysym++) {
-		grab_keysym(s->root, grabmask1, *keysym);
-	}
-	for (keysym = alt_keys_to_grab; *keysym; keysym++) {
-		grab_keysym(s->root, grabmask1 | altmask, *keysym);
-	}
-	grab_keysym(s->root, grabmask2, KEY_NEXT);
+	/* We're only interested in the prefix key */
+	grab_keysym(s->root, PREFIX_MOD, PREFIX_KEY);
 }
