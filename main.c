@@ -49,6 +49,7 @@ unsigned int grabmask2 = Mod1Mask;
 unsigned int altmask = ShiftMask;
 const char   *opt_term[3] = { DEF_TERM, DEF_TERM, NULL };
 int          opt_bw = DEF_BW;
+int          opt_mousetowin = 0;
 #ifdef SNAP
 int          opt_snap = 0;
 #endif
@@ -89,6 +90,8 @@ int main(int argc, char *argv[]) {
 		else if (!strcmp(argv[i], "-term") && i+1<argc) {
 			opt_term[0] = argv[++i];
 			opt_term[1] = opt_term[0];
+		} else if (!strcmp(argv[i], "-mousetowin") && i+1<argc) {
+			opt_mousetowin = atoi(argv[++i]);
 #ifdef SNAP
 		} else if (!strcmp(argv[i], "-snap") && i+1<argc) {
 			opt_snap = atoi(argv[++i]);
@@ -159,6 +162,7 @@ int main(int argc, char *argv[]) {
 			LOG_INFO(" [-bg background] [-bw borderwidth]\n");
 			LOG_INFO("              [-mask1 modifiers] [-mask2 modifiers] [-altmask modifiers]\n");
 			LOG_INFO("              [-snap num]");
+			LOG_INFO("              [-mousetowin 0/1]");
 #ifdef VWM
 			LOG_INFO(" [-app name/class] [-g geometry] [-v vdesk] [-s]");
 #endif

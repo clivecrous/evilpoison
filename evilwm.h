@@ -183,6 +183,7 @@ extern unsigned int     grabmask2;
 extern unsigned int     altmask;
 extern const char       *opt_term[3];
 extern int              opt_bw;
+extern int		opt_mousetowin;
 #ifdef SNAP
 extern int              opt_snap;
 #endif
