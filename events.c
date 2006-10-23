@@ -26,7 +26,7 @@ struct _ksconv {
     int kto;
 } const key_conversions[] = {
     {PREFIX_KEY, PREFIX_MOD,	KEY_PREFIX},
-    {XK_m, 0,		KEY_MOVEWIN},
+    {XK_m, 0,		KEY_CMDMODE},
     {XK_Return, 0,	KEY_NEXT},
     {XK_Tab, 0,		KEY_NEXT},
     {XK_c, 0,		KEY_NEW},
@@ -97,63 +97,6 @@ static void move_client(Client *c) {
     discard_enter_events();
 }
 
-static void do_move_win(Window root, Client *c) {
-    if (XGrabKeyboard(dpy, root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
-	XEvent ev;
-	int do_move = 1;
-	do {
-	    XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
-	    if (ev.type == KeyPress) {
-		switch (do_key_conversion(XKeycodeToKeysym(dpy,ev.xkey.keycode,0), ev.xkey.state)) {
-		case KEY_LEFT:
-		    c->x -= 16;
-		    break;
-		case KEY_DOWN:
-		    c->y += 16;
-		    break;
-		case KEY_UP:
-		    c->y -= 16;
-		    break;
-		case KEY_RIGHT:
-		    c->x += 16;
-		    break;
-		case KEY_TOPLEFT:
-		    c->x = c->border;
-		    c->y = c->border;
-		    break;
-		case KEY_TOPRIGHT:
-		    c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
-		    c->y = c->border;
-		    break;
-		case KEY_BOTTOMLEFT:
-		    c->x = c->border;
-		    c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
-		    break;
-		case KEY_BOTTOMRIGHT:
-		    c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
-		    c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
-		    break;
-		case KEY_RESIZELEFT:
-		    c->width -= 16;
-		    break;
-		case KEY_RESIZERIGHT:
-		    c->width += 16;
-		    break;
-		case KEY_RESIZEUP:
-		    c->height -= 16;
-		    break;
-		case KEY_RESIZEDOWN:
-		    c->height += 16;
-		    break;
-		default: do_move = 0;
-		}
-		if (do_move) move_client(c);
-	    }
-	} while (do_move);
-	XUngrabKeyboard(dpy, CurrentTime);
-    }
-}
-
 static void handle_key_event(XKeyEvent *e) {
     int key = do_key_conversion(XKeycodeToKeysym(dpy,e->keycode,0), e->state);
     KeySym realkey = e->keycode;
@@ -162,6 +105,7 @@ static void handle_key_event(XKeyEvent *e) {
 #ifdef VWM
 	ScreenInfo *current_screen = find_current_screen();
 #endif
+	int cmdmode = 0;
 
 	c = current;
 
@@ -184,6 +128,20 @@ static void handle_key_event(XKeyEvent *e) {
 	    } else key = KEY_NONE;
 	} else key = KEY_NONE;
 
+	do {
+
+	    if (cmdmode) {
+		c = current;
+
+		if (XGrabKeyboard(dpy, e->root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
+		    XEvent ev;
+		    do {
+			XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
+		    } while (ev.type != KeyPress);
+		    key = do_key_conversion(XKeycodeToKeysym(dpy,ev.xkey.keycode,0), ev.xkey.state);
+		}
+	    }
+
 	switch(key) {
 	case KEY_MOUSEDRAG:
 	    if (c) drag(c);
@@ -191,6 +149,83 @@ static void handle_key_event(XKeyEvent *e) {
 	case KEY_MOUSESWEEP:
 	    if (c) sweep(c);
 	    break;
+		case KEY_LEFT:
+		    if (c) {
+			c->x -= 16;
+			move_client(c);
+		    }
+		    break;
+		case KEY_DOWN:
+		    if (c) {
+			c->y += 16;
+			move_client(c);
+		    }
+		    break;
+		case KEY_UP:
+		    if (c) {
+			c->y -= 16;
+			move_client(c);
+		    }
+		    break;
+		case KEY_RIGHT:
+		    if (c) {
+			c->x += 16;
+			move_client(c);
+		    }
+		    break;
+		case KEY_TOPLEFT:
+		    if (c) {
+			c->x = c->border;
+			c->y = c->border;
+			move_client(c);
+		    }
+		    break;
+		case KEY_TOPRIGHT:
+		    if (c) {
+			c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
+			c->y = c->border;
+			move_client(c);
+		    }
+		    break;
+		case KEY_BOTTOMLEFT:
+		    if (c) {
+			c->x = c->border;
+			c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
+			move_client(c);
+		    }
+		    break;
+		case KEY_BOTTOMRIGHT:
+		    if (c) {
+			c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
+			c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
+			move_client(c);
+		    }
+		    break;
+		case KEY_RESIZELEFT:
+		    if (c) {
+			c->width -= 16;
+			move_client(c);
+		    }
+		    break;
+		case KEY_RESIZERIGHT:
+		    if (c) {
+			c->width += 16;
+			move_client(c);
+		    }
+		    break;
+		case KEY_RESIZEUP:
+		    if (c) {
+			c->height -= 16;
+			move_client(c);
+		    }
+		    break;
+		case KEY_RESIZEDOWN:
+		    if (c) {
+			c->height += 16;
+			move_client(c);
+		    }
+		    break;
+
 		case KEY_NEW:
 			spawn(opt_term);
 			break;
@@ -249,11 +284,20 @@ static void handle_key_event(XKeyEvent *e) {
 			}
 			break;
 #endif
-	case KEY_MOVEWIN:
-	    if (c) do_move_win(e->root, c);
+	case KEY_CMDMODE:
+	    if (cmdmode)
+		XUngrabKeyboard(dpy, CurrentTime);
+	    cmdmode = !cmdmode;
 	    break;
-	default: break;
+	default:
+	    if (cmdmode)
+		XUngrabKeyboard(dpy, CurrentTime);
+	    cmdmode = 0;
+	    break;
 	}
+
+	} while (cmdmode);
+
 }
 
 #ifdef MOUSE
