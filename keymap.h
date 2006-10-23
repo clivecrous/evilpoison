@@ -1,9 +1,6 @@
 #ifndef _KEYMAP_H
 #define _KEYMAP_H
 
-#define PREFIX_KEY XK_e
-#define PREFIX_MOD ControlMask
-
 enum KEYVALS {
     KEY_NONE,
     KEY_PREFIX,

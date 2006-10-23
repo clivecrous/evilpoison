@@ -25,7 +25,6 @@ struct _ksconv {
     unsigned int kmask;
     int kto;
 } const key_conversions[] = {
-    {PREFIX_KEY, PREFIX_MOD,	KEY_PREFIX},
     {XK_m, 0,		KEY_CMDMODE},
     {XK_Return, 0,	KEY_NEXT},
     {XK_Tab, 0,		KEY_NEXT},
@@ -82,6 +81,8 @@ struct _ksconv {
 
 static int do_key_conversion(KeySym k, unsigned int mask) {
     int i;
+
+    if (k == opt_prefix_key && mask == opt_prefix_mod) return KEY_PREFIX;
 
     for (i = 0; i < ARRSIZE(key_conversions); i++)
 	if (k == key_conversions[i].kfrom &&

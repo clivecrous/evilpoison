@@ -50,6 +50,8 @@ unsigned int altmask = ShiftMask;
 const char   *opt_term[3] = { DEF_TERM, DEF_TERM, NULL };
 int          opt_bw = DEF_BW;
 int          opt_mousetowin = 0;
+unsigned int opt_prefix_mod = DEF_PREFIX_MOD;
+KeySym	     opt_prefix_key = DEF_PREFIX_KEY;
 #ifdef SNAP
 int          opt_snap = 0;
 #endif
@@ -90,6 +92,26 @@ int main(int argc, char *argv[]) {
 		else if (!strcmp(argv[i], "-term") && i+1<argc) {
 			opt_term[0] = argv[++i];
 			opt_term[1] = opt_term[0];
+		} else if (!strcmp(argv[i], "-prefix") && i+1<argc) {
+		    char *dash = strchr(argv[++i], '-');
+		    if (dash) {
+			switch (*argv[i]) {
+			default:
+			case 'C': case 'c': opt_prefix_mod = ControlMask; break;
+			case 'A': case 'a':
+			case 'M': case 'm': opt_prefix_mod = Mod1Mask; break;
+			case 'S': case 's': opt_prefix_mod = ShiftMask; break;
+			}
+			dash++;
+		    } else {
+			dash = argv[i];
+			opt_prefix_mod = 0;
+		    }
+		    if (dash) {
+			opt_prefix_key = XStringToKeysym(dash);
+			if (opt_prefix_key == NoSymbol)
+			    opt_prefix_key = DEF_PREFIX_KEY;
+		    }
 		} else if (!strcmp(argv[i], "-mousetowin") && i+1<argc) {
 			opt_mousetowin = atoi(argv[++i]);
 #ifdef SNAP
@@ -163,6 +185,7 @@ int main(int argc, char *argv[]) {
 			LOG_INFO("              [-mask1 modifiers] [-mask2 modifiers] [-altmask modifiers]\n");
 			LOG_INFO("              [-snap num]");
 			LOG_INFO("              [-mousetowin 0/1]");
+			LOG_INFO("              [-prefix mod-key]");
 #ifdef VWM
 			LOG_INFO(" [-app name/class] [-g geometry] [-v vdesk] [-s]");
 #endif

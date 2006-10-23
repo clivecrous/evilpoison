@@ -41,6 +41,9 @@ typedef struct {
 #define DEF_TERM        "xterm"
 #endif
 
+#define DEF_PREFIX_KEY  XK_e
+#define DEF_PREFIX_MOD  ControlMask;
+
 /* readability stuff */
 #define RAISE           1
 #define NO_RAISE        0       /* for unhide() */
@@ -184,6 +187,8 @@ extern unsigned int     altmask;
 extern const char       *opt_term[3];
 extern int              opt_bw;
 extern int		opt_mousetowin;
+extern unsigned int	opt_prefix_mod;
+extern KeySym		opt_prefix_key;
 #ifdef SNAP
 extern int              opt_snap;
 #endif

@@ -456,5 +456,5 @@ void grab_keys_for_screen(ScreenInfo *s) {
 	/* Release any previous grabs */
 	XUngrabKey(dpy, AnyKey, AnyModifier, s->root);
 	/* We're only interested in the prefix key */
-	grab_keysym(s->root, PREFIX_MOD, PREFIX_KEY);
+	grab_keysym(s->root, opt_prefix_mod, opt_prefix_key);
 }
