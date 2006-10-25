@@ -2,6 +2,7 @@
  * Copyright (C) 1999-2006 Ciaran Anscomb <evilwm@6809.org.uk>
  * see README for license and other details. */
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -68,10 +69,104 @@ volatile Window initialising = None;
 static void setup_display(void);
 static void *xmalloc(size_t size);
 static unsigned int parse_modifiers(char *s);
+static void parse_rcfile(FILE *fp);
+static void set_cmdparam(char *cmd, char *params);
+static void parse_key(char *keystr, KeySym *key, unsigned int *mod);
+
+
+void parse_key(char *keystr, KeySym *key, unsigned int *mod) {
+    char *dash = strchr(keystr, '-');
+
+    if (dash) {
+	switch (*keystr) {
+	default:
+	case 'C': case 'c': *mod = ControlMask; break;
+	case 'A': case 'a':
+	case 'M': case 'm': *mod = Mod1Mask; break;
+	case 'S': case 's': *mod = ShiftMask; break;
+	}
+	dash++;
+    } else {
+	dash = keystr;
+	*mod = 0;
+    }
+    if (dash) {
+	KeySym nkey = XStringToKeysym(dash);
+	if (nkey != NoSymbol)
+	    *key = nkey;
+    }
+}
+
+void set_cmdparam(char *cmd, char *params) {
+    if (!strncmp(cmd, "mousetowin", 10)) {
+	opt_mousetowin = atoi(params);
+    }
+    else if (!strncmp(cmd, "prefix", 6)) {
+	parse_key(params, &opt_prefix_key, &opt_prefix_mod);
+    }
+#ifdef SOLIDDRAG
+    else if (!strncmp(cmd, "solid_drag", 10)) {
+	solid_drag = atoi(params);
+    }
+#endif
+#ifdef SNAP
+    else if (!strncmp(cmd, "snap", 4)) {
+	opt_snap = atoi(params);
+    }
+#endif
+}
+
+void parse_rcfile(FILE *fp) {
+#define RC_LINE_LEN 256
+    char *line = malloc(RC_LINE_LEN);
+    int len;
+
+    while (!feof(fp)) {
+	(void) fgets(line, RC_LINE_LEN, fp);
+	len = strlen(line);
+	if (len > 0) {
+	    char *params = line;
+	    char *cmd;
+
+	    if (line[len-1] == '\n')
+		line[len-1] = '\0';
+
+	    while (*params && isspace(*params)) params++;
+
+	    if (*params == '\0' || *params == '#') continue;
+
+	    cmd = params;
+
+	    while (*params && !isspace(*params)) params++;
+	    while (*params && isspace(*params)) params++;
+
+	    set_cmdparam(cmd, params);
+	}
+    }
+#undef RC_LINE_LEN
+}
 
 int main(int argc, char *argv[]) {
 	struct sigaction act;
 	int i;
+
+	char *homedir = getenv("HOME");
+
+	if (homedir) {
+	    char *rcfile = (char *)malloc(strlen(homedir)+strlen("/.evilpoisonrc")+2);
+	    FILE *rcfp = NULL;
+
+	    if (rcfile) {
+		sprintf(rcfile, "%s/.evilpoisonrc", homedir);
+
+		if ((rcfp = fopen(rcfile, "r"))) {
+		    parse_rcfile(rcfp);
+		    fclose(rcfp);
+		}
+	    }
+	    free(rcfile);
+	}
+
 
 	for (i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-fn") && i+1<argc)
@@ -93,25 +188,7 @@ int main(int argc, char *argv[]) {
 			opt_term[0] = argv[++i];
 			opt_term[1] = opt_term[0];
 		} else if (!strcmp(argv[i], "-prefix") && i+1<argc) {
-		    char *dash = strchr(argv[++i], '-');
-		    if (dash) {
-			switch (*argv[i]) {
-			default:
-			case 'C': case 'c': opt_prefix_mod = ControlMask; break;
-			case 'A': case 'a':
-			case 'M': case 'm': opt_prefix_mod = Mod1Mask; break;
-			case 'S': case 's': opt_prefix_mod = ShiftMask; break;
-			}
-			dash++;
-		    } else {
-			dash = argv[i];
-			opt_prefix_mod = 0;
-		    }
-		    if (dash) {
-			opt_prefix_key = XStringToKeysym(dash);
-			if (opt_prefix_key == NoSymbol)
-			    opt_prefix_key = DEF_PREFIX_KEY;
-		    }
+		    parse_key(argv[++i], &opt_prefix_key, &opt_prefix_mod);
 		} else if (!strcmp(argv[i], "-mousetowin") && i+1<argc) {
 			opt_mousetowin = atoi(argv[++i]);
 #ifdef SNAP
