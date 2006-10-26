@@ -121,6 +121,8 @@ void parse_rcfile(FILE *fp) {
     char *line = malloc(RC_LINE_LEN);
     int len;
 
+    if (!line) return;
+
     while (!feof(fp)) {
 	(void) fgets(line, RC_LINE_LEN, fp);
 	len = strlen(line);
@@ -143,6 +145,7 @@ void parse_rcfile(FILE *fp) {
 	    set_cmdparam(cmd, params);
 	}
     }
+    free(line);
 #undef RC_LINE_LEN
 }
 
