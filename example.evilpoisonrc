@@ -1,0 +1,17 @@
+# This is an example configuration file for evilpoison window manager.
+# Copy this file to ~/.evilpoisonrc and edit it.
+#
+# All lines beginning with '#' are comments and are ignored.
+
+# will mouse warp to the windows?  0 or 1
+mousetowin	1
+
+# set the command prefix key.
+prefix		C-t
+
+# will dragging windows be solid, or just outline?  0 or 1
+solid_drag	1
+
+# will windows snap to screen borders?  0 disables, any positive integer
+# defines the distance from which it snaps.
+snap		0
