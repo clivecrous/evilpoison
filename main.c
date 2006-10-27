@@ -101,6 +101,18 @@ void set_cmdparam(char *cmd, char *params) {
     if (!strncmp(cmd, "mousetowin", 10)) {
 	opt_mousetowin = atoi(params);
     }
+    else if (!strncmp(cmd, "bind", 4)) {
+	KeySym ks = NoSymbol;
+	unsigned int mask;
+	char *tmpc = params;
+
+	while (*tmpc && !isspace(*tmpc)) tmpc++;
+	while (*tmpc && isspace(*tmpc)) { *tmpc = '\0'; tmpc++; }
+
+	parse_key(params, &ks, &mask);
+	if (ks != NoSymbol)
+	    add_key_binding(ks, mask, tmpc);
+    }
     else if (!strncmp(cmd, "prefix", 6)) {
 	parse_key(params, &opt_prefix_key, &opt_prefix_mod);
     }

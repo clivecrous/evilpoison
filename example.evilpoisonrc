@@ -6,12 +6,79 @@
 # will mouse warp to the windows?  0 or 1
 mousetowin	1
 
-# set the command prefix key.
-prefix		C-t
-
 # will dragging windows be solid, or just outline?  0 or 1
 solid_drag	1
 
 # will windows snap to screen borders?  0 disables, any positive integer
 # defines the distance from which it snaps.
 snap		0
+
+
+# Key bindings
+
+# set the command prefix key.
+prefix		C-t
+
+# next window
+bind	Return	nextwin
+bind	Tab	nextwin
+
+# command mode
+bind	m	cmdmode
+
+# new terminal
+bind	c	new
+
+# moving windows
+bind	y	topleft
+bind	u	topright
+bind	b	bottomleft
+bind	n	bottomright
+bind	h	left
+bind	l	right
+bind	j	down
+bind	k	up
+bind	Left	left
+bind	Right	right
+bind	Up	up
+bind	Down	down
+
+# changing window size
+bind	a	resizeleft
+bind	d	resizeright
+bind	w	resizeup
+bind	s	resizedown
+
+bind	plus	maxvert
+bind	minus	maxhoriz
+bind	x	max
+
+bind	v	vsplit
+bind	g	hsplit
+
+# mouse
+bind	comma	mousesweep
+bind	period	mousedrag
+
+# window stacking
+bind	Insert	lower
+
+# virtual desks
+# fix window
+bind	f	fix
+
+# moving from desk to desk
+bind	o	prevdesk
+bind	p	nextdesk
+
+bind	1	desk1
+bind	2	desk2
+bind	3	desk3
+bind	4	desk4
+bind	5	desk5
+bind	6	desk6
+bind	7	desk7
+bind	8	desk8
+
+# kill window
+bind	Escape	kill

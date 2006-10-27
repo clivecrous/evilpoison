@@ -45,7 +45,9 @@ enum KEYVALS {
     KEY_DESK7,
     KEY_DESK8,
 #endif
-    KEY_KILL
+    KEY_KILL,
+
+    NUM_COMMANDS
 };
 
 #define KEY_TO_VDESK(key) ((key) - KEY_DESK1)

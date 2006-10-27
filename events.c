@@ -3,6 +3,7 @@
  * see README for license and other details. */
 
 #include <stdlib.h>
+#include <string.h>
 #include "evilwm.h"
 #include "log.h"
 
@@ -20,71 +21,101 @@ static void current_to_head(void) {
 	}
 }
 
+const char *command_names[NUM_COMMANDS] = {
+    "none",
+    "prefix",
+    "cmdmode",
+    "nextwin",
+    "new",
+    "topleft",
+    "topright",
+    "bottomleft",
+    "bottomright",
+    "left",
+    "right",
+    "down",
+    "up",
+    "resizeleft",
+    "resizeright",
+    "resizedown",
+    "resizeup",
+    "mousedrag",
+    "mousesweep",
+    "lower",
+    "info",
+    "maxvert",
+    "maxhoriz",
+    "max",
+    "vsplit",
+    "hsplit",
+#ifdef VWM
+    "fix",
+    "prevdesk",
+    "nextdesk",
+    "desk1",
+    "desk2",
+    "desk3",
+    "desk4",
+    "desk5",
+    "desk6",
+    "desk7",
+    "desk8",
+#endif
+    "kill"
+};
+
 struct _ksconv {
     KeySym kfrom;
     unsigned int kmask;
     int kto;
-} const key_conversions[] = {
-    {XK_m, 0,		KEY_CMDMODE},
-    {XK_Return, 0,	KEY_NEXT},
-    {XK_Tab, 0,		KEY_NEXT},
-    {XK_c, 0,		KEY_NEW},
-    {XK_y, 0,		KEY_TOPLEFT},
-    {XK_u, 0,		KEY_TOPRIGHT},
-    {XK_b, 0,		KEY_BOTTOMLEFT},
-    {XK_n, 0,		KEY_BOTTOMRIGHT},
-    {XK_h, 0,		KEY_LEFT},
-    {XK_l, 0,		KEY_RIGHT},
-    {XK_j, 0,		KEY_DOWN},
-    {XK_k, 0,		KEY_UP},
-    {XK_Left, 0,	KEY_LEFT},
-    {XK_Right, 0,	KEY_RIGHT},
-    {XK_Up, 0,		KEY_UP},
-    {XK_Down, 0,	KEY_DOWN},
-
-    {XK_a, 0,	KEY_RESIZELEFT},
-    {XK_d, 0,	KEY_RESIZERIGHT},
-    {XK_w, 0,		KEY_RESIZEUP},
-    {XK_s, 0,	KEY_RESIZEDOWN},
-
-    {XK_comma, 0, KEY_MOUSESWEEP},
-    {XK_period, 0, KEY_MOUSEDRAG},
-
-    {XK_Insert, 0,	KEY_LOWER},
-    /*{XK_i, 0,		KEY_INFO},*/ /* FIXME: info causes wm to hang */
-
-    {XK_plus, 0,	KEY_MAXVERT},
-    {XK_minus, 0,	KEY_MAXHORIZ},
-    {XK_x, 0,		KEY_MAX},
-    {XK_v, 0,		KEY_VSPLIT},
-    {XK_g, 0,		KEY_HSPLIT},
-
-
-    {XK_Escape, 0,	KEY_KILL},
-#ifdef VWM
-    {XK_f, 0,		KEY_FIX},
-    {XK_o, 0,	KEY_PREVDESK},
-    {XK_p, 0,	KEY_NEXTDESK},
-    {XK_1, 0,		KEY_DESK1},
-    {XK_2, 0,		KEY_DESK2},
-    {XK_3, 0,		KEY_DESK3},
-    {XK_4, 0,		KEY_DESK4},
-    {XK_5, 0,		KEY_DESK5},
-    {XK_6, 0,		KEY_DESK6},
-    {XK_7, 0,		KEY_DESK7},
-    {XK_8, 0,		KEY_DESK8},
-#endif
-    {0,0,0}
 };
 
-#define ARRSIZE(x) (int)(sizeof(x) / sizeof(x[0]))
+static int num_keyconvs = 0;
+static struct _ksconv *key_conversions = NULL;
+
+void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
+    int i;
+    struct _ksconv *tmpkc;
+
+    if (!cmd) return;
+
+    for (i = 0; i < NUM_COMMANDS; i++)
+	if (!strncmp(cmd, command_names[i], strlen(command_names[i])))
+	    break;
+
+    if (i >= NUM_COMMANDS) return;
+
+    tmpkc = malloc(sizeof(struct _ksconv) * (num_keyconvs+1));
+
+    if (!tmpkc) return;
+
+    if (key_conversions) {
+	if (num_keyconvs > 0)
+	    memcpy(tmpkc, key_conversions, sizeof(struct _ksconv) * num_keyconvs);
+	free(key_conversions);
+    }
+
+    tmpkc[num_keyconvs].kfrom = k;
+    tmpkc[num_keyconvs].kmask = mask;
+    tmpkc[num_keyconvs].kto = i;
+
+    num_keyconvs++;
+
+    key_conversions = tmpkc;
+}
+
+void free_key_bindings() {
+    if (key_conversions) {
+	free(key_conversions);
+	key_conversions = NULL;
+	num_keyconvs = 0;
+    }
+}
 
 static int do_key_conversion(KeySym k, unsigned int mask) {
     int i;
 
-    if (k == opt_prefix_key && mask == opt_prefix_mod) return KEY_PREFIX;
-
-    for (i = 0; i < ARRSIZE(key_conversions); i++)
+    for (i = 0; i < num_keyconvs; i++)
 	if (k == key_conversions[i].kfrom &&
 	    ((key_conversions[i].kmask == 0) || (mask == key_conversions[i].kmask)))
 	    return key_conversions[i].kto;
@@ -100,8 +131,8 @@ static void move_client(Client *c) {
 }
 
 static void handle_key_event(XKeyEvent *e) {
-    int key = do_key_conversion(XKeycodeToKeysym(dpy,e->keycode,0), e->state);
-    KeySym realkey = e->keycode;
+    int key;
+    KeySym realkey = XKeycodeToKeysym(dpy,e->keycode,0);
 	Client *c;
 	int width_inc, height_inc;
 #ifdef VWM
@@ -116,7 +147,7 @@ static void handle_key_event(XKeyEvent *e) {
 	    height_inc = (c->height_inc > 1) ? c->height_inc : 16;
 	}
 
-	if ((key == KEY_PREFIX) && (e->type == KeyPress)) {
+	if ((realkey == opt_prefix_key) && (e->state == opt_prefix_mod) && (e->type == KeyPress)) {
 	    if (XGrabKeyboard(dpy, e->root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
 		XEvent ev;
 
@@ -125,8 +156,8 @@ static void handle_key_event(XKeyEvent *e) {
 		} while (ev.type != KeyPress);
 
 		XUngrabKeyboard(dpy, CurrentTime);
-		key = do_key_conversion(XKeycodeToKeysym(dpy, ev.xkey.keycode, 0), ev.xkey.state);
-		realkey = ev.xkey.keycode;
+		realkey = XKeycodeToKeysym(dpy, ev.xkey.keycode, 0);
+		key = do_key_conversion(realkey, ev.xkey.state);
 	    } else key = KEY_NONE;
 	} else key = KEY_NONE;
 
