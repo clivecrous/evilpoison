@@ -117,7 +117,7 @@ static int do_key_conversion(KeySym k, unsigned int mask) {
 
     for (i = 0; i < num_keyconvs; i++)
 	if (k == key_conversions[i].kfrom &&
-	    ((key_conversions[i].kmask == 0) || (mask == key_conversions[i].kmask)))
+	    ((key_conversions[i].kmask == 0) || ((mask & key_conversions[i].kmask) == key_conversions[i].kmask)))
 	    return key_conversions[i].kto;
 
     return KEY_NONE;
@@ -147,7 +147,7 @@ static void handle_key_event(XKeyEvent *e) {
 	    height_inc = (c->height_inc > 1) ? c->height_inc : 16;
 	}
 
-	if ((realkey == opt_prefix_key) && (e->state == opt_prefix_mod) && (e->type == KeyPress)) {
+	if ((realkey == opt_prefix_key) && ( (e->state & opt_prefix_mod) == opt_prefix_mod ) && (e->type == KeyPress)) {
 	    if (XGrabKeyboard(dpy, e->root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
 		XEvent ev;
 
