@@ -145,7 +145,7 @@ static void handle_key_event(XKeyEvent *e) {
   key = do_key_conversion(realkey, ev.xkey.state);
 
 	int width_inc, height_inc;
-  int cmdmode = 1;
+  int cmdmode = 0;
 	Client *c = current;
 
 	if (c) {
@@ -161,7 +161,7 @@ static void handle_key_event(XKeyEvent *e) {
     Cursor command_mode_cursor = XCreateFontCursor( dpy, XC_icon );
     XGrabPointer(dpy, e->root, False, 0, GrabModeAsync, GrabModeAsync, None, command_mode_cursor, CurrentTime );
 
-    while ( cmdmode ) {
+    do {
       do {
           XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
       } while (ev.type != KeyPress);
@@ -327,7 +327,7 @@ static void handle_key_event(XKeyEvent *e) {
           break;
       }
 
-    }
+    } while ( cmdmode );
 
 		XUngrabKeyboard(dpy, CurrentTime);
 		XUngrabPointer(dpy, CurrentTime);
