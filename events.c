@@ -118,8 +118,8 @@ static int do_key_conversion(KeySym k, unsigned int mask) {
     int i;
 
     for (i = 0; i < num_keyconvs; i++)
-	if (k == key_conversions[i].kfrom &&
-	    ((key_conversions[i].kmask == 0) || ((mask & key_conversions[i].kmask) == key_conversions[i].kmask)))
+	if ( k == key_conversions[i].kfrom &&
+	     mask == key_conversions[i].kmask )
 	    return key_conversions[i].kto;
 
     return KEY_NONE;
