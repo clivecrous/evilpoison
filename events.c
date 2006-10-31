@@ -7,6 +7,8 @@
 #include "evilwm.h"
 #include "log.h"
 
+#include <X11/cursorfont.h>
+
 static void current_to_head(void) {
 	Client *c;
 	if (current && current != head_client) {
@@ -139,6 +141,7 @@ static void handle_key_event(XKeyEvent *e) {
 	ScreenInfo *current_screen = find_current_screen();
 #endif
 	int cmdmode = 0;
+	Cursor command_mode_cursor = XCreateFontCursor( dpy, XC_icon );
 
 	c = current;
 
@@ -150,12 +153,14 @@ static void handle_key_event(XKeyEvent *e) {
 	if ((realkey == opt_prefix_key) && ( (e->state & opt_prefix_mod) == opt_prefix_mod ) && (e->type == KeyPress)) {
 	    if (XGrabKeyboard(dpy, e->root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
 		XEvent ev;
+        XGrabPointer(dpy, e->root, False, 0, GrabModeAsync, GrabModeAsync, None, command_mode_cursor, CurrentTime );
 
 		do {
 		    XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
 		} while (ev.type != KeyPress);
 
 		XUngrabKeyboard(dpy, CurrentTime);
+		XUngrabPointer(dpy, CurrentTime);
 		realkey = XKeycodeToKeysym(dpy, ev.xkey.keycode, 0);
 		key = do_key_conversion(realkey, ev.xkey.state);
 	    } else key = KEY_NONE;
@@ -168,6 +173,7 @@ static void handle_key_event(XKeyEvent *e) {
 
 		if (XGrabKeyboard(dpy, e->root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
 		    XEvent ev;
+        XGrabPointer(dpy, e->root, False, 0, GrabModeAsync, GrabModeAsync, None, command_mode_cursor, CurrentTime );
 		    do {
 			XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
 		    } while (ev.type != KeyPress);
@@ -318,13 +324,17 @@ static void handle_key_event(XKeyEvent *e) {
 			break;
 #endif
 	case KEY_CMDMODE:
-	    if (cmdmode)
-		XUngrabKeyboard(dpy, CurrentTime);
+	    if (cmdmode) {
+        XUngrabKeyboard(dpy, CurrentTime);
+        XUngrabPointer(dpy, CurrentTime);
+      }
 	    cmdmode = !cmdmode;
 	    break;
 	default:
-	    if (cmdmode)
-		XUngrabKeyboard(dpy, CurrentTime);
+	    if (cmdmode) {
+        XUngrabKeyboard(dpy, CurrentTime);
+        XUngrabPointer(dpy, CurrentTime);
+      }
 	    cmdmode = 0;
 	    break;
 	}
