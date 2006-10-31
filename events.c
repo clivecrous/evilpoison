@@ -161,7 +161,10 @@ static void handle_key_event(XKeyEvent *e) {
     Cursor command_mode_cursor = XCreateFontCursor( dpy, XC_icon );
     XGrabPointer(dpy, e->root, False, 0, GrabModeAsync, GrabModeAsync, None, command_mode_cursor, CurrentTime );
 
+    int modifier;
     do {
+      modifier = 0;
+
       do {
           XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
       } while (ev.type != KeyPress);
@@ -315,11 +318,33 @@ static void handle_key_event(XKeyEvent *e) {
           cmdmode = !cmdmode;
           break;
         default:
-          cmdmode = 0;
+          switch ( realkey )
+          {
+            /* Ignore Modifiers */
+            case XK_Shift_L:
+            case XK_Shift_R:
+            case XK_Control_L:
+            case XK_Control_R:
+            case XK_Caps_Lock:
+            case XK_Shift_Lock:
+            case XK_Meta_L:
+            case XK_Meta_R:
+            case XK_Alt_L:
+            case XK_Alt_R:
+            case XK_Super_L:
+            case XK_Super_R:
+            case XK_Hyper_L:
+            case XK_Hyper_R:
+              modifier = 1;
+              break;
+            default:
+              cmdmode = 0;
+              break;
+          }
           break;
       }
 
-    } while ( cmdmode );
+    } while ( cmdmode || modifier );
 
 		XUngrabKeyboard(dpy, CurrentTime);
 		XUngrabPointer(dpy, CurrentTime);
