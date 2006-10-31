@@ -91,6 +91,10 @@ void parse_key(char *keystr, KeySym *key, unsigned int *mod) {
     *mod = 0;
   }
   if (dash) {
+    if ( *dash >= 'A' && *dash <= 'Z' ) {
+      *dash -= 'A' - 'a';
+      *mod ^= ShiftMask;
+    }
     KeySym nkey = XStringToKeysym(dash);
     if (nkey != NoSymbol)
         *key = nkey;
