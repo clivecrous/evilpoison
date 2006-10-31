@@ -75,26 +75,26 @@ static void parse_key(char *keystr, KeySym *key, unsigned int *mod);
 
 
 void parse_key(char *keystr, KeySym *key, unsigned int *mod) {
-    char *dash = strchr(keystr, '-');
+  char *dash = strchr(keystr, '-');
 
-    if (dash) {
-	switch (*keystr) {
-	default:
-	case 'C': case 'c': *mod = ControlMask; break;
-	case 'A': case 'a':
-	case 'M': case 'm': *mod = Mod1Mask; break;
-	case 'S': case 's': *mod = ShiftMask; break;
-	}
-	dash++;
-    } else {
-	dash = keystr;
-	*mod = 0;
+  if (dash) {
+    switch (*keystr) {
+      default:
+      case 'C': case 'c': *mod = ControlMask; break;
+      case 'A': case 'a':
+      case 'M': case 'm': *mod = Mod1Mask; break;
+      case 'S': case 's': *mod = ShiftMask; break;
     }
-    if (dash) {
-	KeySym nkey = XStringToKeysym(dash);
-	if (nkey != NoSymbol)
-	    *key = nkey;
-    }
+    dash++;
+  } else {
+    dash = keystr;
+    *mod = 0;
+  }
+  if (dash) {
+    KeySym nkey = XStringToKeysym(dash);
+    if (nkey != NoSymbol)
+        *key = nkey;
+  }
 }
 
 void set_cmdparam(char *cmd, char *params) {
