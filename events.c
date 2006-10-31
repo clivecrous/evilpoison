@@ -151,7 +151,7 @@ static void handle_key_event(XKeyEvent *e) {
 	}
 
 	if ((realkey == opt_prefix_key) && ( (e->state & opt_prefix_mod) == opt_prefix_mod ) && (e->type == KeyPress)) {
-	    if (XGrabKeyboard(dpy, e->root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
+	    if (XGrabKeyboard(dpy, e->root, GrabModeAsync, False, GrabModeAsync, CurrentTime) == GrabSuccess) {
 		XEvent ev;
         XGrabPointer(dpy, e->root, False, 0, GrabModeAsync, GrabModeAsync, None, command_mode_cursor, CurrentTime );
 
@@ -171,7 +171,7 @@ static void handle_key_event(XKeyEvent *e) {
 	    if (cmdmode) {
 		c = current;
 
-		if (XGrabKeyboard(dpy, e->root, False, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess) {
+		if (XGrabKeyboard(dpy, e->root, GrabModeAsync, False, GrabModeAsync, CurrentTime) == GrabSuccess) {
 		    XEvent ev;
         XGrabPointer(dpy, e->root, False, 0, GrabModeAsync, GrabModeAsync, None, command_mode_cursor, CurrentTime );
 		    do {
