@@ -312,17 +312,9 @@ static void handle_key_event(XKeyEvent *e) {
           break;
 #endif
         case KEY_CMDMODE:
-          if ( cmdmode ) {
-            XUngrabKeyboard(dpy, CurrentTime);
-            XUngrabPointer(dpy, CurrentTime);
-          }
           cmdmode = !cmdmode;
           break;
         default:
-          if ( cmdmode ) {
-            XUngrabKeyboard(dpy, CurrentTime);
-            XUngrabPointer(dpy, CurrentTime);
-          }
           cmdmode = 0;
           break;
       }
