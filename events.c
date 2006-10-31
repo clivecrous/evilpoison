@@ -133,213 +133,205 @@ static void move_client(Client *c) {
 }
 
 static void handle_key_event(XKeyEvent *e) {
-    int key;
-    KeySym realkey = XKeycodeToKeysym(dpy,e->keycode,0);
-	Client *c;
-	int width_inc, height_inc;
-#ifdef VWM
-	ScreenInfo *current_screen = find_current_screen();
-#endif
-	int cmdmode = 0;
-	Cursor command_mode_cursor = XCreateFontCursor( dpy, XC_icon );
+  KeySym realkey = XKeycodeToKeysym(dpy,e->keycode,0);
 
-	c = current;
+  if ( realkey != opt_prefix_key ||
+       (e->state & opt_prefix_mod) != opt_prefix_mod ) return;
+
+  int key;
+  XEvent ev;
+
+  realkey = XKeycodeToKeysym(dpy, ev.xkey.keycode, 0);
+  key = do_key_conversion(realkey, ev.xkey.state);
+
+	int width_inc, height_inc;
+  int cmdmode = 1;
+	Client *c = current;
 
 	if (c) {
 	    width_inc = (c->width_inc > 1) ? c->width_inc : 16;
 	    height_inc = (c->height_inc > 1) ? c->height_inc : 16;
 	}
 
-	if ((realkey == opt_prefix_key) && ( (e->state & opt_prefix_mod) == opt_prefix_mod ) && (e->type == KeyPress)) {
-	    if (XGrabKeyboard(dpy, e->root, GrabModeAsync, False, GrabModeAsync, CurrentTime) == GrabSuccess) {
-		XEvent ev;
-        XGrabPointer(dpy, e->root, False, 0, GrabModeAsync, GrabModeAsync, None, command_mode_cursor, CurrentTime );
+#ifdef VWM
+	ScreenInfo *current_screen = find_current_screen();
+#endif
 
-		do {
-		    XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
-		} while (ev.type != KeyPress);
+  if (XGrabKeyboard(dpy, e->root, GrabModeAsync, False, GrabModeAsync, CurrentTime) == GrabSuccess) {
+    Cursor command_mode_cursor = XCreateFontCursor( dpy, XC_icon );
+    XGrabPointer(dpy, e->root, False, 0, GrabModeAsync, GrabModeAsync, None, command_mode_cursor, CurrentTime );
+
+    while ( cmdmode ) {
+      do {
+          XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
+      } while (ev.type != KeyPress);
+
+      realkey = XKeycodeToKeysym(dpy, ev.xkey.keycode, 0);
+      key = do_key_conversion(realkey, ev.xkey.state);
+
+      switch(key) {
+        case KEY_MOUSEDRAG:
+          if (c) drag(c);
+          break;
+        case KEY_MOUSESWEEP:
+          if (c) sweep(c);
+          break;
+        case KEY_LEFT:
+          if (c) {
+            c->x -= 16;
+            move_client(c);
+          }
+          break;
+        case KEY_DOWN:
+          if (c) {
+            c->y += 16;
+            move_client(c);
+          }
+          break;
+        case KEY_UP:
+          if (c) {
+            c->y -= 16;
+            move_client(c);
+          }
+          break;
+        case KEY_RIGHT:
+          if (c) {
+            c->x += 16;
+            move_client(c);
+          }
+          break;
+        case KEY_TOPLEFT:
+          if (c) {
+            c->x = c->border;
+            c->y = c->border;
+            move_client(c);
+          }
+          break;
+        case KEY_TOPRIGHT:
+          if (c) {
+            c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
+            c->y = c->border;
+            move_client(c);
+          }
+          break;
+        case KEY_BOTTOMLEFT:
+          if (c) {
+            c->x = c->border;
+            c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
+            move_client(c);
+          }
+          break;
+        case KEY_BOTTOMRIGHT:
+          if (c) {
+            c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
+            c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
+            move_client(c);
+          }
+          break;
+        case KEY_RESIZELEFT:
+          if (c) {
+            c->width -= 16;
+            move_client(c);
+          }
+          break;
+        case KEY_RESIZERIGHT:
+          if (c) {
+            c->width += 16;
+            move_client(c);
+          }
+          break;
+        case KEY_RESIZEUP:
+          if (c) {
+            c->height -= 16;
+            move_client(c);
+          }
+          break;
+        case KEY_RESIZEDOWN:
+          if (c) {
+            c->height += 16;
+            move_client(c);
+          }
+          break;
+
+        case KEY_NEW:
+          spawn(opt_term);
+          break;
+        case KEY_NEXT:
+          next();
+          /* current_to_head();*/
+          break;
+        case KEY_KILL:
+          if (c) send_wm_delete(c, e->state & altmask);
+          break;
+        case KEY_LOWER:
+          if (c) XLowerWindow(dpy, c->parent);
+          break;
+        case KEY_INFO:
+          if (c) show_info(c, realkey);
+          break;
+        case KEY_MAX:
+          if (c) maximise_client(c, MAXIMISE_HORZ|MAXIMISE_VERT);
+          break;
+        case KEY_MAXVERT:
+          if (c) maximise_client(c, MAXIMISE_VERT);
+          break;
+        case KEY_MAXHORIZ:
+          if (c) maximise_client(c, MAXIMISE_HORZ);
+          break;
+        case KEY_VSPLIT:
+          if (c) {
+            c->width = c->width / 2;
+            move_client(c);
+          }
+          break;
+        case KEY_HSPLIT:
+          if (c) {
+            c->height = c->height / 2;
+            move_client(c);
+          }
+          break;
+#ifdef VWM
+        case KEY_FIX:
+          if (c) fix_client(c);
+          break;
+        case KEY_DESK1: case KEY_DESK2: case KEY_DESK3: case KEY_DESK4:
+        case KEY_DESK5: case KEY_DESK6: case KEY_DESK7: case KEY_DESK8:
+          switch_vdesk(current_screen, KEY_TO_VDESK(key));
+          break;
+        case KEY_PREVDESK:
+          if (current_screen->vdesk > KEY_TO_VDESK(KEY_DESK1)) {
+            switch_vdesk(current_screen,
+              current_screen->vdesk - 1);
+          }
+          break;
+        case KEY_NEXTDESK:
+          if (current_screen->vdesk < KEY_TO_VDESK(KEY_DESK8)) {
+            switch_vdesk(current_screen,
+                current_screen->vdesk + 1);
+          }
+          break;
+#endif
+        case KEY_CMDMODE:
+          if ( cmdmode ) {
+            XUngrabKeyboard(dpy, CurrentTime);
+            XUngrabPointer(dpy, CurrentTime);
+          }
+          cmdmode = !cmdmode;
+          break;
+        default:
+          if ( cmdmode ) {
+            XUngrabKeyboard(dpy, CurrentTime);
+            XUngrabPointer(dpy, CurrentTime);
+          }
+          cmdmode = 0;
+          break;
+      }
+
+    }
 
 		XUngrabKeyboard(dpy, CurrentTime);
 		XUngrabPointer(dpy, CurrentTime);
-		realkey = XKeycodeToKeysym(dpy, ev.xkey.keycode, 0);
-		key = do_key_conversion(realkey, ev.xkey.state);
-	    } else key = KEY_NONE;
-	} else key = KEY_NONE;
-
-	do {
-
-	    if (cmdmode) {
-		c = current;
-
-		if (XGrabKeyboard(dpy, e->root, GrabModeAsync, False, GrabModeAsync, CurrentTime) == GrabSuccess) {
-		    XEvent ev;
-        XGrabPointer(dpy, e->root, False, 0, GrabModeAsync, GrabModeAsync, None, command_mode_cursor, CurrentTime );
-		    do {
-			XMaskEvent(dpy, KeyPressMask|KeyReleaseMask, &ev);
-		    } while (ev.type != KeyPress);
-		    key = do_key_conversion(XKeycodeToKeysym(dpy,ev.xkey.keycode,0), ev.xkey.state);
-		}
-	    }
-
-	switch(key) {
-	case KEY_MOUSEDRAG:
-	    if (c) drag(c);
-	    break;
-	case KEY_MOUSESWEEP:
-	    if (c) sweep(c);
-	    break;
-		case KEY_LEFT:
-		    if (c) {
-			c->x -= 16;
-			move_client(c);
-		    }
-		    break;
-		case KEY_DOWN:
-		    if (c) {
-			c->y += 16;
-			move_client(c);
-		    }
-		    break;
-		case KEY_UP:
-		    if (c) {
-			c->y -= 16;
-			move_client(c);
-		    }
-		    break;
-		case KEY_RIGHT:
-		    if (c) {
-			c->x += 16;
-			move_client(c);
-		    }
-		    break;
-		case KEY_TOPLEFT:
-		    if (c) {
-			c->x = c->border;
-			c->y = c->border;
-			move_client(c);
-		    }
-		    break;
-		case KEY_TOPRIGHT:
-		    if (c) {
-			c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
-			c->y = c->border;
-			move_client(c);
-		    }
-		    break;
-		case KEY_BOTTOMLEFT:
-		    if (c) {
-			c->x = c->border;
-			c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
-			move_client(c);
-		    }
-		    break;
-		case KEY_BOTTOMRIGHT:
-		    if (c) {
-			c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
-			c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
-			move_client(c);
-		    }
-		    break;
-		case KEY_RESIZELEFT:
-		    if (c) {
-			c->width -= 16;
-			move_client(c);
-		    }
-		    break;
-		case KEY_RESIZERIGHT:
-		    if (c) {
-			c->width += 16;
-			move_client(c);
-		    }
-		    break;
-		case KEY_RESIZEUP:
-		    if (c) {
-			c->height -= 16;
-			move_client(c);
-		    }
-		    break;
-		case KEY_RESIZEDOWN:
-		    if (c) {
-			c->height += 16;
-			move_client(c);
-		    }
-		    break;
-
-		case KEY_NEW:
-			spawn(opt_term);
-			break;
-		case KEY_NEXT:
-			next();
-			/* current_to_head();*/
-			break;
-		case KEY_KILL:
-		    if (c) send_wm_delete(c, e->state & altmask);
-			break;
-		case KEY_LOWER:
-		    if (c) XLowerWindow(dpy, c->parent);
-			break;
-		case KEY_INFO:
-		    if (c) show_info(c, realkey);
-			break;
-		case KEY_MAX:
-		    if (c) maximise_client(c, MAXIMISE_HORZ|MAXIMISE_VERT);
-			break;
-		case KEY_MAXVERT:
-		    if (c) maximise_client(c, MAXIMISE_VERT);
-			break;
-		case KEY_MAXHORIZ:
-		    if (c) maximise_client(c, MAXIMISE_HORZ);
-			break;
-	case KEY_VSPLIT:
-	    if (c) {
-		c->width = c->width / 2;
-		move_client(c);
-	    }
-	    break;
-	case KEY_HSPLIT:
-	    if (c) {
-		c->height = c->height / 2;
-		move_client(c);
-	    }
-	    break;
-#ifdef VWM
-		case KEY_FIX:
-		    if (c) fix_client(c);
-			break;
-		case KEY_DESK1: case KEY_DESK2: case KEY_DESK3: case KEY_DESK4:
-		case KEY_DESK5: case KEY_DESK6: case KEY_DESK7: case KEY_DESK8:
-			switch_vdesk(current_screen, KEY_TO_VDESK(key));
-			break;
-		case KEY_PREVDESK:
-			if (current_screen->vdesk > KEY_TO_VDESK(KEY_DESK1)) {
-				switch_vdesk(current_screen,
-						current_screen->vdesk - 1);
-			}
-			break;
-		case KEY_NEXTDESK:
-			if (current_screen->vdesk < KEY_TO_VDESK(KEY_DESK8)) {
-				switch_vdesk(current_screen,
-						current_screen->vdesk + 1);
-			}
-			break;
-#endif
-	case KEY_CMDMODE:
-	    if (cmdmode) {
-        XUngrabKeyboard(dpy, CurrentTime);
-        XUngrabPointer(dpy, CurrentTime);
-      }
-	    cmdmode = !cmdmode;
-	    break;
-	default:
-	    if (cmdmode) {
-        XUngrabKeyboard(dpy, CurrentTime);
-        XUngrabPointer(dpy, CurrentTime);
-      }
-	    cmdmode = 0;
-	    break;
-	}
-
-	} while (cmdmode);
+  }
 
 }
 
