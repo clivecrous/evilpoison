@@ -307,20 +307,20 @@ static void handle_key_event(XKeyEvent *e) {
           case KEY_FIX:
             if (c) fix_client(c);
             break;
-          case KEY_DESK1: switch_vdesk(current_screen, 1); break;
-          case KEY_DESK2: switch_vdesk(current_screen, 2); break;
-          case KEY_DESK3: switch_vdesk(current_screen, 3); break;
-          case KEY_DESK4: switch_vdesk(current_screen, 4); break;
-          case KEY_DESK5: switch_vdesk(current_screen, 5); break;
-          case KEY_DESK6: switch_vdesk(current_screen, 6); break;
-          case KEY_DESK7: switch_vdesk(current_screen, 7); break;
-          case KEY_DESK8: switch_vdesk(current_screen, 8); break;
+          case KEY_DESK1: switch_vdesk(current_screen, 0); break;
+          case KEY_DESK2: switch_vdesk(current_screen, 1); break;
+          case KEY_DESK3: switch_vdesk(current_screen, 2); break;
+          case KEY_DESK4: switch_vdesk(current_screen, 3); break;
+          case KEY_DESK5: switch_vdesk(current_screen, 4); break;
+          case KEY_DESK6: switch_vdesk(current_screen, 5); break;
+          case KEY_DESK7: switch_vdesk(current_screen, 6); break;
+          case KEY_DESK8: switch_vdesk(current_screen, 7); break;
           case KEY_PREVDESK:
-            if (current_screen->vdesk > 1 )
+            if (current_screen->vdesk > 0 )
               switch_vdesk(current_screen, current_screen->vdesk - 1);
             break;
           case KEY_NEXTDESK:
-            if (current_screen->vdesk < 8 )
+            if (current_screen->vdesk < 7 )
               switch_vdesk(current_screen, current_screen->vdesk + 1);
             break;
 #endif
