@@ -300,21 +300,21 @@ static void handle_key_event(XKeyEvent *e) {
         case KEY_FIX:
           if (c) fix_client(c);
           break;
-        case KEY_DESK1: case KEY_DESK2: case KEY_DESK3: case KEY_DESK4:
-        case KEY_DESK5: case KEY_DESK6: case KEY_DESK7: case KEY_DESK8:
-          switch_vdesk(current_screen, KEY_TO_VDESK(key_conversions[key_enum].command_enum));
-          break;
+        case KEY_DESK1: switch_vdesk(current_screen, 1); break;
+        case KEY_DESK2: switch_vdesk(current_screen, 2); break;
+        case KEY_DESK3: switch_vdesk(current_screen, 3); break;
+        case KEY_DESK4: switch_vdesk(current_screen, 4); break;
+        case KEY_DESK5: switch_vdesk(current_screen, 5); break;
+        case KEY_DESK6: switch_vdesk(current_screen, 6); break;
+        case KEY_DESK7: switch_vdesk(current_screen, 7); break;
+        case KEY_DESK8: switch_vdesk(current_screen, 8); break;
         case KEY_PREVDESK:
-          if (current_screen->vdesk > KEY_TO_VDESK(KEY_DESK1)) {
-            switch_vdesk(current_screen,
-              current_screen->vdesk - 1);
-          }
+          if (current_screen->vdesk > 1 )
+            switch_vdesk(current_screen, current_screen->vdesk - 1);
           break;
         case KEY_NEXTDESK:
-          if (current_screen->vdesk < KEY_TO_VDESK(KEY_DESK8)) {
-            switch_vdesk(current_screen,
-                current_screen->vdesk + 1);
-          }
+          if (current_screen->vdesk < 8 )
+            switch_vdesk(current_screen, current_screen->vdesk + 1);
           break;
 #endif
         case KEY_CMDMODE:
