@@ -105,6 +105,7 @@ void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
     tmpkc[num_keyconvs].chain = malloc( sizeof( struct KeySymMask ) );
     tmpkc[num_keyconvs].chain->symbol = k;
     tmpkc[num_keyconvs].chain->mask = mask;
+    // TODO This memory is never freed.
 
     tmpkc[num_keyconvs].command_enum = i;
     tmpkc[num_keyconvs].command = malloc(strlen(cmd)+1);
