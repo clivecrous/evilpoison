@@ -123,7 +123,7 @@ void free_key_bindings() {
     }
 }
 
-unsigned int find_key_binding(KeySym k, unsigned int mask) {
+int find_key_binding(KeySym k, unsigned int mask) {
   int i;
 
   for (i = 0; i < num_keyconvs; i++)
@@ -146,7 +146,7 @@ static void handle_key_event(XKeyEvent *e) {
   if ( realkey != opt_prefix_key ||
        (e->state & opt_prefix_mod) != opt_prefix_mod ) return;
 
-  unsigned int key_enum;
+  int key_enum;
   XEvent ev;
 
 	int width_inc, height_inc;
