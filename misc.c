@@ -29,7 +29,7 @@ void spawn(const char * command) {
 			 * been "const char *const argv[]", but the committee
 			 * favored legacy code over modern code, and modern
 			 * compilers bark at our extra const. (LD) */
-			case 0: execlp( "sh", "sh", "-c", command );
+			case 0: execlp( "sh", "sh", "-c", command, NULL );
 			default: _exit(0);
 		}
 	}
