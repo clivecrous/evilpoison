@@ -66,9 +66,13 @@ const char *command_names[NUM_COMMANDS] = {
     "kill"
 };
 
+struct KeySymMask {
+  KeySym symbol;
+  unsigned int mask;
+};
+
 struct _ksconv {
-    KeySym kfrom;
-    unsigned int kmask;
+    struct KeySymMask *chain;
     unsigned int command_enum;
     char * command;
 };
@@ -98,8 +102,10 @@ void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
 	free(key_conversions);
     }
 
-    tmpkc[num_keyconvs].kfrom = k;
-    tmpkc[num_keyconvs].kmask = mask;
+    tmpkc[num_keyconvs].chain = malloc( sizeof( struct KeySymMask ) );
+    tmpkc[num_keyconvs].chain->symbol = k;
+    tmpkc[num_keyconvs].chain->mask = mask;
+
     tmpkc[num_keyconvs].command_enum = i;
     tmpkc[num_keyconvs].command = malloc(strlen(cmd)+1);
     strcpy(tmpkc[num_keyconvs].command,cmd);
@@ -121,7 +127,7 @@ unsigned int find_key_binding(KeySym k, unsigned int mask) {
   int i;
 
   for (i = 0; i < num_keyconvs; i++)
-    if ( k == key_conversions[i].kfrom && mask == key_conversions[i].kmask )
+    if ( k == key_conversions[i].chain->symbol && mask == key_conversions[i].chain->mask )
       return i;
 
   return -1;
