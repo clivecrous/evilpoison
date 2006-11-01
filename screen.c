@@ -5,25 +5,28 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
 #include "evilwm.h"
 #include "log.h"
 
 #ifdef INFOBANNER
-Window info_window = None;
 
-static void create_info_window(Client *c);
-static void update_info_window(Client *c);
-static void remove_info_window(void);
+static Window create_info_window(Client *c);
+static void update_info_window(Client *c, Window info_window);
+static void remove_info_window(Window info_window);
 static void grab_keysym(Window w, unsigned int mask, KeySym keysym);
 
-static void create_info_window(Client *c) {
+static Window create_info_window(Client *c) {
+  Window info_window = None;
 	info_window = XCreateSimpleWindow(dpy, c->screen->root, -4, -4, 2, 2,
 			0, c->screen->fg.pixel, c->screen->fg.pixel);
 	XMapRaised(dpy, info_window);
-	update_info_window(c);
+	update_info_window(c, info_window);
+  return info_window;
 }
 
-static void update_info_window(Client *c) {
+static void update_info_window(Client *c, Window info_window) {
 	char *name;
 	char buf[27];
 	int namew, iwinx, iwiny, iwinw, iwinh;
@@ -63,7 +66,7 @@ static void update_info_window(Client *c) {
 			buf, strlen(buf));
 }
 
-static void remove_info_window(void) {
+static void remove_info_window(Window info_window) {
 	if (info_window)
 		XDestroyWindow(dpy, info_window);
 	info_window = None;
@@ -115,7 +118,7 @@ void sweep(Client *c) {
 
 	XRaiseWindow(dpy, c->parent);
 #ifdef INFOBANNER_MOVERESIZE
-	create_info_window(c);
+	Window info_window = create_info_window(c);
 #endif
 	XGrabServer(dpy);
 	draw_outline(c);
@@ -130,7 +133,7 @@ void sweep(Client *c) {
 				XUngrabServer(dpy);
 				recalculate_sweep(c, old_cx, old_cy, ev.xmotion.x, ev.xmotion.y);
 #ifdef INFOBANNER_MOVERESIZE
-				update_info_window(c);
+				update_info_window(c,info_window);
 #endif
 				XSync(dpy, False);
 				XGrabServer(dpy);
@@ -140,7 +143,7 @@ void sweep(Client *c) {
 				draw_outline(c); /* clear */
 				XUngrabServer(dpy);
 #ifdef INFOBANNER_MOVERESIZE
-				remove_info_window();
+				remove_info_window(info_window);
 #endif
 				XUngrabPointer(dpy, CurrentTime);
 				moveresize(c);
@@ -151,29 +154,42 @@ void sweep(Client *c) {
 }
 #endif
 
-void show_info(Client *c, KeySym key) {
-	XEvent ev;
-	XKeyboardState keyboard;
-
-	XGetKeyboardControl(dpy, &keyboard);
-	XAutoRepeatOff(dpy);
 #ifdef INFOBANNER
-	create_info_window(c);
+void *destroy_info(Window *info_window)
+#else
+void *destroy_info(Client *c)
+#endif
+{
+  usleep(1000000); /* TODO Defaulting to 1 second, should be configurable */
+#ifdef INFOBANNER
+  remove_info_window(*info_window);
+  free( info_window );
+#else
+  draw_outline(c);
+  XUngrabServer(dpy);
+#endif
+  XFlush(dpy);
+  pthread_exit( NULL );
+}
+
+void show_info(Client *c) {
+
+#ifdef INFOBANNER
+  Window *info_window = malloc( sizeof( Window ) );
+	*info_window = create_info_window(c);
 #else
 	XGrabServer(dpy);
 	draw_outline(c);
 #endif
-	do {
-		XMaskEvent(dpy, KeyReleaseMask|KeyPressMask, &ev);
-	} while (XKeycodeToKeysym(dpy,ev.xkey.keycode,0) != key);
+  XFlush(dpy);
+  pthread_t thread;
+  pthread_create( &thread, NULL, destroy_info,
 #ifdef INFOBANNER
-	remove_info_window();
+  (void *)info_window
 #else
-	draw_outline(c);
-	XUngrabServer(dpy);
+  (void *)c
 #endif
-	if (keyboard.global_auto_repeat == AutoRepeatModeOn)
-		XAutoRepeatOn(dpy);
+  );
 }
 
 #ifdef MOUSE
@@ -242,7 +258,7 @@ void drag(Client *c) {
 	XRaiseWindow(dpy, c->parent);
 	get_mouse_position(&x1, &y1, c->screen->root);
 #ifdef INFOBANNER_MOVERESIZE
-	create_info_window(c);
+	Window info_window = create_info_window(c);
 #endif
 	if (!solid_drag) {
 		XGrabServer(dpy);
@@ -265,7 +281,7 @@ void drag(Client *c) {
 #endif
 
 #ifdef INFOBANNER_MOVERESIZE
-				update_info_window(c);
+				update_info_window(c,info_window);
 #endif
 				if (!solid_drag) {
 					XSync(dpy, False);
@@ -284,7 +300,7 @@ void drag(Client *c) {
 					XUngrabServer(dpy);
 				}
 #ifdef INFOBANNER_MOVERESIZE
-				remove_info_window();
+				remove_info_window(info_window);
 #endif
 				XUngrabPointer(dpy, CurrentTime);
 				if (!solid_drag) {

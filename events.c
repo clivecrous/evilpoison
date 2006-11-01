@@ -188,6 +188,7 @@ static void handle_key_event(XKeyEvent *e) {
       key_enum = find_key_binding(realkey, ev.xkey.state);
 
       if ( key_enum != -1 )
+      {
         switch(key_conversions[key_enum].command_enum) {
           case KEY_MOUSEDRAG:
             if (c) drag(c);
@@ -276,18 +277,17 @@ static void handle_key_event(XKeyEvent *e) {
             if (strlen(key_conversions[key_enum].command) > 5)
               spawn((char *)(((int)key_conversions[key_enum].command)+5));
             break;
-          case KEY_NEXT:
-            next();
-            refresh_client();
-            break;
           case KEY_KILL:
             if (c) send_wm_delete(c, e->state & altmask);
             break;
           case KEY_LOWER:
             if (c) XLowerWindow(dpy, c->parent);
             break;
+          case KEY_NEXT:
+            next();
+            refresh_client();
           case KEY_INFO:
-            if (c) show_info(c, realkey);
+            if (c) show_info(c);
             break;
           case KEY_MAX:
             if (c) maximise_client(c, MAXIMISE_HORZ|MAXIMISE_VERT);
@@ -335,7 +335,7 @@ static void handle_key_event(XKeyEvent *e) {
             cmdmode = !cmdmode;
             break;
         }
-      else {
+      } else {
         switch ( realkey )
         {
           /* Ignore Modifiers */
