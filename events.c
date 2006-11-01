@@ -177,180 +177,181 @@ static void handle_key_event(XKeyEvent *e) {
       realkey = XKeycodeToKeysym(dpy, ev.xkey.keycode, 0);
       key_enum = find_key_binding(realkey, ev.xkey.state);
 
-      switch(key_conversions[key_enum].command_enum) {
-        case KEY_MOUSEDRAG:
-          if (c) drag(c);
-          break;
-        case KEY_MOUSESWEEP:
-          if (c) sweep(c);
-          break;
-        case KEY_LEFT:
-          if (c) {
-            c->x -= 16;
-            move_client(c);
-          }
-          break;
-        case KEY_DOWN:
-          if (c) {
-            c->y += 16;
-            move_client(c);
-          }
-          break;
-        case KEY_UP:
-          if (c) {
-            c->y -= 16;
-            move_client(c);
-          }
-          break;
-        case KEY_RIGHT:
-          if (c) {
-            c->x += 16;
-            move_client(c);
-          }
-          break;
-        case KEY_TOPLEFT:
-          if (c) {
-            c->x = c->border;
-            c->y = c->border;
-            move_client(c);
-          }
-          break;
-        case KEY_TOPRIGHT:
-          if (c) {
-            c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
-            c->y = c->border;
-            move_client(c);
-          }
-          break;
-        case KEY_BOTTOMLEFT:
-          if (c) {
-            c->x = c->border;
-            c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
-            move_client(c);
-          }
-          break;
-        case KEY_BOTTOMRIGHT:
-          if (c) {
-            c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
-            c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
-            move_client(c);
-          }
-          break;
-        case KEY_RESIZELEFT:
-          if (c) {
-            c->width -= 16;
-            move_client(c);
-          }
-          break;
-        case KEY_RESIZERIGHT:
-          if (c) {
-            c->width += 16;
-            move_client(c);
-          }
-          break;
-        case KEY_RESIZEUP:
-          if (c) {
-            c->height -= 16;
-            move_client(c);
-          }
-          break;
-        case KEY_RESIZEDOWN:
-          if (c) {
-            c->height += 16;
-            move_client(c);
-          }
-          break;
+      if ( key_enum != -1 )
+        switch(key_conversions[key_enum].command_enum) {
+          case KEY_MOUSEDRAG:
+            if (c) drag(c);
+            break;
+          case KEY_MOUSESWEEP:
+            if (c) sweep(c);
+            break;
+          case KEY_LEFT:
+            if (c) {
+              c->x -= 16;
+              move_client(c);
+            }
+            break;
+          case KEY_DOWN:
+            if (c) {
+              c->y += 16;
+              move_client(c);
+            }
+            break;
+          case KEY_UP:
+            if (c) {
+              c->y -= 16;
+              move_client(c);
+            }
+            break;
+          case KEY_RIGHT:
+            if (c) {
+              c->x += 16;
+              move_client(c);
+            }
+            break;
+          case KEY_TOPLEFT:
+            if (c) {
+              c->x = c->border;
+              c->y = c->border;
+              move_client(c);
+            }
+            break;
+          case KEY_TOPRIGHT:
+            if (c) {
+              c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
+              c->y = c->border;
+              move_client(c);
+            }
+            break;
+          case KEY_BOTTOMLEFT:
+            if (c) {
+              c->x = c->border;
+              c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
+              move_client(c);
+            }
+            break;
+          case KEY_BOTTOMRIGHT:
+            if (c) {
+              c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
+              c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
+              move_client(c);
+            }
+            break;
+          case KEY_RESIZELEFT:
+            if (c) {
+              c->width -= 16;
+              move_client(c);
+            }
+            break;
+          case KEY_RESIZERIGHT:
+            if (c) {
+              c->width += 16;
+              move_client(c);
+            }
+            break;
+          case KEY_RESIZEUP:
+            if (c) {
+              c->height -= 16;
+              move_client(c);
+            }
+            break;
+          case KEY_RESIZEDOWN:
+            if (c) {
+              c->height += 16;
+              move_client(c);
+            }
+            break;
 
-        case KEY_EXEC:
-          if (strlen(key_conversions[key_enum].command) > 5)
-          {
-            fprintf( stdout, "Exec: %s\n", (char *)(((int)key_conversions[key_enum].command)+5) );
-            spawn((char *)(((int)key_conversions[key_enum].command)+5));
-          }
-          break;
-        case KEY_NEXT:
-          next();
-          /* current_to_head();*/
-          break;
-        case KEY_KILL:
-          if (c) send_wm_delete(c, e->state & altmask);
-          break;
-        case KEY_LOWER:
-          if (c) XLowerWindow(dpy, c->parent);
-          break;
-        case KEY_INFO:
-          if (c) show_info(c, realkey);
-          break;
-        case KEY_MAX:
-          if (c) maximise_client(c, MAXIMISE_HORZ|MAXIMISE_VERT);
-          break;
-        case KEY_MAXVERT:
-          if (c) maximise_client(c, MAXIMISE_VERT);
-          break;
-        case KEY_MAXHORIZ:
-          if (c) maximise_client(c, MAXIMISE_HORZ);
-          break;
-        case KEY_VSPLIT:
-          if (c) {
-            c->width = c->width / 2;
-            move_client(c);
-          }
-          break;
-        case KEY_HSPLIT:
-          if (c) {
-            c->height = c->height / 2;
-            move_client(c);
-          }
-          break;
+          case KEY_EXEC:
+            if (strlen(key_conversions[key_enum].command) > 5)
+            {
+              fprintf( stdout, "Exec: %s\n", (char *)(((int)key_conversions[key_enum].command)+5) );
+              spawn((char *)(((int)key_conversions[key_enum].command)+5));
+            }
+            break;
+          case KEY_NEXT:
+            next();
+            /* current_to_head();*/
+            break;
+          case KEY_KILL:
+            if (c) send_wm_delete(c, e->state & altmask);
+            break;
+          case KEY_LOWER:
+            if (c) XLowerWindow(dpy, c->parent);
+            break;
+          case KEY_INFO:
+            if (c) show_info(c, realkey);
+            break;
+          case KEY_MAX:
+            if (c) maximise_client(c, MAXIMISE_HORZ|MAXIMISE_VERT);
+            break;
+          case KEY_MAXVERT:
+            if (c) maximise_client(c, MAXIMISE_VERT);
+            break;
+          case KEY_MAXHORIZ:
+            if (c) maximise_client(c, MAXIMISE_HORZ);
+            break;
+          case KEY_VSPLIT:
+            if (c) {
+              c->width = c->width / 2;
+              move_client(c);
+            }
+            break;
+          case KEY_HSPLIT:
+            if (c) {
+              c->height = c->height / 2;
+              move_client(c);
+            }
+            break;
 #ifdef VWM
-        case KEY_FIX:
-          if (c) fix_client(c);
-          break;
-        case KEY_DESK1: switch_vdesk(current_screen, 1); break;
-        case KEY_DESK2: switch_vdesk(current_screen, 2); break;
-        case KEY_DESK3: switch_vdesk(current_screen, 3); break;
-        case KEY_DESK4: switch_vdesk(current_screen, 4); break;
-        case KEY_DESK5: switch_vdesk(current_screen, 5); break;
-        case KEY_DESK6: switch_vdesk(current_screen, 6); break;
-        case KEY_DESK7: switch_vdesk(current_screen, 7); break;
-        case KEY_DESK8: switch_vdesk(current_screen, 8); break;
-        case KEY_PREVDESK:
-          if (current_screen->vdesk > 1 )
-            switch_vdesk(current_screen, current_screen->vdesk - 1);
-          break;
-        case KEY_NEXTDESK:
-          if (current_screen->vdesk < 8 )
-            switch_vdesk(current_screen, current_screen->vdesk + 1);
-          break;
+          case KEY_FIX:
+            if (c) fix_client(c);
+            break;
+          case KEY_DESK1: switch_vdesk(current_screen, 1); break;
+          case KEY_DESK2: switch_vdesk(current_screen, 2); break;
+          case KEY_DESK3: switch_vdesk(current_screen, 3); break;
+          case KEY_DESK4: switch_vdesk(current_screen, 4); break;
+          case KEY_DESK5: switch_vdesk(current_screen, 5); break;
+          case KEY_DESK6: switch_vdesk(current_screen, 6); break;
+          case KEY_DESK7: switch_vdesk(current_screen, 7); break;
+          case KEY_DESK8: switch_vdesk(current_screen, 8); break;
+          case KEY_PREVDESK:
+            if (current_screen->vdesk > 1 )
+              switch_vdesk(current_screen, current_screen->vdesk - 1);
+            break;
+          case KEY_NEXTDESK:
+            if (current_screen->vdesk < 8 )
+              switch_vdesk(current_screen, current_screen->vdesk + 1);
+            break;
 #endif
-        case KEY_CMDMODE:
-          cmdmode = !cmdmode;
-          break;
-        default:
-          switch ( realkey )
-          {
-            /* Ignore Modifiers */
-            case XK_Shift_L:
-            case XK_Shift_R:
-            case XK_Control_L:
-            case XK_Control_R:
-            case XK_Caps_Lock:
-            case XK_Shift_Lock:
-            case XK_Meta_L:
-            case XK_Meta_R:
-            case XK_Alt_L:
-            case XK_Alt_R:
-            case XK_Super_L:
-            case XK_Super_R:
-            case XK_Hyper_L:
-            case XK_Hyper_R:
-              modifier = 1;
-              break;
-            default:
-              cmdmode = 0;
-              break;
-          }
-          break;
+          case KEY_CMDMODE:
+            cmdmode = !cmdmode;
+            break;
+        }
+      else {
+        switch ( realkey )
+        {
+          /* Ignore Modifiers */
+          case XK_Shift_L:
+          case XK_Shift_R:
+          case XK_Control_L:
+          case XK_Control_R:
+          case XK_Caps_Lock:
+          case XK_Shift_Lock:
+          case XK_Meta_L:
+          case XK_Meta_R:
+          case XK_Alt_L:
+          case XK_Alt_R:
+          case XK_Super_L:
+          case XK_Super_R:
+          case XK_Hyper_L:
+          case XK_Hyper_R:
+            modifier = 1;
+            break;
+          default:
+            cmdmode = 0;
+            break;
+        }
       }
 
     } while ( cmdmode || modifier );
