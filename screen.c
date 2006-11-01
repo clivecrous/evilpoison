@@ -125,6 +125,7 @@ void sweep(Client *c) {
 		XMaskEvent(dpy, MouseMask, &ev);
 		switch (ev.type) {
 			case MotionNotify:
+        while (XCheckTypedEvent(dpy, MotionNotify, &ev));
 				draw_outline(c); /* clear */
 				XUngrabServer(dpy);
 				recalculate_sweep(c, old_cx, old_cy, ev.xmotion.x, ev.xmotion.y);
@@ -251,6 +252,7 @@ void drag(Client *c) {
 		XMaskEvent(dpy, MouseMask, &ev);
 		switch (ev.type) {
 			case MotionNotify:
+        while (XCheckTypedEvent(dpy, MotionNotify, &ev));
 				if (!solid_drag) {
 					draw_outline(c); /* clear */
 					XUngrabServer(dpy);
