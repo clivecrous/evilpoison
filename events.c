@@ -152,16 +152,25 @@ static void handle_key_event(XKeyEvent *e) {
 
 	int width_inc, height_inc;
   int cmdmode = 0;
-	Client *c = current;
-
-	if (c) {
-	    width_inc = (c->width_inc > 1) ? c->width_inc : 16;
-	    height_inc = (c->height_inc > 1) ? c->height_inc : 16;
-	}
+	Client *c;
 
 #ifdef VWM
-	ScreenInfo *current_screen = find_current_screen();
+  ScreenInfo *current_screen;
 #endif
+
+  void refresh_client()
+  {
+    c = current;
+    if (c) {
+        width_inc = (c->width_inc > 1) ? c->width_inc : 16;
+        height_inc = (c->height_inc > 1) ? c->height_inc : 16;
+    }
+#ifdef VWM
+    current_screen = find_current_screen();
+#endif
+  }
+
+  refresh_client();
 
   if (XGrabKeyboard(dpy, e->root, GrabModeAsync, False, GrabModeAsync, CurrentTime) == GrabSuccess) {
     Cursor command_mode_cursor = XCreateFontCursor( dpy, XC_icon );
@@ -269,7 +278,7 @@ static void handle_key_event(XKeyEvent *e) {
             break;
           case KEY_NEXT:
             next();
-            /* current_to_head();*/
+            refresh_client();
             break;
           case KEY_KILL:
             if (c) send_wm_delete(c, e->state & altmask);
