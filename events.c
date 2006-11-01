@@ -264,10 +264,7 @@ static void handle_key_event(XKeyEvent *e) {
 
           case KEY_EXEC:
             if (strlen(key_conversions[key_enum].command) > 5)
-            {
-              fprintf( stdout, "Exec: %s\n", (char *)(((int)key_conversions[key_enum].command)+5) );
               spawn((char *)(((int)key_conversions[key_enum].command)+5));
-            }
             break;
           case KEY_NEXT:
             next();
