@@ -21,7 +21,7 @@ DEFINES += -DSOLIDDRAG
 DEFINES += -DINFOBANNER
 # Uncomment to show the same banner on moves and resizes.  Note this can
 # make things very SLOW!
-#DEFINES += -DINFOBANNER_MOVERESIZE
+DEFINES += -DINFOBANNER_MOVERESIZE
 
 # To support virtual desktops, uncomment the following line.
 DEFINES += -DVWM
