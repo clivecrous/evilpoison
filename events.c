@@ -9,20 +9,6 @@
 
 #include <X11/cursorfont.h>
 
-static void current_to_head(void) {
-	Client *c;
-	if (current && current != head_client) {
-		for (c = head_client; c; c = c->next) {
-			if (c->next == current) {
-				c->next = current->next;
-				current->next = head_client;
-				head_client = current;
-				break;
-			}
-		}
-	}
-}
-
 const char *command_names[NUM_COMMANDS] = {
     "none",
     "prefix",
@@ -499,7 +485,6 @@ static void handle_enter_event(XCrossingEvent *e) {
 			return;
 #endif
 		select_client(c);
-		current_to_head();
 	}
 }
 
