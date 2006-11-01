@@ -6,7 +6,7 @@ enum KEYVALS {
     KEY_PREFIX,
     KEY_CMDMODE,
     KEY_NEXT,
-    KEY_NEW,
+    KEY_EXEC,
     KEY_TOPLEFT,
     KEY_TOPRIGHT,
     KEY_BOTTOMLEFT,

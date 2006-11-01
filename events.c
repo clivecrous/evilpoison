@@ -28,7 +28,7 @@ const char *command_names[NUM_COMMANDS] = {
     "prefix",
     "cmdmode",
     "nextwin",
-    "new",
+    "exec",
     "topleft",
     "topright",
     "bottomleft",
@@ -69,7 +69,8 @@ const char *command_names[NUM_COMMANDS] = {
 struct _ksconv {
     KeySym kfrom;
     unsigned int kmask;
-    int kto;
+    unsigned int command_enum;
+    char * command;
 };
 
 static int num_keyconvs = 0;
@@ -99,7 +100,9 @@ void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
 
     tmpkc[num_keyconvs].kfrom = k;
     tmpkc[num_keyconvs].kmask = mask;
-    tmpkc[num_keyconvs].kto = i;
+    tmpkc[num_keyconvs].command_enum = i;
+    tmpkc[num_keyconvs].command = malloc(strlen(cmd)+1);
+    strcpy(tmpkc[num_keyconvs].command,cmd);
 
     num_keyconvs++;
 
@@ -114,15 +117,14 @@ void free_key_bindings() {
     }
 }
 
-static int do_key_conversion(KeySym k, unsigned int mask) {
-    int i;
+unsigned int find_key_binding(KeySym k, unsigned int mask) {
+  int i;
 
-    for (i = 0; i < num_keyconvs; i++)
-	if ( k == key_conversions[i].kfrom &&
-	     mask == key_conversions[i].kmask )
-	    return key_conversions[i].kto;
+  for (i = 0; i < num_keyconvs; i++)
+    if ( k == key_conversions[i].kfrom && mask == key_conversions[i].kmask )
+      return i;
 
-    return KEY_NONE;
+  return -1;
 }
 
 static void move_client(Client *c) {
@@ -138,11 +140,8 @@ static void handle_key_event(XKeyEvent *e) {
   if ( realkey != opt_prefix_key ||
        (e->state & opt_prefix_mod) != opt_prefix_mod ) return;
 
-  int key;
+  unsigned int key_enum;
   XEvent ev;
-
-  realkey = XKeycodeToKeysym(dpy, ev.xkey.keycode, 0);
-  key = do_key_conversion(realkey, ev.xkey.state);
 
 	int width_inc, height_inc;
   int cmdmode = 0;
@@ -170,9 +169,9 @@ static void handle_key_event(XKeyEvent *e) {
       } while (ev.type != KeyPress);
 
       realkey = XKeycodeToKeysym(dpy, ev.xkey.keycode, 0);
-      key = do_key_conversion(realkey, ev.xkey.state);
+      key_enum = find_key_binding(realkey, ev.xkey.state);
 
-      switch(key) {
+      switch(key_conversions[key_enum].command_enum) {
         case KEY_MOUSEDRAG:
           if (c) drag(c);
           break;
@@ -256,8 +255,12 @@ static void handle_key_event(XKeyEvent *e) {
           }
           break;
 
-        case KEY_NEW:
-          spawn(opt_term);
+        case KEY_EXEC:
+          if (strlen(key_conversions[key_enum].command) > 5)
+          {
+            fprintf( stdout, "Exec: %s\n", (char *)(((int)key_conversions[key_enum].command)+5) );
+            spawn((char *)(((int)key_conversions[key_enum].command)+5));
+          }
           break;
         case KEY_NEXT:
           next();
@@ -299,7 +302,7 @@ static void handle_key_event(XKeyEvent *e) {
           break;
         case KEY_DESK1: case KEY_DESK2: case KEY_DESK3: case KEY_DESK4:
         case KEY_DESK5: case KEY_DESK6: case KEY_DESK7: case KEY_DESK8:
-          switch_vdesk(current_screen, KEY_TO_VDESK(key));
+          switch_vdesk(current_screen, KEY_TO_VDESK(key_conversions[key_enum].command_enum));
           break;
         case KEY_PREVDESK:
           if (current_screen->vdesk > KEY_TO_VDESK(KEY_DESK1)) {

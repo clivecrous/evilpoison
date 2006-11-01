@@ -48,7 +48,6 @@ unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
 unsigned int grabmask2 = Mod1Mask;
 unsigned int altmask = ShiftMask;
-const char   *opt_term[3] = { DEF_TERM, DEF_TERM, NULL };
 int          opt_bw = DEF_BW;
 int          opt_mousetowin = 0;
 unsigned int opt_prefix_mod = DEF_PREFIX_MOD;
@@ -203,10 +202,7 @@ int main(int argc, char *argv[]) {
 #endif
 		else if (!strcmp(argv[i], "-bw") && i+1<argc)
 			opt_bw = atoi(argv[++i]);
-		else if (!strcmp(argv[i], "-term") && i+1<argc) {
-			opt_term[0] = argv[++i];
-			opt_term[1] = opt_term[0];
-		} else if (!strcmp(argv[i], "-prefix") && i+1<argc) {
+		else if (!strcmp(argv[i], "-prefix") && i+1<argc) {
 		    parse_key(argv[++i], &opt_prefix_key, &opt_prefix_mod);
 		} else if (!strcmp(argv[i], "-mousetowin") && i+1<argc) {
 			opt_mousetowin = atoi(argv[++i]);
@@ -272,7 +268,7 @@ int main(int argc, char *argv[]) {
 			exit(0);
 #endif
 		} else {
-			LOG_INFO("usage: evilwm [-display display] [-term termprog] [-fn fontname]\n");
+			LOG_INFO("usage: evilwm [-display display] [-fn fontname]\n");
 			LOG_INFO("              [-fg foreground]");
 #ifdef VWM
 			LOG_INFO(" [-fc fixed]");

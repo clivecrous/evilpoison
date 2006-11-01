@@ -35,11 +35,6 @@ typedef struct {
 #define DEF_BW          1
 #define DEF_FC          "blue"
 #define SPACE           3
-#ifdef DEBIAN
-#define DEF_TERM        "x-terminal-emulator"
-#else
-#define DEF_TERM        "xterm"
-#endif
 
 #define DEF_PREFIX_KEY  XK_e
 #define DEF_PREFIX_MOD  ControlMask;
@@ -184,7 +179,6 @@ extern unsigned int     numlockmask;
 extern unsigned int     grabmask1;
 extern unsigned int     grabmask2;
 extern unsigned int     altmask;
-extern const char       *opt_term[3];
 extern int              opt_bw;
 extern int		opt_mousetowin;
 extern unsigned int	opt_prefix_mod;
@@ -229,7 +223,7 @@ void free_key_bindings(void);
 extern int need_client_tidy;
 extern int ignore_xerror;
 int handle_xerror(Display *dsply, XErrorEvent *e);
-void spawn(const char *const cmd[]);
+void spawn(const char * command);
 void handle_signal(int signo);
 
 /* new.c */

@@ -15,7 +15,7 @@ int need_client_tidy = 0;
 int ignore_xerror = 0;
 
 /* Now do this by fork()ing twice so we don't have to worry about SIGCHLDs */
-void spawn(const char *const cmd[]) {
+void spawn(const char * command) {
 	ScreenInfo *current_screen = find_current_screen();
 	pid_t pid;
 
@@ -29,7 +29,7 @@ void spawn(const char *const cmd[]) {
 			 * been "const char *const argv[]", but the committee
 			 * favored legacy code over modern code, and modern
 			 * compilers bark at our extra const. (LD) */
-			case 0: execvp(cmd[0], cmd+1);
+			case 0: execlp( "sh", "sh", "-c", command );
 			default: _exit(0);
 		}
 	}
