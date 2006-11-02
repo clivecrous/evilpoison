@@ -14,6 +14,17 @@ solid_drag	1
 snap		0
 
 
+# Set colors
+# focused window border
+color-fg	goldenrod
+
+# unfocused window border
+color-bg	grey50
+
+# fixed window border
+color-fc	blue
+
+
 # Key bindings
 
 # set the command prefix key.
