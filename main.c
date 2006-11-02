@@ -71,9 +71,9 @@ static unsigned int parse_modifiers(char *s);
 static void parse_rcfile(FILE *fp);
 static void set_cmdparam(char *cmd, char *params);
 static void parse_key(char *keystr, KeySym *key, unsigned int *mod);
-char *xstrcpy(char *str);
 
-char *xstrcpy(char *str)
+char *xstrcpy(const char *str);
+char *xstrcpy(const char *str)
 {
     char *tmp;
 
