@@ -202,10 +202,10 @@ void show_info(Client *c) {
   XFlush(dpy);
   pthread_t thread;
 #ifdef INFOBANNER
-  /* if ( pthread_create( &thread, NULL, (void *)destroy_info, (void *)info_window ) == 0 ) */
+  if ( pthread_create( &thread, NULL, (void *)destroy_info, (void *)info_window ) != 0 )
     destroy_info_remove( info_window );
 #else
-  /* if ( pthread_create( &thread, NULL, (void *)destroy_info, (void *)c ) == 0 ) */
+  if ( pthread_create( &thread, NULL, (void *)destroy_info, (void *)c ) != 0 )
     destroy_info_remove( c );
 #endif
 }
