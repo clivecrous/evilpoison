@@ -217,6 +217,7 @@ void set_shape(Client *c);
 void event_main_loop(void);
 void add_key_binding(KeySym k, unsigned int mask, char *cmd);
 void free_key_bindings(void);
+int find_key_binding(KeySym k, unsigned int mask);
 
 /* misc.c */
 
