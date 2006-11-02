@@ -39,10 +39,10 @@ Atom xa_net_wm_state_sticky;
 /* Things that affect user interaction */
 static const char   *opt_display = "";
 static const char   *opt_font = DEF_FONT;
-static const char   *opt_fg = DEF_FG;
-static const char   *opt_bg = DEF_BG;
+char   *opt_fg;
+char   *opt_bg;
 #ifdef VWM
-static const char   *opt_fc = DEF_FC;
+char   *opt_fc;
 #endif
 unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
@@ -71,7 +71,17 @@ static unsigned int parse_modifiers(char *s);
 static void parse_rcfile(FILE *fp);
 static void set_cmdparam(char *cmd, char *params);
 static void parse_key(char *keystr, KeySym *key, unsigned int *mod);
+char *xstrcpy(char *str);
 
+char *xstrcpy(char *str)
+{
+    char *tmp;
+
+    if (!str) return NULL;
+
+    tmp = (char *)malloc(strlen(str));
+    return strcpy(tmp, str);
+}
 
 void parse_key(char *keystr, KeySym *key, unsigned int *mod) {
   char *dash = strchr(keystr, '-');
@@ -117,6 +127,17 @@ void set_cmdparam(char *cmd, char *params) {
 	if (ks != NoSymbol)
 	    add_key_binding(ks, mask, tmpc);
     }
+    else if (!strncmp(cmd, "color-fg", 8)) {
+	opt_fg = xstrcpy(params);
+    }
+    else if (!strncmp(cmd, "color-bg", 8)) {
+	opt_bg = xstrcpy(params);
+    }
+#ifdef VWM
+    else if (!strncmp(cmd, "color-fc", 8)) {
+	opt_fc = xstrcpy(params);
+    }
+#endif
     else if (!strncmp(cmd, "prefix", 6)) {
 	parse_key(params, &opt_prefix_key, &opt_prefix_mod);
     }
@@ -193,15 +214,18 @@ int main(int argc, char *argv[]) {
 		else if (!strcmp(argv[i], "-display") && i+1<argc) {
 			opt_display = argv[++i];
 		}
-		else if (!strcmp(argv[i], "-fg") && i+1<argc)
-			opt_fg = argv[++i];
-		else if (!strcmp(argv[i], "-bg") && i+1<argc)
-			opt_bg = argv[++i];
+		else if (!strcmp(argv[i], "-fg") && i+1<argc) {
+		    if (opt_fg) free(opt_fg);
+		    opt_fg = xstrcpy(argv[++i]);
+		} else if (!strcmp(argv[i], "-bg") && i+1<argc) {
+		    if (opt_bg) free(opt_bg);
+		    opt_bg = xstrcpy(argv[++i]);
 #ifdef VWM
-		else if (!strcmp(argv[i], "-fc") && i+1<argc)
-			opt_fc = argv[++i];
+		} else if (!strcmp(argv[i], "-fc") && i+1<argc) {
+		    if (opt_fc) free(opt_fc);
+		    opt_fc = xstrcpy(argv[++i]);
 #endif
-		else if (!strcmp(argv[i], "-bw") && i+1<argc)
+		} else if (!strcmp(argv[i], "-bw") && i+1<argc)
 			opt_bw = atoi(argv[++i]);
 		else if (!strcmp(argv[i], "-prefix") && i+1<argc) {
 		    parse_key(argv[++i], &opt_prefix_key, &opt_prefix_mod);
@@ -289,6 +313,10 @@ int main(int argc, char *argv[]) {
 			exit((!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))?0:1);
 		}
 	}
+
+	if (!opt_fg) opt_fg = xstrcpy(DEF_FG);
+	if (!opt_bg) opt_bg = xstrcpy(DEF_BG);
+	if (!opt_fc) opt_fc = xstrcpy(DEF_FC);
 
 	act.sa_handler = handle_signal;
 	sigemptyset(&act.sa_mask);
