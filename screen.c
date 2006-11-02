@@ -155,12 +155,13 @@ void sweep(Client *c) {
 #endif
 
 #ifdef INFOBANNER
-void *destroy_info(Window *info_window)
+void destroy_info_remove(Window *info_window);
+void destroy_info_remove(Window *info_window)
 #else
-void *destroy_info(Client *c)
+void destroy_info_remove(Client *c);
+void destroy_info_remove(Client *c)
 #endif
 {
-  usleep(1000000); /* TODO Defaulting to 1 second, should be configurable */
 #ifdef INFOBANNER
   remove_info_window(*info_window);
   free( info_window );
@@ -169,7 +170,24 @@ void *destroy_info(Client *c)
   XUngrabServer(dpy);
 #endif
   XFlush(dpy);
+}
+
+#ifdef INFOBANNER
+void *destroy_info(Window *info_window);
+void *destroy_info(Window *info_window)
+#else
+void *destroy_info(Client *c);
+void *destroy_info(Client *c)
+#endif
+{
+  usleep(1000000); /* TODO Defaulting to 1 second, should be configurable */
+#ifdef INFOBANNER
+  destroy_info_remove( info_window );
+#else
+  destroy_info_remove( c );
+#endif
   pthread_exit( NULL );
+  return NULL;
 }
 
 void show_info(Client *c) {
@@ -183,13 +201,13 @@ void show_info(Client *c) {
 #endif
   XFlush(dpy);
   pthread_t thread;
-  pthread_create( &thread, NULL, destroy_info,
 #ifdef INFOBANNER
-  (void *)info_window
+  if ( pthread_create( &thread, NULL, (void *)destroy_info, (void *)info_window ) == 0 )
+    destroy_info_remove( info_window );
 #else
-  (void *)c
+  if ( pthread_create( &thread, NULL, (void *)destroy_info, (void *)c ) == 0 )
+    destroy_info_remove( c );
 #endif
-  );
 }
 
 #ifdef MOUSE
