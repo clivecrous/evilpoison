@@ -144,19 +144,14 @@ static void handle_key_event(XKeyEvent *e) {
   ScreenInfo *current_screen;
 #endif
 
-  void refresh_client()
-  {
-    c = current;
-    if (c) {
-        width_inc = (c->width_inc > 1) ? c->width_inc : 16;
-        height_inc = (c->height_inc > 1) ? c->height_inc : 16;
-    }
-#ifdef VWM
-    current_screen = find_current_screen();
-#endif
+  c = current;
+  if (c) {
+      width_inc = (c->width_inc > 1) ? c->width_inc : 16;
+      height_inc = (c->height_inc > 1) ? c->height_inc : 16;
   }
-
-  refresh_client();
+#ifdef VWM
+  current_screen = find_current_screen();
+#endif
 
   if (XGrabKeyboard(dpy, e->root, GrabModeAsync, False, GrabModeAsync, CurrentTime) == GrabSuccess) {
     Cursor command_mode_cursor = XCreateFontCursor( dpy, XC_icon );
@@ -271,7 +266,14 @@ static void handle_key_event(XKeyEvent *e) {
             break;
           case KEY_NEXT:
             next();
-            refresh_client();
+            c = current;
+            if (c) {
+                width_inc = (c->width_inc > 1) ? c->width_inc : 16;
+                height_inc = (c->height_inc > 1) ? c->height_inc : 16;
+            }
+#ifdef VWM
+            current_screen = find_current_screen();
+#endif
           case KEY_INFO:
             if (c) show_info(c);
             break;
