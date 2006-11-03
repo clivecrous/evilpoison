@@ -180,7 +180,7 @@ void *destroy_info(Client *c);
 void *destroy_info(Client *c)
 #endif
 {
-  usleep(1000000); /* TODO Defaulting to 1 second, should be configurable */
+  usleep(opt_info_delay);
 #ifdef INFOBANNER
   destroy_info_remove( info_window );
 #else

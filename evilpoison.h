@@ -175,6 +175,7 @@ extern Atom xa_net_wm_state_sticky;
 #endif
 
 /* Things that affect user interaction */
+extern unsigned long	opt_info_delay;
 extern unsigned int     numlockmask;
 extern unsigned int     grabmask1;
 extern unsigned int     grabmask2;

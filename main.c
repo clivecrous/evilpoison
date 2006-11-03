@@ -44,6 +44,7 @@ char   *opt_bg;
 #ifdef VWM
 char   *opt_fc;
 #endif
+unsigned long opt_info_delay = 1000000;  /* 1 second */
 unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
 unsigned int grabmask2 = Mod1Mask;
@@ -126,6 +127,9 @@ void set_cmdparam(char *cmd, char *params) {
 	parse_key(params, &ks, &mask);
 	if (ks != NoSymbol)
 	    add_key_binding(ks, mask, tmpc);
+    }
+    else if (!strncmp(cmd, "infowindelay", 12)) {
+	opt_info_delay = atoi(params) * 1000;
     }
     else if (!strncmp(cmd, "color-fg", 8)) {
 	opt_fg = xstrcpy(params);

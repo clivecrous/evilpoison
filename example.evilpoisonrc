@@ -13,6 +13,10 @@ solid_drag	1
 # defines the distance from which it snaps.
 snap		0
 
+# how long does the info window show up when focusing to a new window
+# 1000 = 1 second
+infowindelay	1000
+
 
 # Set colors
 # focused window border
