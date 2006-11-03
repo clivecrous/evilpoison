@@ -3,7 +3,7 @@
  * see README for license and other details. */
 
 #include <stdlib.h>
-#include "evilwm.h"
+#include "evilpoison.h"
 #include "log.h"
 
 #ifdef VWM

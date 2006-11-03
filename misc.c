@@ -8,7 +8,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include "evilwm.h"
+#include "evilpoison.h"
 #include "log.h"
 
 int need_client_tidy = 0;

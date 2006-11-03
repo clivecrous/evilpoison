@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "evilwm.h"
+#include "evilpoison.h"
 #include "log.h"
 
 #ifdef INFOBANNER

@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "evilwm.h"
+#include "evilpoison.h"
 #include "log.h"
 
 #include <X11/cursorfont.h>

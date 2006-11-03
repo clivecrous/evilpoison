@@ -8,7 +8,7 @@
 #include <string.h>
 #include <signal.h>
 #include <X11/cursorfont.h>
-#include "evilwm.h"
+#include "evilpoison.h"
 #include "log.h"
 
 /* Commonly used X information */

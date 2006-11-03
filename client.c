@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "evilwm.h"
+#include "evilpoison.h"
 #include "log.h"
 
 static int send_xmessage(Window w, Atom a, long x);

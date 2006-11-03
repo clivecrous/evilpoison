@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "evilwm.h"
+#include "evilpoison.h"
 #include "log.h"
 
 #define MAXIMUM_PROPERTY_LENGTH 4096
