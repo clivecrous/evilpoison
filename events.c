@@ -113,7 +113,7 @@ void free_key_bindings() {
 int find_key_binding(KeySym k, unsigned int mask) {
   int i;
 
-  mask &= !numlockmask;
+  mask &= (0xFFFF-numlockmask);
 
   for (i = 0; i < num_keyconvs; i++)
     if ( k == key_conversions[i].chain->symbol && mask == key_conversions[i].chain->mask )
