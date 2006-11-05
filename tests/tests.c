@@ -2,6 +2,7 @@
 #include <string.h>
 #include <check.h>
 
+#include "check_dictionary.h"
 #include "check_settings.h"
 
 Suite * master_suite( void );
@@ -18,6 +19,8 @@ int main( void )
     int nf;
 
     SRunner *sr = srunner_create( master_suite() );
+
+    srunner_add_suite( sr, dictionary_suite() );
     srunner_add_suite( sr, settings_suite() );
 
     srunner_run_all( sr, CK_ENV );

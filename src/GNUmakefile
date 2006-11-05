@@ -1,7 +1,8 @@
 include ../settings.make
 
 HEADERS  = evilpoison.h log.h settings.h
-SRCS     = client.c events.c main.c misc.c new.c screen.c ewmh.c settings.c
+SRCS     = client.c dictionary.c events.c main.c misc.c \
+					 new.c screen.c ewmh.c settings.c
 OBJS     = $(SRCS:.c=.o)
 
 .PHONY: all install dist debuild clean
