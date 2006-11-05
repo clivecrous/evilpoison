@@ -30,7 +30,7 @@ unsigned int settings_haskey( const char *key );
 char *settings_get( const char *key );
 
 /** Unset, or clear, a key-value pair.
- * The date which was previously stored at this key will be deleted.
+ * The data which was previously stored at this key will be deleted.
  * \param key The key for which the associated data will be deleted.
  */
 void settings_unset( const char *key );
