@@ -47,6 +47,8 @@ enum KEYVALS {
 #endif
     KEY_KILL,
 
+    KEY_BIND,
+
     NUM_COMMANDS
 };
 
