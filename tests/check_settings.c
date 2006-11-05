@@ -104,18 +104,18 @@ settings_suite( void )
 
     tcase_add_test( tc_init, test_settings_init_startupValues );
 
-    tcase_add_test( tc_init, test_settings_set_newValue );
-    tcase_add_test( tc_init, test_settings_set_updateValue );
-    tcase_add_test( tc_init, test_settings_set_setNull );
+    tcase_add_test( tc_set, test_settings_set_newValue );
+    tcase_add_test( tc_set, test_settings_set_updateValue );
+    tcase_add_test( tc_set, test_settings_set_setNull );
 
-    tcase_add_test( tc_init, test_settings_haskey_yes );
-    tcase_add_test( tc_init, test_settings_haskey_no );
+    tcase_add_test( tc_haskey, test_settings_haskey_yes );
+    tcase_add_test( tc_haskey, test_settings_haskey_no );
 
-    tcase_add_test( tc_init, test_settings_get_exists );
-    tcase_add_test( tc_init, test_settings_get_notExists );
+    tcase_add_test( tc_get, test_settings_get_exists );
+    tcase_add_test( tc_get, test_settings_get_notExists );
 
-    tcase_add_test( tc_init, test_settings_unset_exists );
-    tcase_add_test( tc_init, test_settings_unset_notExists );
+    tcase_add_test( tc_unset, test_settings_unset_exists );
+    tcase_add_test( tc_unset, test_settings_unset_notExists );
 
     return suite;
 }
