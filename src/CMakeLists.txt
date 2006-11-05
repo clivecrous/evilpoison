@@ -39,6 +39,6 @@ add_definitions(-DCOLOURMAP)
 add_definitions(-DVERSION='"${VERSION}"')
 
 add_executable(evilpoison
-  client.c  events.c  ewmh.c  main.c  misc.c  new.c  screen.c)
+  client.c  events.c  ewmh.c  main.c  misc.c  new.c  screen.c settings.c)
 
 target_link_libraries(evilpoison ${X11_LIBRARIES} pthread)
