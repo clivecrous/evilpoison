@@ -5,12 +5,6 @@
 #include "check_settings.h"
 #include "settings.h"
 
-START_TEST (test_settings_init_startupValues)
-{
-  settings_init();
-}
-END_TEST
-
 START_TEST (test_settings_set_newValue)
 {
   settings_set( "foo", "bar" );
@@ -89,20 +83,18 @@ Suite *
 settings_suite( void )
 {
     Suite *suite = suite_create( "Settings" );
+    
+    settings_init();
 
-    TCase *tc_init    = tcase_create( "init" );
     TCase *tc_set     = tcase_create( "set" );
     TCase *tc_haskey  = tcase_create( "haskey" );
     TCase *tc_get     = tcase_create( "get" );
     TCase *tc_unset   = tcase_create( "unset" );
 
-    suite_add_tcase( suite, tc_init );
     suite_add_tcase( suite, tc_set );
     suite_add_tcase( suite, tc_haskey );
     suite_add_tcase( suite, tc_get );
     suite_add_tcase( suite, tc_unset );
-
-    tcase_add_test( tc_init, test_settings_init_startupValues );
 
     tcase_add_test( tc_set, test_settings_set_newValue );
     tcase_add_test( tc_set, test_settings_set_updateValue );
