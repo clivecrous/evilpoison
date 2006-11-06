@@ -2,6 +2,7 @@
 #include <string.h>
 #include <check.h>
 
+#include "check_command.h"
 #include "check_dictionary.h"
 #include "check_settings.h"
 
@@ -20,6 +21,7 @@ int main( void )
 
     SRunner *sr = srunner_create( master_suite() );
 
+    srunner_add_suite( sr, command_suite() );
     srunner_add_suite( sr, dictionary_suite() );
     srunner_add_suite( sr, settings_suite() );
 
