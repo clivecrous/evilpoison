@@ -6,6 +6,7 @@
 #include "check_command.h"
 #include "command.h"
 
+char *greet(char *whom);
 char *greet(char *whom)
 {
   char *greeting = malloc( strlen( whom) + 8);

@@ -28,7 +28,7 @@ void settings_set( const char *key, const char *value )
     strcpy( newvalue, value );
   }
   else
-    newvalue = value;
+    newvalue = 0;
 
   dictionary_set( _settings, key, newvalue );
 }

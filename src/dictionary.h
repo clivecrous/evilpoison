@@ -27,7 +27,7 @@ void dictionary_destroy( Dictionary *dictionary );
  * \param key The key with which to associate the given value.
  * \param value The value to be stored and associated with the given key.
  */
-void dictionary_set( Dictionary *dictionary, const char *key, const void *value );
+void dictionary_set( Dictionary *dictionary, const char *key, void *value );
 
 /** Check whether a key exists.
  * The given key will be checked for existance.

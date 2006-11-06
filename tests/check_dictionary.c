@@ -13,6 +13,7 @@ START_TEST (test_dictionary_create)
 }
 END_TEST
 
+void *create_value(const char *string);
 void *create_value(const char *string)
 {
   char *value = malloc( strlen( string) + 1 );

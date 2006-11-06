@@ -50,7 +50,7 @@ static void dictionary_remove(
 }
 
 void dictionary_set(
-    Dictionary *dictionary, const char *key, const void *value )
+    Dictionary *dictionary, const char *key, void *value )
 {
   DictionaryPair *pair = dictionary_find( dictionary, key );
 
