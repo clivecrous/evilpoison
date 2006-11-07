@@ -30,6 +30,10 @@ void settings_init( void )
 
   settings_set( "text.delay", "1000" );
 
+  settings_set( "text.colour.background", "Wheat" );
+  settings_set( "text.border.colour", "goldenrod" );
+  settings_set( "text.border.width", "1" );
+
   atexit( settings_done );
 }
 
