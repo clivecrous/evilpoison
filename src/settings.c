@@ -39,6 +39,7 @@ void settings_init( void )
 
   settings_set( "text.font", "-*-*-medium-r-*-*-14-*-*-*-*-*-*-*" );
 
+  settings_set( "window.move.display", "1" );
   settings_set( "window.move.velocity", "16" );
   settings_set( "window.resize.velocity", "16" );
 

@@ -172,11 +172,6 @@ extern unsigned int     grabmask2;
 extern unsigned int     altmask;
 extern unsigned int	opt_prefix_mod;
 extern KeySym		opt_prefix_key;
-#ifdef SOLIDDRAG
-extern int              solid_drag;
-#else
-# define solid_drag (0)
-#endif
 extern Application      *head_app;
 
 void parse_key(char *keystr, KeySym *key, unsigned int *mod);

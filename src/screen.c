@@ -319,13 +319,15 @@ void drag(Client *c) {
 	int old_cx = c->x;
 	int old_cy = c->y;
 
+  int move_display = atoi( settings_get( "window.move.display" ) );
+
 	if (!grab_pointer(c->screen->root, MouseMask, move_curs)) return;
 	XRaiseWindow(dpy, c->parent);
 	get_mouse_position(&x1, &y1, c->screen->root);
 #ifdef INFOBANNER_MOVERESIZE
 	Window info_window = create_info_window(c);
 #endif
-	if (!solid_drag) {
+	if (!move_display) {
 		XGrabServer(dpy);
 		draw_outline(c);
 	}
@@ -334,7 +336,7 @@ void drag(Client *c) {
 		switch (ev.type) {
 			case MotionNotify:
         while (XCheckTypedEvent(dpy, MotionNotify, &ev));
-				if (!solid_drag) {
+				if (!move_display) {
 					draw_outline(c); /* clear */
 					XUngrabServer(dpy);
 				}
@@ -348,7 +350,7 @@ void drag(Client *c) {
 #ifdef INFOBANNER_MOVERESIZE
 				update_info_window(c,info_window);
 #endif
-				if (!solid_drag) {
+				if (!move_display) {
 					XSync(dpy, False);
 					XGrabServer(dpy);
 					draw_outline(c);
@@ -360,7 +362,7 @@ void drag(Client *c) {
 				}
 				break;
 			case ButtonRelease:
-				if (!solid_drag) {
+				if (!move_display) {
 					draw_outline(c); /* clear */
 					XUngrabServer(dpy);
 				}
@@ -368,7 +370,7 @@ void drag(Client *c) {
 				remove_info_window(info_window);
 #endif
 				XUngrabPointer(dpy, CurrentTime);
-				if (!solid_drag) {
+				if (!move_display) {
 					moveresize(c);
 				}
 				return;

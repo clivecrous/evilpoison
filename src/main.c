@@ -46,9 +46,6 @@ unsigned int grabmask2 = Mod1Mask;
 unsigned int altmask = ShiftMask;
 unsigned int opt_prefix_mod = DEF_PREFIX_MOD;
 KeySym	     opt_prefix_key = DEF_PREFIX_KEY;
-#ifdef SOLIDDRAG
-int          solid_drag = 1;  /* use solid drag by default */
-#endif
 Application  *head_app = NULL;
 
 /* Client tracking information */
@@ -102,30 +99,26 @@ void parse_key(char *keystr, KeySym *key, unsigned int *mod) {
 }
 
 unsigned int set_cmdparam(char *cmd, char *params) {
-    if (!strncmp(cmd, "bind", 4)) {
-	KeySym ks = NoSymbol;
-	unsigned int mask;
-	char *tmpc = params;
+  if (!strncmp(cmd, "bind", 4))
+  {
+    KeySym ks = NoSymbol;
+    unsigned int mask;
+    char *tmpc = params;
 
-	while (*tmpc && !isspace(*tmpc)) tmpc++;
-	while (*tmpc && isspace(*tmpc)) { *tmpc = '\0'; tmpc++; }
+    while (*tmpc && !isspace(*tmpc)) tmpc++;
+    while (*tmpc && isspace(*tmpc)) { *tmpc = '\0'; tmpc++; }
 
-	parse_key(params, &ks, &mask);
-	if (ks != NoSymbol)
-	    add_key_binding(ks, mask, tmpc);
+    parse_key(params, &ks, &mask);
+    if (ks != NoSymbol)
+      add_key_binding(ks, mask, tmpc);
     return 1;
-    }
-    else if (!strncmp(cmd, "prefix", 6)) {
-	parse_key(params, &opt_prefix_key, &opt_prefix_mod);
+  }
+  else if (!strncmp(cmd, "prefix", 6))
+  {
+    parse_key(params, &opt_prefix_key, &opt_prefix_mod);
     return 1;
-    }
-#ifdef SOLIDDRAG
-    else if (!strncmp(cmd, "solid_drag", 10)) {
-	solid_drag = atoi(params);
-    return 1;
-    }
-#endif
-    return 0;
+  }
+  return 0;
 }
 
 void parse_rcfile(FILE *fp) {
@@ -262,7 +255,7 @@ int main(int argc, char *argv[]) {
 			altmask = parse_modifiers(argv[i]);
 #ifdef SOLIDDRAG
 		} else if (!strcmp(argv[i], "-nosoliddrag")) {
-			solid_drag = 0;
+      settings_set( "window.move.display", "0" );
 #endif
 #ifdef STDIO
 		} else if (!strcmp(argv[i], "-V")) {
