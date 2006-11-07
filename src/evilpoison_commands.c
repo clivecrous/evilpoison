@@ -36,8 +36,6 @@ char *evilpoison_command_unset(char *commandline)
 
 void evilpoison_commands_init( void )
 {
-  command_init();
-
   command_assign( "set",    evilpoison_command_set );
   command_assign( "unset",  evilpoison_command_unset );
 }

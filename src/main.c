@@ -11,6 +11,10 @@
 #include "evilpoison.h"
 #include "log.h"
 
+#include "command.h"
+#include "settings.h"
+#include "evilpoison_commands.h"
+
 /* Commonly used X information */
 Display     *dpy;
 XFontStruct *font;
@@ -329,6 +333,10 @@ int main(int argc, char *argv[]) {
 	sigaction(SIGHUP, &act, NULL);
 
 	setup_display();
+
+  settings_init();
+  command_init();
+  evilpoison_commands_init();
 
 	event_main_loop();
 
