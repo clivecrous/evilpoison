@@ -19,7 +19,8 @@ void settings_init( void )
   settings_set( "border.colour.inactive", "grey50" );
 
 #ifdef  VWM
-  settings_set( "border.colour.fixed", "blue" );
+  settings_set( "border.colour.fixed.active", "blue" );
+  settings_set( "border.colour.fixed.inactive", "grey50" );
 #endif
 
 #ifdef SNAP

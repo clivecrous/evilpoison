@@ -28,7 +28,8 @@ set border.colour.active goldenrod
 set border.colour.inactive grey50
 
 # fixed window border
-set border.colour.fixed blue
+set border.colour.fixed.active blue
+set border.colour.fixed.inactive grey50
 
 # Key bindings
 

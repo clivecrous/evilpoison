@@ -203,7 +203,7 @@ int main(int argc, char *argv[]) {
         settings_set( "border.colour.inactive", argv[++i] );
 #ifdef VWM
 		} else if (!strcmp(argv[i], "-fc") && i+1<argc) {
-        settings_set( "border.colour.fixed", argv[++i] );
+        settings_set( "border.colour.fixed.active", argv[++i] );
 #endif
 		} else if (!strcmp(argv[i], "-bw") && i+1<argc)
         settings_set( "border.width", argv[++i] );
