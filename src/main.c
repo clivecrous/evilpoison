@@ -198,9 +198,9 @@ int main(int argc, char *argv[]) {
 			opt_display = argv[++i];
 		}
 		else if (!strcmp(argv[i], "-fg") && i+1<argc) {
-        settings_set( "border.colour.foreground", argv[++i] );
+        settings_set( "border.colour.active", argv[++i] );
 		} else if (!strcmp(argv[i], "-bg") && i+1<argc) {
-        settings_set( "border.colour.background", argv[++i] );
+        settings_set( "border.colour.inactive", argv[++i] );
 #ifdef VWM
 		} else if (!strcmp(argv[i], "-fc") && i+1<argc) {
         settings_set( "border.colour.fixed", argv[++i] );

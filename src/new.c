@@ -256,7 +256,7 @@ static void reparent(Client *c) {
   XColor border_colour_inactive;
   XColor dummy;
 
-  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.background" ), &border_colour_inactive, &dummy);
+  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.inactive" ), &border_colour_inactive, &dummy);
 
 	p_attr.border_pixel = border_colour_inactive.pixel;
 	p_attr.override_redirect = True;

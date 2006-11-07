@@ -15,8 +15,8 @@ void settings_init( void )
 
   settings_set( "border.width", "1" );
 
-  settings_set( "border.colour.foreground", "goldenrod" );
-  settings_set( "border.colour.background", "grey50" );
+  settings_set( "border.colour.active", "goldenrod" );
+  settings_set( "border.colour.inactive", "grey50" );
 
 #ifdef  VWM
   settings_set( "border.colour.fixed", "blue" );

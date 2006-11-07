@@ -22,10 +22,10 @@ set text.delay 1000
 
 # Set colors
 # focused window border
-set border.colour.foreground goldenrod
+set border.colour.active goldenrod
 
 # unfocused window border
-set border.colour.background grey50
+set border.colour.inactive grey50
 
 # fixed window border
 set border.colour.fixed blue
