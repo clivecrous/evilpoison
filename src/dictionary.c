@@ -79,8 +79,8 @@ void dictionary_set(
     else
       dictionary->data = malloc( sizeof( DictionaryPair ) );
 
+    pair = &dictionary->data[dictionary->size];
     dictionary->size++;
-    pair = dictionary->data;
 
     pair->key = malloc( strlen( key ) + 1 );
     strcpy( pair->key, key );
