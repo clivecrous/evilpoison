@@ -104,7 +104,7 @@ void select_client(Client *c) {
   {
     XAllocNamedColor(dpy, DefaultColormap(dpy, current->screen->screen), settings_get( "border.colour.inactive" ), &border_colour_inactive, &dummy);
 #ifdef VWM
-    XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.fixed.inactive" ), &border_colour_fixed_inactive, &dummy);
+    XAllocNamedColor(dpy, DefaultColormap(dpy, current->screen->screen), settings_get( "border.colour.fixed.inactive" ), &border_colour_fixed_inactive, &dummy);
 		if (is_sticky(current))
 			bpixel = border_colour_fixed_inactive.pixel;
 		else
