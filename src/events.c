@@ -161,6 +161,9 @@ static void handle_key_event(XKeyEvent *e) {
   int cmdmode = 0;
 	Client *c;
 
+  int window_move_velocity = atoi( settings_get( "window.move.velocity" ) );
+  int window_resize_velocity = atoi( settings_get( "window.resize.velocity" ) );
+
 #ifdef VWM
   ScreenInfo *current_screen;
 #endif
@@ -200,25 +203,25 @@ static void handle_key_event(XKeyEvent *e) {
             break;
           case KEY_LEFT:
             if (c) {
-              c->x -= 16;
+              c->x -= window_move_velocity;
               move_client(c);
             }
             break;
           case KEY_DOWN:
             if (c) {
-              c->y += 16;
+              c->y += window_move_velocity;
               move_client(c);
             }
             break;
           case KEY_UP:
             if (c) {
-              c->y -= 16;
+              c->y -= window_move_velocity;
               move_client(c);
             }
             break;
           case KEY_RIGHT:
             if (c) {
-              c->x += 16;
+              c->x += window_move_velocity;
               move_client(c);
             }
             break;
@@ -252,25 +255,25 @@ static void handle_key_event(XKeyEvent *e) {
             break;
           case KEY_RESIZELEFT:
             if (c) {
-              c->width -= 16;
+              c->width -= window_resize_velocity;
               move_client(c);
             }
             break;
           case KEY_RESIZERIGHT:
             if (c) {
-              c->width += 16;
+              c->width += window_resize_velocity;
               move_client(c);
             }
             break;
           case KEY_RESIZEUP:
             if (c) {
-              c->height -= 16;
+              c->height -= window_resize_velocity;
               move_client(c);
             }
             break;
           case KEY_RESIZEDOWN:
             if (c) {
-              c->height += 16;
+              c->height += window_resize_velocity;
               move_client(c);
             }
             break;
