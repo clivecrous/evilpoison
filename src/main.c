@@ -43,7 +43,6 @@ Atom xa_net_wm_state_sticky;
 /* Things that affect user interaction */
 static const char   *opt_display = "";
 static const char   *opt_font = DEF_FONT;
-unsigned long opt_info_delay = 1000000;  /* 1 second */
 unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
 unsigned int grabmask2 = Mod1Mask;
@@ -117,10 +116,6 @@ unsigned int set_cmdparam(char *cmd, char *params) {
 	parse_key(params, &ks, &mask);
 	if (ks != NoSymbol)
 	    add_key_binding(ks, mask, tmpc);
-    return 1;
-    }
-    else if (!strncmp(cmd, "infowindelay", 12)) {
-	opt_info_delay = atoi(params) * 1000;
     return 1;
     }
     else if (!strncmp(cmd, "prefix", 6)) {

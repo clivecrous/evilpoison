@@ -181,7 +181,7 @@ void *destroy_info(Client *c);
 void *destroy_info(Client *c)
 #endif
 {
-  usleep(opt_info_delay);
+  usleep( 1000 * atoi( settings_get( "text.delay" ) ) );
 #ifdef INFOBANNER
   destroy_info_remove( info_window );
 #else

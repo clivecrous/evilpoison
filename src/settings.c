@@ -28,6 +28,8 @@ void settings_init( void )
 
   settings_set( "mouse.warp", "0" );
 
+  settings_set( "text.delay", "1000" );
+
   atexit( settings_done );
 }
 

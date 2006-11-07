@@ -16,10 +16,9 @@ solid_drag	1
 # defines the distance from which it snaps.
 set border.snap 16
 
-# how long does the info window show up when focusing to a new window
+# how long does any non-interactive text window show up
 # 1000 = 1 second
-infowindelay	1000
-
+set text.delay 1000
 
 # Set colors
 # focused window border
