@@ -201,6 +201,8 @@ void *destroy_info(Client *c)
 
 void show_info(Client *c) {
 
+  if (!atoi( settings_get( "text.delay" ) )) return;
+
 #ifdef INFOBANNER
   Window *info_window = malloc( sizeof( Window ) );
 	*info_window = create_info_window(c);
