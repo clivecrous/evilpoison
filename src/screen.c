@@ -37,7 +37,7 @@ static Window create_info_window(Client *c) {
 static void update_info_window(Client *c, Window info_window) {
 	char *name;
 	char buf[27];
-	int namew, iwinx, iwiny, iwinw, iwinh;
+	int namew, iwinx, iwiny, iwinw, iwinh, iwinb;
 	int width_inc = c->width_inc, height_inc = c->height_inc;
 
 	if (!info_window)
@@ -53,10 +53,11 @@ static void update_info_window(Client *c, Window info_window) {
 			iwinw = namew + 2;
 		iwinh = iwinh * 2;
 	}
-	iwinx = c->x + c->border + c->width - iwinw;
+  iwinb = atoi( settings_get( "text.border.width" ) )*2;
+	iwinx = c->x + c->width + c->border - ( iwinw + iwinb );
 	iwiny = c->y - c->border;
-	if (iwinx + iwinw > DisplayWidth(dpy, c->screen->screen))
-		iwinx = DisplayWidth(dpy, c->screen->screen) - iwinw;
+	if (iwinx + iwinw + iwinb > DisplayWidth(dpy, c->screen->screen))
+		iwinx = DisplayWidth(dpy, c->screen->screen) - (iwinw + iwinb);
 	if (iwinx < 0)
 		iwinx = 0;
 	if (iwiny + iwinh > DisplayHeight(dpy, c->screen->screen))
