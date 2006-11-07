@@ -35,6 +35,8 @@ void settings_init( void )
   settings_set( "text.border.colour", "goldenrod" );
   settings_set( "text.border.width", "1" );
 
+  settings_set( "text.font", "-*-*-medium-r-*-*-14-*-*-*-*-*-*-*" );
+
   atexit( settings_done );
 }
 

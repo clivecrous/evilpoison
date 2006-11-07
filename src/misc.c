@@ -44,11 +44,8 @@ void handle_signal(int signo) {
 	/* Quit Nicely */
 	while(head_client) remove_client(head_client);
 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
-	if (font) XFreeFont(dpy, font);
-	for (i = 0; i < num_screens; i++) {
-		XFreeGC(dpy, screens[i].invert_gc);
+	for (i = 0; i < num_screens; i++)
 		XInstallColormap(dpy, DefaultColormap(dpy, i));
-	}
 	free(screens);
 	XCloseDisplay(dpy);
 	exit(0);

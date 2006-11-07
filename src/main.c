@@ -17,7 +17,6 @@
 
 /* Commonly used X information */
 Display     *dpy;
-XFontStruct *font;
 Cursor      move_curs;
 Cursor      resize_curs;
 int         num_screens;
@@ -42,7 +41,6 @@ Atom xa_net_wm_state_sticky;
 
 /* Things that affect user interaction */
 static const char   *opt_display = "";
-static const char   *opt_font = DEF_FONT;
 unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
 unsigned int grabmask2 = Mod1Mask;
@@ -193,7 +191,7 @@ int main(int argc, char *argv[]) {
 
 	for (i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-fn") && i+1<argc)
-			opt_font = argv[++i];
+        settings_set( "text.font", argv[++i] );
 		else if (!strcmp(argv[i], "-display") && i+1<argc) {
 			opt_display = argv[++i];
 		}
@@ -325,7 +323,6 @@ static void *xmalloc(size_t size) {
 }
 
 static void setup_display(void) {
-	XGCValues gv;
 	XSetWindowAttributes attr;
 	XModifierKeymap *modmap;
 	/* used in scanning windows (XQueryTree) */
@@ -357,12 +354,12 @@ static void setup_display(void) {
 	xa_net_wm_state_sticky = XInternAtom(dpy, "_NET_WM_STATE_STICKY", False);
 #endif
 
-	font = XLoadQueryFont(dpy, opt_font);
-	if (!font) font = XLoadQueryFont(dpy, DEF_FONT);
-	if (!font) {
-		LOG_ERROR("couldn't find a font to use: try starting with -fn fontname\n");
-		exit(1);
-	}
+  XFontStruct *font;
+	font = XLoadQueryFont(dpy, settings_get( "text.font" ) );
+	if (!font)
+		LOG_ERROR("[Warning] Couldn't find a font to use try starting with a different font.\n")
+  else
+    XUnloadFont( dpy, font );
 
 	move_curs = XCreateFontCursor(dpy, XC_fleur);
 	resize_curs = XCreateFontCursor(dpy, XC_plus);
@@ -379,12 +376,6 @@ static void setup_display(void) {
 		}
 	}
 	XFreeModifiermap(modmap);
-
-	/* set up GC parameters - same for each screen */
-	gv.function = GXinvert;
-	gv.subwindow_mode = IncludeInferiors;
-	gv.line_width = atoi( settings_get( "border.width" ) );
-	gv.font = font->fid;
 
 	/* set up root window attributes - same for each screen */
 #ifdef COLOURMAP
@@ -430,8 +421,6 @@ static void setup_display(void) {
 #ifdef VWM
 		screens[i].vdesk = KEY_TO_VDESK(KEY_DESK1);
 #endif
-
-		screens[i].invert_gc = XCreateGC(dpy, screens[i].root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont, &gv);
 
 		XChangeWindowAttributes(dpy, screens[i].root, CWEventMask, &attr);
 		grab_keys_for_screen(&screens[i]);

@@ -29,7 +29,6 @@ typedef struct {
 
 /* default settings */
 
-#define DEF_FONT        "variable"
 #define SPACE           3
 
 #define DEF_PREFIX_KEY  XK_e
@@ -90,7 +89,6 @@ typedef struct ScreenInfo ScreenInfo;
 struct ScreenInfo {
 	int screen;
 	Window root;
-	GC invert_gc;
 #ifdef VWM
 	int vdesk;
 #endif
@@ -145,7 +143,6 @@ struct Application {
 
 /* Commonly used X information */
 extern Display      *dpy;
-extern XFontStruct  *font;
 extern Cursor       move_curs;
 extern Cursor       resize_curs;
 extern int          num_screens;

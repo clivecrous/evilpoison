@@ -39,9 +39,12 @@ static void update_info_window(Client *c, Window info_window) {
 	char buf[27];
 	int namew, iwinx, iwiny, iwinw, iwinh, iwinb;
 	int width_inc = c->width_inc, height_inc = c->height_inc;
+  XFontStruct *font;
 
-	if (!info_window)
-		return;
+	if (!info_window) return;
+	font = XLoadQueryFont(dpy, settings_get( "text.font" ) );
+  if (!font) return;
+  
 	snprintf(buf, sizeof(buf), "%dx%d+%d+%d", (c->width-c->base_width)/width_inc,
 		(c->height-c->base_height)/height_inc, c->x, c->y);
 	iwinw = XTextWidth(font, buf, strlen(buf)) + 2;
@@ -66,13 +69,27 @@ static void update_info_window(Client *c, Window info_window) {
 		iwiny = 0;
 	XMoveResizeWindow(dpy, info_window, iwinx, iwiny, iwinw, iwinh);
 	XClearWindow(dpy, info_window);
+
+  XGCValues gv;
+  GC gc;
+
+	gv.function = GXinvert;
+	gv.subwindow_mode = IncludeInferiors;
+	gv.line_width = atoi( settings_get( "border.width" ) );
+	gv.font = font->fid;
+
+  gc = XCreateGC(dpy, c->screen->root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont, &gv);
+
 	if (name) {
-		XDrawString(dpy, info_window, c->screen->invert_gc,
+		XDrawString(dpy, info_window, gc,
 				1, iwinh / 2 - 1, name, strlen(name));
 		XFree(name);
 	}
-	XDrawString(dpy, info_window, c->screen->invert_gc, 1, iwinh - 1,
+	XDrawString(dpy, info_window, gc, 1, iwinh - 1,
 			buf, strlen(buf));
+
+  XFreeGC( dpy, gc );
+  XUnloadFont( dpy, font );
 }
 
 static void remove_info_window(Window info_window) {
@@ -84,23 +101,41 @@ static void remove_info_window(Window info_window) {
 
 #if defined(MOUSE) || !defined(INFOBANNER)
 static void draw_outline(Client *c) {
+  XGCValues gv;
+  GC gc;
+
+	gv.function = GXinvert;
+	gv.subwindow_mode = IncludeInferiors;
+	gv.line_width = atoi( settings_get( "border.width" ) );
+
 #ifndef INFOBANNER_MOVERESIZE
 	char buf[27];
 	int width_inc = c->width_inc, height_inc = c->height_inc;
+  XFontStruct *font;
+	gv.font = font->fid;
+  gc = XCreateGC(dpy, c->screen->root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont, &gv);
+#else
+  gc = XCreateGC(dpy, c->screen->root, GCFunction | GCSubwindowMode | GCLineWidth, &gv);
 #endif  /* ndef INFOBANNER_MOVERESIZE */
 
-	XDrawRectangle(dpy, c->screen->root, c->screen->invert_gc,
+	XDrawRectangle(dpy, c->screen->root, gc,
 		c->x - c->border, c->y - c->border,
 		c->width + c->border, c->height + c->border);
 
 #ifndef INFOBANNER_MOVERESIZE
-	snprintf(buf, sizeof(buf), "%dx%d+%d+%d", (c->width-c->base_width)/width_inc,
-			(c->height-c->base_height)/height_inc, c->x, c->y);
-	XDrawString(dpy, c->screen->root, c->screen->invert_gc,
-		c->x + c->width - XTextWidth(font, buf, strlen(buf)) - SPACE,
-		c->y + c->height - SPACE,
-		buf, strlen(buf));
+	font = XLoadQueryFont(dpy, settings_get( "text.font" ) );
+  if (font)
+  {
+    snprintf(buf, sizeof(buf), "%dx%d+%d+%d", (c->width-c->base_width)/width_inc,
+        (c->height-c->base_height)/height_inc, c->x, c->y);
+    XDrawString(dpy, c->screen->root, gc,
+      c->x + c->width - XTextWidth(font, buf, strlen(buf)) - SPACE,
+      c->y + c->height - SPACE,
+      buf, strlen(buf));
+    XUnloadFont( dpy, font );
+  }
 #endif  /* ndef INFOBANNER_MOVERESIZE */
+  XFreeGC( dpy, gc );
 }
 #endif
 
