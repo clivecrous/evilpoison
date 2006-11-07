@@ -157,7 +157,6 @@ static void handle_key_event(XKeyEvent *e) {
   int key_enum;
   XEvent ev;
 
-	int width_inc, height_inc;
   int cmdmode = 0;
 	Client *c;
 
@@ -169,10 +168,6 @@ static void handle_key_event(XKeyEvent *e) {
 #endif
 
   c = current;
-  if (c) {
-      width_inc = (c->width_inc > 1) ? c->width_inc : 16;
-      height_inc = (c->height_inc > 1) ? c->height_inc : 16;
-  }
 #ifdef VWM
   current_screen = find_current_screen();
 #endif
@@ -295,10 +290,6 @@ static void handle_key_event(XKeyEvent *e) {
           case KEY_NEXT:
             next();
             c = current;
-            if (c) {
-                width_inc = (c->width_inc > 1) ? c->width_inc : 16;
-                height_inc = (c->height_inc > 1) ? c->height_inc : 16;
-            }
 #ifdef VWM
             current_screen = find_current_screen();
 #endif
