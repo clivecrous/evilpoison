@@ -253,8 +253,12 @@ static void init_geometry(Client *c) {
 
 static void reparent(Client *c) {
 	XSetWindowAttributes p_attr;
+  XColor border_colour_inactive;
+  XColor dummy;
 
-	p_attr.border_pixel = c->screen->bg.pixel;
+  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.background" ), &border_colour_inactive, &dummy);
+
+	p_attr.border_pixel = border_colour_inactive.pixel;
 	p_attr.override_redirect = True;
 	p_attr.event_mask = ChildMask | ButtonPressMask | EnterWindowMask;
 	c->parent = XCreateWindow(dpy, c->screen->root, c->x-c->border, c->y-c->border,

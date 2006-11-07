@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "evilpoison.h"
 #include "log.h"
+#include "settings.h"
 
 static int send_xmessage(Window w, Atom a, long x);
 
@@ -94,16 +95,25 @@ void gravitate_client(Client *c, int sign) {
 }
 
 void select_client(Client *c) {
+  XColor border_colour_active, border_colour_inactive, border_colour_fixed;
+  XColor dummy;
+
+  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.foreground" ), &border_colour_active, &dummy);
+  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.background" ), &border_colour_inactive, &dummy);
+#ifdef VWM
+  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.fixed" ), &border_colour_fixed, &dummy);
+#endif
+
 	if (current)
-		XSetWindowBorder(dpy, current->parent, current->screen->bg.pixel);
+		XSetWindowBorder(dpy, current->parent, border_colour_inactive.pixel);
 	if (c) {
 		unsigned long bpixel;
 #ifdef VWM
 		if (is_sticky(c))
-			bpixel = c->screen->fc.pixel;
+			bpixel = border_colour_fixed.pixel;
 		else
 #endif
-			bpixel = c->screen->fg.pixel;
+			bpixel = border_colour_active.pixel;
 		XSetWindowBorder(dpy, c->parent, bpixel);
 #ifdef COLOURMAP
 		XInstallColormap(dpy, c->cmap);

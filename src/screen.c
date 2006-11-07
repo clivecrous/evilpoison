@@ -19,9 +19,13 @@ static void remove_info_window(Window info_window);
 static void grab_keysym(Window w, unsigned int mask, KeySym keysym);
 
 static Window create_info_window(Client *c) {
+  XColor border_colour_active;
+  XColor dummy;
+  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.foreground" ), &border_colour_active, &dummy);
+
   Window info_window = None;
 	info_window = XCreateSimpleWindow(dpy, c->screen->root, -4, -4, 2, 2,
-			0, c->screen->fg.pixel, c->screen->fg.pixel);
+			0, border_colour_active.pixel, border_colour_active.pixel);
 	XMapRaised(dpy, info_window);
 	update_info_window(c, info_window);
   return info_window;

@@ -91,10 +91,8 @@ struct ScreenInfo {
 	int screen;
 	Window root;
 	GC invert_gc;
-	XColor fg, bg;
 #ifdef VWM
 	int vdesk;
-	XColor fc;
 #endif
 	char *display;
 };

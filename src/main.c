@@ -327,7 +327,6 @@ static void *xmalloc(size_t size) {
 static void setup_display(void) {
 	XGCValues gv;
 	XSetWindowAttributes attr;
-	XColor dummy;
 	XModifierKeymap *modmap;
 	/* used in scanning windows (XQueryTree) */
 	unsigned int i, j, nwins;
@@ -430,12 +429,6 @@ static void setup_display(void) {
 		screens[i].root = RootWindow(dpy, i);
 #ifdef VWM
 		screens[i].vdesk = KEY_TO_VDESK(KEY_DESK1);
-#endif
-
-		XAllocNamedColor(dpy, DefaultColormap(dpy, i), settings_get( "border.colour.foreground" ), &screens[i].fg, &dummy);
-		XAllocNamedColor(dpy, DefaultColormap(dpy, i), settings_get( "border.colour.background" ), &screens[i].bg, &dummy);
-#ifdef VWM
-		XAllocNamedColor(dpy, DefaultColormap(dpy, i), settings_get( "border.colour.fixed" ), &screens[i].fc, &dummy);
 #endif
 
 		screens[i].invert_gc = XCreateGC(dpy, screens[i].root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont, &gv);
