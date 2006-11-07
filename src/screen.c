@@ -89,7 +89,7 @@ static void update_info_window(Client *c, Window info_window) {
 			buf, strlen(buf));
 
   XFreeGC( dpy, gc );
-  XUnloadFont( dpy, font );
+  XFreeFont( dpy, font );
 }
 
 static void remove_info_window(Window info_window) {

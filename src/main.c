@@ -359,7 +359,7 @@ static void setup_display(void) {
 	if (!font)
 		LOG_ERROR("[Warning] Couldn't find a font to use try starting with a different font.\n")
   else
-    XUnloadFont( dpy, font );
+    XFreeFont( dpy, font );
 
 	move_curs = XCreateFontCursor(dpy, XC_fleur);
 	resize_curs = XCreateFontCursor(dpy, XC_plus);
