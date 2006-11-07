@@ -29,6 +29,8 @@ void settings_init( void )
 
   settings_set( "mouse.warp", "0" );
 
+  settings_set( "display", "" );
+
   settings_set( "text.delay", "1000" );
 
   settings_set( "text.colour.background", "Wheat" );

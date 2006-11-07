@@ -40,7 +40,6 @@ Atom xa_net_wm_state_sticky;
 #endif
 
 /* Things that affect user interaction */
-static const char   *opt_display = "";
 unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
 unsigned int grabmask2 = Mod1Mask;
@@ -193,7 +192,7 @@ int main(int argc, char *argv[]) {
 		if (!strcmp(argv[i], "-fn") && i+1<argc)
         settings_set( "text.font", argv[++i] );
 		else if (!strcmp(argv[i], "-display") && i+1<argc) {
-			opt_display = argv[++i];
+        settings_set( "display", argv[++i] );
 		}
 		else if (!strcmp(argv[i], "-fg") && i+1<argc) {
         settings_set( "border.colour.active", argv[++i] );
@@ -330,9 +329,9 @@ static void setup_display(void) {
 	Window dw1, dw2, *wins;
 	XWindowAttributes winattr;
 
-	dpy = XOpenDisplay(opt_display);
+	dpy = XOpenDisplay( settings_get( "display") );
 	if (!dpy) { 
-		LOG_ERROR("can't open display %s\n", opt_display);
+		LOG_ERROR("can't open display %s\n", settings_get( "display") );
 		exit(1);
 	}
 	XSetErrorHandler(handle_xerror);
