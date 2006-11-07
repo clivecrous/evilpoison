@@ -15,6 +15,13 @@ void settings_init( void )
 
   settings_set( "border.width", "1" );
 
+  settings_set( "border.colour.foreground", "goldenrod" );
+  settings_set( "border.colour.background", "grey50" );
+
+#ifdef  VWM
+  settings_set( "border.colour.fixed", "blue" );
+#endif
+
   atexit( settings_done );
 }
 

@@ -43,11 +43,6 @@ Atom xa_net_wm_state_sticky;
 /* Things that affect user interaction */
 static const char   *opt_display = "";
 static const char   *opt_font = DEF_FONT;
-char   *opt_fg;
-char   *opt_bg;
-#ifdef VWM
-char   *opt_fc;
-#endif
 unsigned long opt_info_delay = 1000000;  /* 1 second */
 unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
@@ -136,20 +131,6 @@ unsigned int set_cmdparam(char *cmd, char *params) {
 	opt_info_delay = atoi(params) * 1000;
     return 1;
     }
-    else if (!strncmp(cmd, "color-fg", 8)) {
-	opt_fg = xstrcpy(params);
-    return 1;
-    }
-    else if (!strncmp(cmd, "color-bg", 8)) {
-	opt_bg = xstrcpy(params);
-    return 1;
-    }
-#ifdef VWM
-    else if (!strncmp(cmd, "color-fc", 8)) {
-	opt_fc = xstrcpy(params);
-    return 1;
-    }
-#endif
     else if (!strncmp(cmd, "prefix", 6)) {
 	parse_key(params, &opt_prefix_key, &opt_prefix_mod);
     return 1;
@@ -236,15 +217,12 @@ int main(int argc, char *argv[]) {
 			opt_display = argv[++i];
 		}
 		else if (!strcmp(argv[i], "-fg") && i+1<argc) {
-		    if (opt_fg) free(opt_fg);
-		    opt_fg = xstrcpy(argv[++i]);
+        settings_set( "border.colour.foreground", argv[++i] );
 		} else if (!strcmp(argv[i], "-bg") && i+1<argc) {
-		    if (opt_bg) free(opt_bg);
-		    opt_bg = xstrcpy(argv[++i]);
+        settings_set( "border.colour.background", argv[++i] );
 #ifdef VWM
 		} else if (!strcmp(argv[i], "-fc") && i+1<argc) {
-		    if (opt_fc) free(opt_fc);
-		    opt_fc = xstrcpy(argv[++i]);
+        settings_set( "border.colour.fixed", argv[++i] );
 #endif
 		} else if (!strcmp(argv[i], "-bw") && i+1<argc)
         settings_set( "border.width", argv[++i] );
@@ -334,10 +312,6 @@ int main(int argc, char *argv[]) {
 			exit((!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))?0:1);
 		}
 	}
-
-	if (!opt_fg) opt_fg = xstrcpy(DEF_FG);
-	if (!opt_bg) opt_bg = xstrcpy(DEF_BG);
-	if (!opt_fc) opt_fc = xstrcpy(DEF_FC);
 
 	act.sa_handler = handle_signal;
 	sigemptyset(&act.sa_mask);
@@ -477,10 +451,10 @@ static void setup_display(void) {
 		screens[i].vdesk = KEY_TO_VDESK(KEY_DESK1);
 #endif
 
-		XAllocNamedColor(dpy, DefaultColormap(dpy, i), opt_fg, &screens[i].fg, &dummy);
-		XAllocNamedColor(dpy, DefaultColormap(dpy, i), opt_bg, &screens[i].bg, &dummy);
+		XAllocNamedColor(dpy, DefaultColormap(dpy, i), settings_get( "border.colour.foreground" ), &screens[i].fg, &dummy);
+		XAllocNamedColor(dpy, DefaultColormap(dpy, i), settings_get( "border.colour.background" ), &screens[i].bg, &dummy);
 #ifdef VWM
-		XAllocNamedColor(dpy, DefaultColormap(dpy, i), opt_fc, &screens[i].fc, &dummy);
+		XAllocNamedColor(dpy, DefaultColormap(dpy, i), settings_get( "border.colour.fixed" ), &screens[i].fc, &dummy);
 #endif
 
 		screens[i].invert_gc = XCreateGC(dpy, screens[i].root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont, &gv);

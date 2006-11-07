@@ -30,9 +30,6 @@ typedef struct {
 /* default settings */
 
 #define DEF_FONT        "variable"
-#define DEF_FG          "goldenrod"
-#define DEF_BG          "grey50"
-#define DEF_FC          "blue"
 #define SPACE           3
 
 #define DEF_PREFIX_KEY  XK_e

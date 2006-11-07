@@ -23,14 +23,13 @@ infowindelay	1000
 
 # Set colors
 # focused window border
-color-fg	goldenrod
+set border.colour.foreground goldenrod
 
 # unfocused window border
-color-bg	grey50
+set border.colour.background grey50
 
 # fixed window border
-color-fc	blue
-
+set border.colour.fixed blue
 
 # Key bindings
 
