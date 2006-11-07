@@ -269,18 +269,18 @@ static void snap_client(Client *c) {
 	int dpy_width = DisplayWidth(dpy, c->screen->screen);
 	int dpy_height = DisplayHeight(dpy, c->screen->screen);
 	Client *ci;
-  int opt_snap = atoi( settings_get( "border.snap" ) );
+  int border_snap = atoi( settings_get( "border.snap" ) );
 
 	/* snap to screen border */
-	if (abs(c->x - c->border) < opt_snap) c->x = c->border;
-	if (abs(c->y - c->border) < opt_snap) c->y = c->border;
-	if (abs(c->x + c->width + c->border - dpy_width) < opt_snap)
+	if (abs(c->x - c->border) < border_snap) c->x = c->border;
+	if (abs(c->y - c->border) < border_snap) c->y = c->border;
+	if (abs(c->x + c->width + c->border - dpy_width) < border_snap)
 		c->x = dpy_width - c->width - c->border;
-	if (abs(c->y + c->height + c->border - dpy_height) < opt_snap)
+	if (abs(c->y + c->height + c->border - dpy_height) < border_snap)
 		c->y = dpy_height - c->height - c->border;
 
 	/* snap to other windows */
-	dx = dy = opt_snap;
+	dx = dy = border_snap;
 	for (ci = head_client; ci; ci = ci->next) {
 		if (ci != c
 				&& (ci->screen == c->screen)
@@ -288,13 +288,13 @@ static void snap_client(Client *c) {
 				&& (ci->vdesk == c->vdesk)
 #endif
 				) {
-			if (ci->y - ci->border - c->border - c->height - c->y <= opt_snap && c->y - c->border - ci->border - ci->height - ci->y <= opt_snap) {
+			if (ci->y - ci->border - c->border - c->height - c->y <= border_snap && c->y - c->border - ci->border - ci->height - ci->y <= border_snap) {
 				dx = absmin(dx, ci->x + ci->width - c->x + c->border + ci->border);
 				dx = absmin(dx, ci->x + ci->width - c->x - c->width);
 				dx = absmin(dx, ci->x - c->x - c->width - c->border - ci->border);
 				dx = absmin(dx, ci->x - c->x);
 			}
-			if (ci->x - ci->border - c->border - c->width - c->x <= opt_snap && c->x - c->border - ci->border - ci->width - ci->x <= opt_snap) {
+			if (ci->x - ci->border - c->border - c->width - c->x <= border_snap && c->x - c->border - ci->border - ci->width - ci->x <= border_snap) {
 				dy = absmin(dy, ci->y + ci->height - c->y + c->border + ci->border);
 				dy = absmin(dy, ci->y + ci->height - c->y - c->height);
 				dy = absmin(dy, ci->y - c->y - c->height - c->border - ci->border);
@@ -302,9 +302,9 @@ static void snap_client(Client *c) {
 			}
 		}
 	}
-	if (abs(dx) < opt_snap)
+	if (abs(dx) < border_snap)
 		c->x += dx;
-	if (abs(dy) < opt_snap)
+	if (abs(dy) < border_snap)
 		c->y += dy;
 	if (abs(c->x) == c->border && c->width == dpy_width)
 		c->x = 0;
