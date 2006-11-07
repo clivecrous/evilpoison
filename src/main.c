@@ -53,7 +53,6 @@ unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
 unsigned int grabmask2 = Mod1Mask;
 unsigned int altmask = ShiftMask;
-int          opt_bw = DEF_BW;
 int          opt_mousetowin = 0;
 unsigned int opt_prefix_mod = DEF_PREFIX_MOD;
 KeySym	     opt_prefix_key = DEF_PREFIX_KEY;
@@ -74,7 +73,7 @@ static void setup_display(void);
 static void *xmalloc(size_t size);
 static unsigned int parse_modifiers(char *s);
 static void parse_rcfile(FILE *fp);
-static void set_cmdparam(char *cmd, char *params);
+static unsigned int set_cmdparam(char *cmd, char *params);
 
 char *xstrcpy(const char *str);
 char *xstrcpy(const char *str)
@@ -115,9 +114,10 @@ void parse_key(char *keystr, KeySym *key, unsigned int *mod) {
   }
 }
 
-void set_cmdparam(char *cmd, char *params) {
+unsigned int set_cmdparam(char *cmd, char *params) {
     if (!strncmp(cmd, "mousetowin", 10)) {
 	opt_mousetowin = atoi(params);
+    return 1;
     }
     else if (!strncmp(cmd, "bind", 4)) {
 	KeySym ks = NoSymbol;
@@ -130,34 +130,43 @@ void set_cmdparam(char *cmd, char *params) {
 	parse_key(params, &ks, &mask);
 	if (ks != NoSymbol)
 	    add_key_binding(ks, mask, tmpc);
+    return 1;
     }
     else if (!strncmp(cmd, "infowindelay", 12)) {
 	opt_info_delay = atoi(params) * 1000;
+    return 1;
     }
     else if (!strncmp(cmd, "color-fg", 8)) {
 	opt_fg = xstrcpy(params);
+    return 1;
     }
     else if (!strncmp(cmd, "color-bg", 8)) {
 	opt_bg = xstrcpy(params);
+    return 1;
     }
 #ifdef VWM
     else if (!strncmp(cmd, "color-fc", 8)) {
 	opt_fc = xstrcpy(params);
+    return 1;
     }
 #endif
     else if (!strncmp(cmd, "prefix", 6)) {
 	parse_key(params, &opt_prefix_key, &opt_prefix_mod);
+    return 1;
     }
 #ifdef SOLIDDRAG
     else if (!strncmp(cmd, "solid_drag", 10)) {
 	solid_drag = atoi(params);
+    return 1;
     }
 #endif
 #ifdef SNAP
     else if (!strncmp(cmd, "snap", 4)) {
 	opt_snap = atoi(params);
+    return 1;
     }
 #endif
+    return 0;
 }
 
 void parse_rcfile(FILE *fp) {
@@ -186,7 +195,8 @@ void parse_rcfile(FILE *fp) {
 	    while (*params && !isspace(*params)) params++;
 	    while (*params && isspace(*params)) params++;
 
-	    set_cmdparam(cmd, params);
+	    if (!set_cmdparam(cmd, params))
+        command_execute( line );
 	}
     }
     free(line);
@@ -196,6 +206,10 @@ void parse_rcfile(FILE *fp) {
 int main(int argc, char *argv[]) {
 	struct sigaction act;
 	int i;
+
+  settings_init();
+  command_init();
+  evilpoison_commands_init();
 
 	char *homedir = getenv("HOME");
 
@@ -233,7 +247,7 @@ int main(int argc, char *argv[]) {
 		    opt_fc = xstrcpy(argv[++i]);
 #endif
 		} else if (!strcmp(argv[i], "-bw") && i+1<argc)
-			opt_bw = atoi(argv[++i]);
+        settings_set( "border.width", argv[++i] );
 		else if (!strcmp(argv[i], "-prefix") && i+1<argc) {
 		    parse_key(argv[++i], &opt_prefix_key, &opt_prefix_mod);
 		} else if (!strcmp(argv[i], "-mousetowin") && i+1<argc) {
@@ -334,10 +348,6 @@ int main(int argc, char *argv[]) {
 
 	setup_display();
 
-  settings_init();
-  command_init();
-  evilpoison_commands_init();
-
 	event_main_loop();
 
 	return 1;
@@ -419,7 +429,7 @@ static void setup_display(void) {
 	/* set up GC parameters - same for each screen */
 	gv.function = GXinvert;
 	gv.subwindow_mode = IncludeInferiors;
-	gv.line_width = 1;  /* opt_bw */
+	gv.line_width = atoi( settings_get( "border.width" ) );
 	gv.font = font->fid;
 
 	/* set up root window attributes - same for each screen */

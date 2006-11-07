@@ -3,6 +3,9 @@
 #
 # All lines beginning with '#' are comments and are ignored.
 
+# Set window border width to 1 pixel wide
+set border.width 1
+
 # will mouse warp to the windows?  0 or 1
 mousetowin	1
 

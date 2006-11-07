@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "evilpoison.h"
 #include "log.h"
+#include "settings.h"
 
 #define MAXIMUM_PROPERTY_LENGTH 4096
 
@@ -71,7 +72,7 @@ void make_new_client(Window w, ScreenInfo *s) {
 	 * X calls to raise an X error and thus flag it for removal. */
 	XUngrabServer(dpy);
 
-	c->border = opt_bw;
+	c->border = atoi( settings_get( "border.width" ) );
 
 	init_geometry(c);
 

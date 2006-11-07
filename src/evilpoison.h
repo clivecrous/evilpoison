@@ -32,7 +32,6 @@ typedef struct {
 #define DEF_FONT        "variable"
 #define DEF_FG          "goldenrod"
 #define DEF_BG          "grey50"
-#define DEF_BW          1
 #define DEF_FC          "blue"
 #define SPACE           3
 
@@ -180,7 +179,6 @@ extern unsigned int     numlockmask;
 extern unsigned int     grabmask1;
 extern unsigned int     grabmask2;
 extern unsigned int     altmask;
-extern int              opt_bw;
 extern int		opt_mousetowin;
 extern unsigned int	opt_prefix_mod;
 extern KeySym		opt_prefix_key;
