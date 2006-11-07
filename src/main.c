@@ -48,7 +48,6 @@ unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
 unsigned int grabmask2 = Mod1Mask;
 unsigned int altmask = ShiftMask;
-int          opt_mousetowin = 0;
 unsigned int opt_prefix_mod = DEF_PREFIX_MOD;
 KeySym	     opt_prefix_key = DEF_PREFIX_KEY;
 #ifdef SOLIDDRAG
@@ -107,11 +106,7 @@ void parse_key(char *keystr, KeySym *key, unsigned int *mod) {
 }
 
 unsigned int set_cmdparam(char *cmd, char *params) {
-    if (!strncmp(cmd, "mousetowin", 10)) {
-	opt_mousetowin = atoi(params);
-    return 1;
-    }
-    else if (!strncmp(cmd, "bind", 4)) {
+    if (!strncmp(cmd, "bind", 4)) {
 	KeySym ks = NoSymbol;
 	unsigned int mask;
 	char *tmpc = params;
@@ -219,8 +214,8 @@ int main(int argc, char *argv[]) {
         settings_set( "border.width", argv[++i] );
 		else if (!strcmp(argv[i], "-prefix") && i+1<argc) {
 		    parse_key(argv[++i], &opt_prefix_key, &opt_prefix_mod);
-		} else if (!strcmp(argv[i], "-mousetowin") && i+1<argc) {
-			opt_mousetowin = atoi(argv[++i]);
+		} else if (!strcmp(argv[i], "-mousewarp") && i+1<argc) {
+        settings_set( "mouse.warp", argv[++i] );
 #ifdef SNAP
 		} else if (!strcmp(argv[i], "-snap") && i+1<argc) {
         settings_set( "border.snap", argv[++i] );
@@ -291,7 +286,7 @@ int main(int argc, char *argv[]) {
 			LOG_INFO(" [-bg background] [-bw borderwidth]\n");
 			LOG_INFO("              [-mask1 modifiers] [-mask2 modifiers] [-altmask modifiers]\n");
 			LOG_INFO("              [-snap num]");
-			LOG_INFO("              [-mousetowin 0/1]");
+			LOG_INFO("              [-mousewarp 0/1]");
 			LOG_INFO("              [-prefix mod-key]");
 #ifdef VWM
 			LOG_INFO(" [-app name/class] [-g geometry] [-v vdesk] [-s]");

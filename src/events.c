@@ -6,6 +6,7 @@
 #include <string.h>
 #include "evilpoison.h"
 #include "log.h"
+#include "settings.h"
 
 #include <X11/cursorfont.h>
 
@@ -142,7 +143,7 @@ int find_key_binding(KeySym k, unsigned int mask) {
 
 static void move_client(Client *c) {
     moveresize(c);
-    if (opt_mousetowin)
+    if ( atoi( settings_get( "mouse.warp" ) ) )
 	setmouse(c->window, c->width + c->border - 1, c->height + c->border - 1);
     discard_enter_events();
 }

@@ -26,6 +26,8 @@ void settings_init( void )
   settings_set( "border.snap", "0" );
 #endif
 
+  settings_set( "mouse.warp", "0" );
+
   atexit( settings_done );
 }
 

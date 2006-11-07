@@ -412,7 +412,7 @@ void next(void) {
 		return;
 	unhide(newc, RAISE);
 	select_client(newc);
-	if (opt_mousetowin) {
+	if ( atoi( settings_get( "mouse.warp" ) ) ) {
 	    setmouse(newc->window, 0, 0);
 	    setmouse(newc->window, newc->width + newc->border - 1,
 			newc->height + newc->border - 1);
