@@ -35,6 +35,39 @@ START_TEST (test_dictionary_set_newValue)
 }
 END_TEST
 
+START_TEST (test_dictionary_set_multipleNewValues)
+{
+  Dictionary *dictionary = dictionary_create();
+
+  dictionary_set( dictionary, "foo", create_value("FOO") );
+  dictionary_set( dictionary, "bar", create_value("BAR") );
+  dictionary_set( dictionary, "baz", create_value("BAZ") );
+
+  fail_unless( dictionary_haskey( dictionary, "foo" ),
+      "Dictionary should have key" );
+  fail_unless( dictionary_get( dictionary, "foo" ) != NULL,
+      "Value should not be NULL" );
+  fail_if( strcmp( dictionary_get( dictionary, "foo" ), "FOO" ),
+      "Value stored and value returned should be the same" );
+
+  fail_unless( dictionary_haskey( dictionary, "bar" ),
+      "Dictionary should have key" );
+  fail_unless( dictionary_get( dictionary, "bar" ) != NULL,
+      "Value should not be NULL" );
+  fail_if( strcmp( dictionary_get( dictionary, "bar" ), "BAR" ),
+      "Value stored and value returned should be the same" );
+
+  fail_unless( dictionary_haskey( dictionary, "baz" ),
+      "Dictionary should have key" );
+  fail_unless( dictionary_get( dictionary, "baz" ) != NULL,
+      "Value should not be NULL" );
+  fail_if( strcmp( dictionary_get( dictionary, "baz" ), "BAZ" ),
+      "Value stored and value returned should be the same" );
+
+  dictionary_destroy( dictionary );
+}
+END_TEST
+
 START_TEST (test_dictionary_set_updateValue)
 {
   Dictionary *dictionary = dictionary_create();
@@ -130,6 +163,7 @@ dictionary_suite( void )
     tcase_add_test( tc_create, test_dictionary_create );
 
     tcase_add_test( tc_set, test_dictionary_set_newValue );
+    tcase_add_test( tc_set, test_dictionary_set_multipleNewValues );
     tcase_add_test( tc_set, test_dictionary_set_updateValue );
     tcase_add_test( tc_set, test_dictionary_set_setNull );
 
