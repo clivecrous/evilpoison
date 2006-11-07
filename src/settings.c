@@ -22,6 +22,10 @@ void settings_init( void )
   settings_set( "border.colour.fixed", "blue" );
 #endif
 
+#ifdef SNAP
+  settings_set( "border.snap", "0" );
+#endif
+
   atexit( settings_done );
 }
 

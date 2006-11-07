@@ -51,9 +51,6 @@ unsigned int altmask = ShiftMask;
 int          opt_mousetowin = 0;
 unsigned int opt_prefix_mod = DEF_PREFIX_MOD;
 KeySym	     opt_prefix_key = DEF_PREFIX_KEY;
-#ifdef SNAP
-int          opt_snap = 0;
-#endif
 #ifdef SOLIDDRAG
 int          solid_drag = 1;  /* use solid drag by default */
 #endif
@@ -138,12 +135,6 @@ unsigned int set_cmdparam(char *cmd, char *params) {
 #ifdef SOLIDDRAG
     else if (!strncmp(cmd, "solid_drag", 10)) {
 	solid_drag = atoi(params);
-    return 1;
-    }
-#endif
-#ifdef SNAP
-    else if (!strncmp(cmd, "snap", 4)) {
-	opt_snap = atoi(params);
     return 1;
     }
 #endif
@@ -232,7 +223,7 @@ int main(int argc, char *argv[]) {
 			opt_mousetowin = atoi(argv[++i]);
 #ifdef SNAP
 		} else if (!strcmp(argv[i], "-snap") && i+1<argc) {
-			opt_snap = atoi(argv[++i]);
+        settings_set( "border.snap", argv[++i] );
 #endif
 		} else if (!strcmp(argv[i], "-app") && i+1<argc) {
 			Application *new = xmalloc(sizeof(Application));

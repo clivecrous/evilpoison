@@ -14,7 +14,7 @@ solid_drag	1
 
 # will windows snap to screen borders?  0 disables, any positive integer
 # defines the distance from which it snaps.
-snap		0
+set border.snap 16
 
 # how long does the info window show up when focusing to a new window
 # 1000 = 1 second

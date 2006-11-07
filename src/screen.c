@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include "evilpoison.h"
 #include "log.h"
+#include "settings.h"
 
 #ifdef INFOBANNER
 
@@ -223,6 +224,7 @@ static void snap_client(Client *c) {
 	int dpy_width = DisplayWidth(dpy, c->screen->screen);
 	int dpy_height = DisplayHeight(dpy, c->screen->screen);
 	Client *ci;
+  int opt_snap = atoi( settings_get( "border.snap" ) );
 
 	/* snap to screen border */
 	if (abs(c->x - c->border) < opt_snap) c->x = c->border;
@@ -294,7 +296,7 @@ void drag(Client *c) {
 				c->x = old_cx + (ev.xmotion.x - x1);
 				c->y = old_cy + (ev.xmotion.y - y1);
 #ifdef SNAP
-				if (opt_snap)
+				if ( atoi( settings_get( "border.snap" ) ) )
 					snap_client(c);
 #endif
 

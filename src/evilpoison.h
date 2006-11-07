@@ -179,9 +179,6 @@ extern unsigned int     altmask;
 extern int		opt_mousetowin;
 extern unsigned int	opt_prefix_mod;
 extern KeySym		opt_prefix_key;
-#ifdef SNAP
-extern int              opt_snap;
-#endif
 #ifdef SOLIDDRAG
 extern int              solid_drag;
 #else
