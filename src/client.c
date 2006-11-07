@@ -98,17 +98,16 @@ void select_client(Client *c) {
   XColor border_colour_active, border_colour_inactive, border_colour_fixed;
   XColor dummy;
 
-  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.foreground" ), &border_colour_active, &dummy);
-  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.background" ), &border_colour_inactive, &dummy);
-#ifdef VWM
-  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.fixed" ), &border_colour_fixed, &dummy);
-#endif
-
 	if (current)
+  {
+    XAllocNamedColor(dpy, DefaultColormap(dpy, current->screen->screen), settings_get( "border.colour.background" ), &border_colour_inactive, &dummy);
 		XSetWindowBorder(dpy, current->parent, border_colour_inactive.pixel);
+  }
 	if (c) {
 		unsigned long bpixel;
+    XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.foreground" ), &border_colour_active, &dummy);
 #ifdef VWM
+    XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.fixed" ), &border_colour_fixed, &dummy);
 		if (is_sticky(c))
 			bpixel = border_colour_fixed.pixel;
 		else
