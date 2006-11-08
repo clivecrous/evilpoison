@@ -20,6 +20,10 @@ set border.snap 16
 # 1000 = 1 second
 set text.delay 1000
 
+# Setting the text colours
+set text.colour.foreground Black
+set text.colour.background Wheat
+
 # Set colors
 # focused window border
 set border.colour.active goldenrod

@@ -72,13 +72,17 @@ static void update_info_window(Client *c, Window info_window) {
 
   XGCValues gv;
   GC gc;
+  XColor text_colour_foreground, dummy;
 
-	gv.function = GXinvert;
+  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "text.colour.foreground" ), &text_colour_foreground, &dummy);
+
+	gv.function = GXcopy;
 	gv.subwindow_mode = IncludeInferiors;
 	gv.line_width = atoi( settings_get( "border.width" ) );
 	gv.font = font->fid;
+  gv.foreground = text_colour_foreground.pixel;
 
-  gc = XCreateGC(dpy, c->screen->root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont, &gv);
+  gc = XCreateGC(dpy, c->screen->root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont | GCForeground, &gv);
 
 	if (name) {
 		XDrawString(dpy, info_window, gc,
