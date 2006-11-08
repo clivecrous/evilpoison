@@ -1,5 +1,7 @@
 project(evilpoison,c)
 
+find_package(X11 REQUIRED)
+
 set(VERSION 0.1)
 #set(CMAKE_VERBOSE_MAKEFILE true)
 set(CMAKE_BUILD_TYPE Debug)

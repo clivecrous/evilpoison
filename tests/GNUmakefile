@@ -1,9 +1,12 @@
 include ../settings.make
 
 HEADERS  = check_settings.h
-SRCS     = tests.c check_command.c check_dictionary.c check_settings.c
+SRCS     = tests.c \
+					 check_bind.c check_command.c \
+					 check_dictionary.c check_settings.c
 OBJS     = $(SRCS:.c=.o) \
-	../src/command.o ../src/dictionary.o ../src/settings.o
+	../src/bind.o ../src/command.o \
+	../src/dictionary.o ../src/settings.o
 
 .PHONY: all install dist debuild clean
 

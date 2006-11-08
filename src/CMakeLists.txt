@@ -1,5 +1,3 @@
-find_package(X11 REQUIRED)
-
 # --- Edit the below definitions to customize your compile ---
 
 # Uncomment to enable solid window drags.  This can be slow on old systems.
@@ -39,7 +37,7 @@ add_definitions(-DCOLOURMAP)
 add_definitions(-DVERSION='"${VERSION}"')
 
 add_executable(evilpoison
-  client.c command.c dictionary.c events.c 
+  bind.c client.c command.c dictionary.c events.c 
   evilpoison_commands.c ewmh.c
   main.c misc.c new.c screen.c settings.c)
 

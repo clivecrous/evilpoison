@@ -7,6 +7,7 @@
 #include "evilpoison.h"
 #include "log.h"
 #include "settings.h"
+#include "bind.h"
 
 #include <X11/cursorfont.h>
 
@@ -54,13 +55,8 @@ const char *command_names[NUM_COMMANDS] = {
     "bind"
 };
 
-struct KeySymMask {
-  KeySym symbol;
-  unsigned int mask;
-};
-
 struct _ksconv {
-    struct KeySymMask *chain;
+    BindKeySymMask *chain;
     unsigned int command_enum;
     char * command;
 };
@@ -107,7 +103,7 @@ void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
 	free(key_conversions);
     }
 
-    tmpkc[num_keyconvs].chain = malloc( sizeof( struct KeySymMask ) );
+    tmpkc[num_keyconvs].chain = malloc( sizeof( BindKeySymMask ) );
     tmpkc[num_keyconvs].chain->symbol = k;
     tmpkc[num_keyconvs].chain->mask = mask;
     // TODO This memory is never freed.

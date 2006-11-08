@@ -1,7 +1,7 @@
 include ../settings.make
 
 HEADERS  = evilpoison.h log.h settings.h
-SRCS     = client.c command.c dictionary.c events.c \
+SRCS     = bind.c client.c command.c dictionary.c events.c \
 					 evilpoison_commands.c main.c misc.c \
 					 new.c screen.c ewmh.c settings.c
 OBJS     = $(SRCS:.c=.o)
