@@ -1,6 +1,5 @@
 #include <X11/X.h>
 #include <X11/Xatom.h>
-#include <X11/Xlib.h>
 #include <X11/Xmd.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
@@ -170,8 +169,7 @@ extern unsigned int     numlockmask;
 extern unsigned int     grabmask1;
 extern unsigned int     grabmask2;
 extern unsigned int     altmask;
-extern unsigned int	opt_prefix_mod;
-extern KeySym		opt_prefix_key;
+extern BindKeySymMask   *opt_prefix;
 extern Application      *head_app;
 
 /* Client tracking information */

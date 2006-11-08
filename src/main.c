@@ -8,13 +8,14 @@
 #include <string.h>
 #include <signal.h>
 #include <X11/cursorfont.h>
+#include <X11/Xlib.h>
+#include "bind.h"
 #include "evilpoison.h"
 #include "log.h"
 
 #include "command.h"
 #include "settings.h"
 #include "evilpoison_commands.h"
-#include "bind.h"
 
 /* Commonly used X information */
 Display     *dpy;
@@ -45,8 +46,7 @@ unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
 unsigned int grabmask2 = Mod1Mask;
 unsigned int altmask = ShiftMask;
-unsigned int opt_prefix_mod = DEF_PREFIX_MOD;
-KeySym	     opt_prefix_key = DEF_PREFIX_KEY;
+BindKeySymMask *opt_prefix = NULL;
 Application  *head_app = NULL;
 
 /* Client tracking information */
@@ -94,9 +94,8 @@ unsigned int set_cmdparam(char *cmd, char *params) {
     binding = keycode_convert( params );
     if ( binding )
     {
-      opt_prefix_key = binding->symbol;
-      opt_prefix_mod = binding->mask;
-      free( binding );
+      free( opt_prefix );
+      opt_prefix = binding;
     }
     return 1;
   }
@@ -141,6 +140,8 @@ int main(int argc, char *argv[]) {
 	struct sigaction act;
 	int i;
 
+  opt_prefix = keycode_convert( "c-t" ); /* FIXME This is temporary */
+
   settings_init();
   command_init();
   evilpoison_commands_init();
@@ -184,9 +185,8 @@ int main(int argc, char *argv[]) {
         binding = keycode_convert( argv[++i] );
         if ( binding )
         {
-          opt_prefix_key = binding->symbol;
-          opt_prefix_mod = binding->mask;
-          free( binding );
+          free( opt_prefix );
+          opt_prefix = binding;
         }
 		} else if (!strcmp(argv[i], "-mousewarp") && i+1<argc) {
         settings_set( "mouse.warp", argv[++i] );

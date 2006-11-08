@@ -4,10 +4,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <X11/Xlib.h>
+#include "bind.h"
 #include "evilpoison.h"
 #include "log.h"
 #include "settings.h"
-#include "bind.h"
 
 #include <X11/cursorfont.h>
 
@@ -150,8 +151,8 @@ static void move_client(Client *c) {
 static void handle_key_event(XKeyEvent *e) {
   KeySym realkey = XKeycodeToKeysym(dpy,e->keycode,0);
 
-  if ( realkey != opt_prefix_key ||
-       (e->state & opt_prefix_mod) != opt_prefix_mod ) return;
+  if ( realkey != opt_prefix->symbol ||
+       (e->state & opt_prefix->mask ) != opt_prefix->mask ) return;
 
   int key_enum;
   XEvent ev;

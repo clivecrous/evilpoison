@@ -3,6 +3,8 @@
  * see README for license and other details. */
 
 #include <stdlib.h>
+#include <X11/Xlib.h>
+#include "bind.h"
 #include "evilpoison.h"
 #include "log.h"
 

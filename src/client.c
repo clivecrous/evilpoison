@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <X11/Xlib.h>
+#include "bind.h"
 #include "evilpoison.h"
 #include "log.h"
 #include "settings.h"

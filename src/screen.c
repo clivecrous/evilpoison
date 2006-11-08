@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <X11/Xlib.h>
+#include "bind.h"
 #include "evilpoison.h"
 #include "log.h"
 #include "settings.h"
@@ -545,5 +547,5 @@ void grab_keys_for_screen(ScreenInfo *s) {
 	/* Release any previous grabs */
 	XUngrabKey(dpy, AnyKey, AnyModifier, s->root);
 	/* We're only interested in the prefix key */
-	grab_keysym(s->root, opt_prefix_mod, opt_prefix_key);
+	grab_keysym(s->root, opt_prefix->mask, opt_prefix->symbol );
 }

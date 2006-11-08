@@ -2,12 +2,14 @@
  * Copyright (C) 1999-2006 Ciaran Anscomb <evilwm@6809.org.uk>
  * see README for license and other details. */
 
+#include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include "bind.h"
 #include "evilpoison.h"
 #include "log.h"
 
