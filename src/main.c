@@ -14,6 +14,7 @@
 #include "command.h"
 #include "settings.h"
 #include "evilpoison_commands.h"
+#include "bind.h"
 
 /* Commonly used X information */
 Display     *dpy;
@@ -70,52 +71,33 @@ char *xstrcpy(const char *str)
     return strcpy(tmp, str);
 }
 
-void parse_key(char *keystr, KeySym *key, unsigned int *mod) {
-  char *dash = strchr(keystr, '-');
-
-  if (dash) {
-    switch (*keystr) {
-      default:
-      case 'C': case 'c': *mod = ControlMask; break;
-      case 'A': case 'a':
-      case 'M': case 'm': *mod = Mod1Mask; break;
-      case 'S': case 's': *mod = ShiftMask; break;
-    }
-    dash++;
-  } else {
-    dash = keystr;
-    *mod = 0;
-  }
-  if (dash) {
-    if ( (*(dash+1)==' ' || (*(dash+1))=='\t') &&
-        *dash >= 'A' && *dash <= 'Z' ) {
-      *dash -= 'A' - 'a';
-      *mod ^= ShiftMask;
-    }
-    KeySym nkey = XStringToKeysym(dash);
-    if (nkey != NoSymbol)
-        *key = nkey;
-  }
-}
-
 unsigned int set_cmdparam(char *cmd, char *params) {
   if (!strncmp(cmd, "bind", 4))
   {
-    KeySym ks = NoSymbol;
-    unsigned int mask;
+    BindKeySymMask *binding;
     char *tmpc = params;
 
     while (*tmpc && !isspace(*tmpc)) tmpc++;
     while (*tmpc && isspace(*tmpc)) { *tmpc = '\0'; tmpc++; }
 
-    parse_key(params, &ks, &mask);
-    if (ks != NoSymbol)
-      add_key_binding(ks, mask, tmpc);
+    binding = keycode_convert( params );
+    if ( binding )
+    {
+      add_key_binding( binding->symbol, binding->mask, tmpc);
+      free( binding );
+    }
     return 1;
   }
   else if (!strncmp(cmd, "prefix", 6))
   {
-    parse_key(params, &opt_prefix_key, &opt_prefix_mod);
+    BindKeySymMask *binding;
+    binding = keycode_convert( params );
+    if ( binding )
+    {
+      opt_prefix_key = binding->symbol;
+      opt_prefix_mod = binding->mask;
+      free( binding );
+    }
     return 1;
   }
   return 0;
@@ -198,7 +180,14 @@ int main(int argc, char *argv[]) {
 		} else if (!strcmp(argv[i], "-bw") && i+1<argc)
         settings_set( "border.width", argv[++i] );
 		else if (!strcmp(argv[i], "-prefix") && i+1<argc) {
-		    parse_key(argv[++i], &opt_prefix_key, &opt_prefix_mod);
+        BindKeySymMask *binding;
+        binding = keycode_convert( argv[++i] );
+        if ( binding )
+        {
+          opt_prefix_key = binding->symbol;
+          opt_prefix_mod = binding->mask;
+          free( binding );
+        }
 		} else if (!strcmp(argv[i], "-mousewarp") && i+1<argc) {
         settings_set( "mouse.warp", argv[++i] );
 #ifdef SNAP

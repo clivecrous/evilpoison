@@ -174,8 +174,6 @@ extern unsigned int	opt_prefix_mod;
 extern KeySym		opt_prefix_key;
 extern Application      *head_app;
 
-void parse_key(char *keystr, KeySym *key, unsigned int *mod);
-
 /* Client tracking information */
 extern Client           *head_client;
 extern Client           *current;

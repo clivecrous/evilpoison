@@ -66,8 +66,7 @@ static struct _ksconv *key_conversions = NULL;
 
 static void add_binding(char *binding)
 {
-  KeySym keysym = NoSymbol;
-  unsigned int mask;
+  BindKeySymMask *bound;
 
   char *key_combination = binding;
   while (*key_combination && *key_combination==' ')
@@ -77,8 +76,12 @@ static void add_binding(char *binding)
   while (*command && *command!=' ') command++;
   while (*command && *command==' ') { *command='\0'; command++; }
 
-  parse_key( key_combination, &keysym, &mask );
-  if ( keysym != NoSymbol ) add_key_binding( keysym, mask, command );
+  bound = keycode_convert( key_combination );
+  if ( bound )
+  {
+    add_key_binding( bound->symbol , bound->mask, command );
+    free( bound );
+  }
 }
 
 void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
