@@ -42,11 +42,12 @@ char *command_execute(const char *commandline)
   strcpy( newcommandline, commandline );
 
   char *command = newcommandline;
-  while (*command && *command==' ') command++;
+  while (*command && isblank(*command)) command++;
 
   char *parameters = command;
-  while (*parameters && *parameters!=' ') parameters++;
-  while (*parameters && *parameters==' ') { *parameters='\0'; parameters++; };
+  while (*parameters && !isblank(*parameters)) parameters++;
+  while (*parameters && isblank(*parameters))
+  { *parameters='\0'; parameters++; };
 
   function = dictionary_get( _commands, command );
   if (function)
