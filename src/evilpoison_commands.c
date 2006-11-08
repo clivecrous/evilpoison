@@ -1,12 +1,13 @@
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <X11/Xlib.h>
 
 #include "command.h"
 #include "settings.h"
 #include "evilpoison_commands.h"
-
-char *evilpoison_command_set(char *commandline);
-char *evilpoison_command_unset(char *commandline);
+#include "bind.h"
+#include "evilpoison.h"
 
 char *evilpoison_command_set(char *commandline)
 {
@@ -17,8 +18,8 @@ char *evilpoison_command_set(char *commandline)
   while (*setting && *setting==' ' ) setting++;
 
   char *value = setting;
-  while (*value && *value!=' ' ) value++;
-  while (*value && *value==' ' ) { *value='\0'; value++; };
+  while (*value && !isblank(*value) ) value++;
+  while (*value && isblank(*value) ) { *value='\0'; value++; };
 
   settings_set( setting, value );
 
@@ -34,8 +35,31 @@ char *evilpoison_command_unset(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_bind(char *commandline)
+{
+  BindKeySymMask *binding;
+  char *params = malloc( strlen( commandline ) + 1 );
+  strcpy( params, commandline );
+
+  char *tmpc = params;
+  while (*tmpc && !isblank(*tmpc)) tmpc++;
+  while (*tmpc && isblank(*tmpc)) { *tmpc = '\0'; tmpc++; }
+
+  binding = keycode_convert( params );
+  if ( binding )
+  {
+    add_key_binding( binding->symbol, binding->mask, tmpc);
+    free( binding );
+  }
+
+  free( params );
+  return 0;
+}
+
 void evilpoison_commands_init( void )
 {
   command_assign( "set",    evilpoison_command_set );
   command_assign( "unset",  evilpoison_command_unset );
+
+  command_assign( "bind",   evilpoison_command_bind );
 }

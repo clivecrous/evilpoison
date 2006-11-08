@@ -57,7 +57,6 @@ static void setup_display(void);
 static void *xmalloc(size_t size);
 static unsigned int parse_modifiers(char *s);
 static void parse_rcfile(FILE *fp);
-static unsigned int set_cmdparam(char *cmd, char *params);
 
 char *xstrcpy(const char *str);
 char *xstrcpy(const char *str)
@@ -68,26 +67,6 @@ char *xstrcpy(const char *str)
 
     tmp = (char *)malloc(strlen(str));
     return strcpy(tmp, str);
-}
-
-unsigned int set_cmdparam(char *cmd, char *params) {
-  if (!strncmp(cmd, "bind", 4))
-  {
-    BindKeySymMask *binding;
-    char *tmpc = params;
-
-    while (*tmpc && !isspace(*tmpc)) tmpc++;
-    while (*tmpc && isspace(*tmpc)) { *tmpc = '\0'; tmpc++; }
-
-    binding = keycode_convert( params );
-    if ( binding )
-    {
-      add_key_binding( binding->symbol, binding->mask, tmpc);
-      free( binding );
-    }
-    return 1;
-  }
-  return 0;
 }
 
 void parse_rcfile(FILE *fp) {
@@ -116,8 +95,7 @@ void parse_rcfile(FILE *fp) {
 	    while (*params && !isspace(*params)) params++;
 	    while (*params && isspace(*params)) params++;
 
-	    if (!set_cmdparam(cmd, params))
-        command_execute( line );
+      command_execute( line );
 	}
     }
     free(line);
