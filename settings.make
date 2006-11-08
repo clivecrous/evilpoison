@@ -1,7 +1,7 @@
 # If you don't use CC 
 CC       = gcc
 
-CFLAGS  += -std=c99 
+CFLAGS  += -std=gnu99 
 
 # Edit this line if you don't want evilpoison to install under /usr.
 # Note that $(DESTDIR) is used by the Debian build process.
