@@ -80,20 +80,10 @@ void parse_rcfile(FILE *fp) {
 	(void) fgets(line, RC_LINE_LEN, fp);
 	len = strlen(line);
 	if (len > 0) {
-	    char *params = line;
 	    char *cmd;
 
 	    if (line[len-1] == '\n')
 		line[len-1] = '\0';
-
-	    while (*params && isspace(*params)) params++;
-
-	    if (*params == '\0' || *params == '#') continue;
-
-	    cmd = params;
-
-	    while (*params && !isspace(*params)) params++;
-	    while (*params && isspace(*params)) params++;
 
       command_execute( line );
 	}
