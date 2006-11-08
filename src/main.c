@@ -46,7 +46,6 @@ unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
 unsigned int grabmask2 = Mod1Mask;
 unsigned int altmask = ShiftMask;
-BindKeySymMask *opt_prefix = NULL;
 Application  *head_app = NULL;
 
 /* Client tracking information */
@@ -85,17 +84,6 @@ unsigned int set_cmdparam(char *cmd, char *params) {
     {
       add_key_binding( binding->symbol, binding->mask, tmpc);
       free( binding );
-    }
-    return 1;
-  }
-  else if (!strncmp(cmd, "prefix", 6))
-  {
-    BindKeySymMask *binding;
-    binding = keycode_convert( params );
-    if ( binding )
-    {
-      free( opt_prefix );
-      opt_prefix = binding;
     }
     return 1;
   }
@@ -140,8 +128,6 @@ int main(int argc, char *argv[]) {
 	struct sigaction act;
 	int i;
 
-  opt_prefix = keycode_convert( "c-t" ); /* FIXME This is temporary */
-
   settings_init();
   command_init();
   evilpoison_commands_init();
@@ -181,13 +167,7 @@ int main(int argc, char *argv[]) {
 		} else if (!strcmp(argv[i], "-bw") && i+1<argc)
         settings_set( "border.width", argv[++i] );
 		else if (!strcmp(argv[i], "-prefix") && i+1<argc) {
-        BindKeySymMask *binding;
-        binding = keycode_convert( argv[++i] );
-        if ( binding )
-        {
-          free( opt_prefix );
-          opt_prefix = binding;
-        }
+        settings_set( "prefix", argv[++i] );
 		} else if (!strcmp(argv[i], "-mousewarp") && i+1<argc) {
         settings_set( "mouse.warp", argv[++i] );
 #ifdef SNAP

@@ -150,9 +150,17 @@ static void move_client(Client *c) {
 
 static void handle_key_event(XKeyEvent *e) {
   KeySym realkey = XKeycodeToKeysym(dpy,e->keycode,0);
+  BindKeySymMask *prefix = keycode_convert( settings_get( "prefix" ) );
 
-  if ( realkey != opt_prefix->symbol ||
-       (e->state & opt_prefix->mask ) != opt_prefix->mask ) return;
+  if (!prefix) return;
+
+  if ( realkey != prefix->symbol ||
+       (e->state & prefix->mask ) != prefix->mask )
+  {
+    free( prefix );
+    return;
+  }
+  free( prefix );
 
   int key_enum;
   XEvent ev;

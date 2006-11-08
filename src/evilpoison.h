@@ -169,7 +169,6 @@ extern unsigned int     numlockmask;
 extern unsigned int     grabmask1;
 extern unsigned int     grabmask2;
 extern unsigned int     altmask;
-extern BindKeySymMask   *opt_prefix;
 extern Application      *head_app;
 
 /* Client tracking information */

@@ -27,9 +27,11 @@ void settings_init( void )
   settings_set( "border.snap", "0" );
 #endif
 
+  settings_set( "display", "" );
+
   settings_set( "mouse.warp", "0" );
 
-  settings_set( "display", "" );
+  settings_set( "prefix", "c-t" );
 
   settings_set( "text.delay", "1000" );
 

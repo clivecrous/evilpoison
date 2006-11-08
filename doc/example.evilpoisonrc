@@ -38,7 +38,7 @@ set border.colour.fixed.inactive grey50
 # Key bindings
 
 # set the command prefix key.
-prefix		C-t
+set prefix C-t
 
 # next window
 bind	Return	nextwin
