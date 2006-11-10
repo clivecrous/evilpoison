@@ -196,25 +196,23 @@ int main(int argc, char *argv[]) {
 #endif
 #ifdef STDIO
 		} else if (!strcmp(argv[i], "-V")) {
-			LOG_INFO("evilwm version " VERSION "-paxed\n");
+			LOG_INFO("evilpoison version " VERSION "\n");
 			exit(0);
 #endif
 		} else {
-			LOG_INFO("usage: evilwm [-display display] [-fn fontname]\n");
-			LOG_INFO("              [-fg foreground]");
+			LOG_INFO("usage: evilpoison [-display display] [-fn fontname]");
+			LOG_INFO(" [-fg foreground] [-bg background] [-bw borderwidth]");
+
 #ifdef VWM
 			LOG_INFO(" [-fc fixed]");
 #endif
-			LOG_INFO(" [-bg background] [-bw borderwidth]\n");
-			LOG_INFO("              [-mask1 modifiers] [-mask2 modifiers] [-altmask modifiers]\n");
-			LOG_INFO("              [-snap num]");
-			LOG_INFO("              [-mousewarp 0/1]");
-			LOG_INFO("              [-prefix mod-key]");
+			LOG_INFO(" [-mask1 modifiers] [-mask2 modifiers] [-altmask modifiers]");
+			LOG_INFO(" [-snap num] [-mousewarp 0/1] [-prefix mod-key]");
 #ifdef VWM
 			LOG_INFO(" [-app name/class] [-g geometry] [-v vdesk] [-s]");
 #endif
 #ifdef SOLIDDRAG
-			LOG_INFO("\n              [-nosoliddrag]");
+			LOG_INFO(" [-nosoliddrag]");
 #endif
 			LOG_INFO(" [-V]\n");
 			exit((!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))?0:1);
