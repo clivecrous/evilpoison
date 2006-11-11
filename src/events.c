@@ -51,8 +51,7 @@ const char *command_names[NUM_COMMANDS] = {
     "desk7",
     "desk8",
 #endif
-    "kill",
-    "bind"
+    "kill"
 };
 
 struct _ksconv {
@@ -63,26 +62,6 @@ struct _ksconv {
 
 static int num_keyconvs = 0;
 static struct _ksconv *key_conversions = NULL;
-
-static void add_binding(char *binding)
-{
-  BindKeySymMask *bound;
-
-  char *key_combination = binding;
-  while (*key_combination && *key_combination==' ')
-    key_combination++;
-
-  char *command = key_combination;
-  while (*command && *command!=' ') command++;
-  while (*command && *command==' ') { *command='\0'; command++; }
-
-  bound = keycode_convert( key_combination );
-  if ( bound )
-  {
-    add_key_binding( bound->symbol , bound->mask, command );
-    free( bound );
-  }
-}
 
 void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
     int i;
@@ -278,10 +257,6 @@ static void handle_key_event(XKeyEvent *e) {
               c->height += window_resize_velocity;
               move_client(c);
             }
-            break;
-
-          case KEY_BIND:
-            add_binding((char *)(((int)key_conversions[key_enum].command)+5));
             break;
 
           case KEY_EXEC:
