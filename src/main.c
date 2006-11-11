@@ -71,24 +71,21 @@ char *xstrcpy(const char *str)
 
 void parse_rcfile(FILE *fp) {
 #define RC_LINE_LEN 256
-    char *line = malloc(RC_LINE_LEN);
-    int len;
+  char *line = malloc(RC_LINE_LEN);
+  int len;
 
-    if (!line) return;
+  if (!line) return;
 
-    while (!feof(fp)) {
-	(void) fgets(line, RC_LINE_LEN, fp);
-	len = strlen(line);
-	if (len > 0) {
-	    char *cmd;
-
-	    if (line[len-1] == '\n')
-		line[len-1] = '\0';
-
+  while (!feof(fp))
+  {
+    (void) fgets(line, RC_LINE_LEN, fp);
+    len = strlen(line);
+    if (len > 0) {
+      if (line[len-1] == '\n') line[len-1] = '\0';
       command_execute( line );
-	}
     }
-    free(line);
+  }
+  free(line);
 #undef RC_LINE_LEN
 }
 
