@@ -42,6 +42,8 @@ START_TEST (test_dictionary_set_multipleNewValues)
   dictionary_set( dictionary, "foo", create_value("FOO") );
   dictionary_set( dictionary, "bar", create_value("BAR") );
   dictionary_set( dictionary, "baz", create_value("BAZ") );
+  dictionary_set( dictionary, "foo.bar", create_value("FOO.BAR") );
+  dictionary_set( dictionary, "foo.baz", create_value("FOO.BAZ") );
 
   fail_unless( dictionary_haskey( dictionary, "foo" ),
       "Dictionary should have key" );
@@ -62,6 +64,20 @@ START_TEST (test_dictionary_set_multipleNewValues)
   fail_unless( dictionary_get( dictionary, "baz" ) != NULL,
       "Value should not be NULL" );
   fail_if( strcmp( dictionary_get( dictionary, "baz" ), "BAZ" ),
+      "Value stored and value returned should be the same" );
+
+  fail_unless( dictionary_haskey( dictionary, "foo.bar" ),
+      "Dictionary should have key" );
+  fail_unless( dictionary_get( dictionary, "foo.bar" ) != NULL,
+      "Value should not be NULL" );
+  fail_if( strcmp( dictionary_get( dictionary, "foo.bar" ), "FOO.BAR" ),
+      "Value stored and value returned should be the same" );
+
+  fail_unless( dictionary_haskey( dictionary, "foo.baz" ),
+      "Dictionary should have key" );
+  fail_unless( dictionary_get( dictionary, "foo.baz" ) != NULL,
+      "Value should not be NULL" );
+  fail_if( strcmp( dictionary_get( dictionary, "foo.baz" ), "FOO.BAZ" ),
       "Value stored and value returned should be the same" );
 
   dictionary_destroy( dictionary );
