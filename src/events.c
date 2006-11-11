@@ -14,7 +14,6 @@
 
 const char *command_names[NUM_COMMANDS] = {
     "none",
-    "prefix",
     "cmdmode",
     "nextwin",
     "exec",
