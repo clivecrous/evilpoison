@@ -277,7 +277,7 @@ static void handle_key_event(XKeyEvent *e) {
             current_screen = find_current_screen();
 #endif
           case KEY_INFO:
-            if (c) show_info(c);
+            command_execute( key_conversions[key_enum].command );
             break;
           case KEY_MAX:
             if (c) maximise_client(c, MAXIMISE_HORZ|MAXIMISE_VERT);
