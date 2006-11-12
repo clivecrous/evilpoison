@@ -74,6 +74,12 @@ char *evilpoison_command_info(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_nextwin(char *commandline)
+{
+  next();
+  return 0;
+}
+
 void evilpoison_commands_init( void )
 {
   command_assign( "set",    evilpoison_command_set );
@@ -83,4 +89,6 @@ void evilpoison_commands_init( void )
   command_assign( "cmdmode",   evilpoison_command_cmdmode );
   command_assign( "exec",   evilpoison_command_exec );
   command_assign( "info",   evilpoison_command_info );
+
+  command_assign( "nextwin",   evilpoison_command_nextwin );
 }

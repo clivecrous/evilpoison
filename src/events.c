@@ -271,11 +271,9 @@ static void handle_key_event(XKeyEvent *e) {
             if (c) XLowerWindow(dpy, c->parent);
             break;
           case KEY_NEXT:
-            next();
-            c = current;
-#ifdef VWM
-            current_screen = find_current_screen();
-#endif
+            command_execute( key_conversions[key_enum].command );
+            command_execute( "info" );
+            break;
           case KEY_INFO:
             command_execute( key_conversions[key_enum].command );
             break;
