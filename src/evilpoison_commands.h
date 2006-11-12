@@ -8,3 +8,5 @@ char *evilpoison_command_unset(char *commandline);
 
 char *evilpoison_command_bind(char *commandline);
 
+char *evilpoison_command_exec(char *commandline);
+

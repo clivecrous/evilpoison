@@ -9,6 +9,7 @@
 #include "evilpoison.h"
 #include "log.h"
 #include "settings.h"
+#include "command.h"
 
 #include <X11/cursorfont.h>
 
@@ -260,8 +261,7 @@ static void handle_key_event(XKeyEvent *e) {
             break;
 
           case KEY_EXEC:
-            if (strlen(key_conversions[key_enum].command) > 5)
-              spawn((char *)(((int)key_conversions[key_enum].command)+5));
+            command_execute( key_conversions[key_enum].command );
             break;
           case KEY_KILL:
             if (c) send_wm_delete(c, e->state & altmask);
