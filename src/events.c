@@ -127,6 +127,7 @@ static void move_client(Client *c) {
     discard_enter_events();
 }
 
+int global_cmdmode = 0;
 static void handle_key_event(XKeyEvent *e) {
   KeySym realkey = XKeycodeToKeysym(dpy,e->keycode,0);
   BindKeySymMask *prefix = keycode_convert( settings_get( "prefix" ) );
@@ -144,7 +145,7 @@ static void handle_key_event(XKeyEvent *e) {
   int key_enum;
   XEvent ev;
 
-  int cmdmode = 0;
+  global_cmdmode = 0;
 	Client *c;
 
   int window_move_velocity = atoi( settings_get( "window.move.velocity" ) );
@@ -321,7 +322,7 @@ static void handle_key_event(XKeyEvent *e) {
             break;
 #endif
           case KEY_CMDMODE:
-            cmdmode = !cmdmode;
+            command_execute( key_conversions[key_enum].command );
             break;
         }
       } else {
@@ -345,12 +346,12 @@ static void handle_key_event(XKeyEvent *e) {
             modifier = 1;
             break;
           default:
-            cmdmode = 0;
+            global_cmdmode = 0;
             break;
         }
       }
 
-    } while ( cmdmode || modifier );
+    } while ( global_cmdmode || modifier );
 
 		XUngrabKeyboard(dpy, CurrentTime);
 		XUngrabPointer(dpy, CurrentTime);

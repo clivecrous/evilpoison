@@ -56,6 +56,12 @@ char *evilpoison_command_bind(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_cmdmode(char *commandline)
+{
+  global_cmdmode = !global_cmdmode;
+  return 0;
+}
+
 char *evilpoison_command_exec(char *commandline)
 {
   spawn( commandline );
@@ -68,6 +74,6 @@ void evilpoison_commands_init( void )
   command_assign( "unset",  evilpoison_command_unset );
 
   command_assign( "bind",   evilpoison_command_bind );
-
+  command_assign( "cmdmode",   evilpoison_command_cmdmode );
   command_assign( "exec",   evilpoison_command_exec );
 }
