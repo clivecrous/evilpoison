@@ -18,7 +18,6 @@ int ignore_xerror = 0;
 
 /* Now do this by fork()ing twice so we don't have to worry about SIGCHLDs */
 void spawn(const char * command) {
-  printf("* Executing: \"%s\"\n",command);
 	ScreenInfo *current_screen = find_current_screen();
 	pid_t pid;
 
