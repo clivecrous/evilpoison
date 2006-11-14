@@ -76,9 +76,10 @@ void parse_rcfile(FILE *fp) {
 
   if (!line) return;
 
-  while (!feof(fp))
+  while (1)
   {
     (void) fgets(line, RC_LINE_LEN, fp);
+    if (feof(fp)) break;
     len = strlen(line);
     if (len > 0) {
       if (line[len-1] == '\n') line[len-1] = '\0';
