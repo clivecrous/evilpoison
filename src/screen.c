@@ -524,6 +524,8 @@ ScreenInfo *find_current_screen(void) {
 	int di;
 	unsigned int dui;
 
+  if (!screens) return 0;
+
 	/* XQueryPointer is useful for getting the current pointer root */
 	XQueryPointer(dpy, screens[0].root, &cur_root, &dw, &di, &di, &di, &di, &dui);
 	return find_screen(cur_root);
