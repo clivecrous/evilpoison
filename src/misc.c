@@ -18,23 +18,19 @@ int ignore_xerror = 0;
 
 /* Now do this by fork()ing twice so we don't have to worry about SIGCHLDs */
 void spawn(const char * command) {
+  printf("* Executing: \"%s\"\n",command);
 	ScreenInfo *current_screen = find_current_screen();
 	pid_t pid;
 
 	if (current_screen && current_screen->display)
 		putenv(current_screen->display);
+
 	if (!(pid = fork())) {
 		setsid();
-		switch (fork()) {
-			/* Expect compiler warnings because of half-broken SUS
-			 * execvp prototype:  "char *const argv[]" should have
-			 * been "const char *const argv[]", but the committee
-			 * favored legacy code over modern code, and modern
-			 * compilers bark at our extra const. (LD) */
-			case 0: execlp( "sh", "sh", "-c", command, NULL );
-			default: _exit(0);
-		}
+    if (!fork()) execlp( "sh", "sh", "-c", command, NULL );
+    else _exit(0);
 	}
+
 	if (pid > 0)
 		wait(NULL);
 }
