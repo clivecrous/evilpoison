@@ -2,6 +2,34 @@
 # Copy this file to ~/.evilpoisonrc and edit it.
 #
 # All lines beginning with '#' are comments and are ignored.
+# 
+# Every line begins with a command and is optionally followed by that command's
+# parameters. For a full listing of the available internal commands see the
+# wiki page at:
+# http://www.darkarts.co.za/projects/evilpoison/wiki/InternalCommands
+#
+# Most of the commands within this file will be setting internal variables or
+# binding keys. For a full list of the available internal variables see the
+# wiki page at:
+# http://www.darkarts.co.za/projects/evilpoison/wiki/InternalVariables
+#
+#------------------------------------------------------------------------------
+# Because most of the commands run within this file will be either 'set' or
+# 'bind', here is a brief description of their use:
+#
+#  set <variable name> <value>
+#
+#    Where "variable name" is a variable just like the listing of
+#    InternalVariables on the wiki page, and "value" is the value you wish to
+#    set it to.
+#
+#  bind <key combination> <command>
+#
+#    Where "key combination" is the keyboard combination to bind the given
+#    command to and "command" is a command just like the listing of
+#    InternalCommands on the wiki page.
+#
+#==============================================================================
 
 # Set window border width to 1 pixel wide
 set border.width 1
@@ -10,7 +38,7 @@ set border.width 1
 set mouse.warp 1
 
 # will dragging windows be solid, or just outline?  0 or 1
-solid_drag	1
+set window.move.display 1
 
 # will windows snap to screen borders?  0 disables, any positive integer
 # defines the distance from which it snaps.
@@ -103,3 +131,6 @@ bind	8	desk8
 
 # kill window
 bind	Escape	kill
+
+# Startup an xterm terminal for convenience.
+exec xterm -rv
