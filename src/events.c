@@ -547,11 +547,16 @@ void event_main_loop(void) {
 		}
 		if (need_client_tidy) {
 			Client *c, *nc;
+			int donext = 0;
 			for (c = head_client; c; c = nc) {
 				nc = c->next;
-				if (c->remove)
+				if (c->remove) {
+				    if (c == current) donext = 1;
 					remove_client(c);
+				}
 			}
+			if (donext)
+			    next();
 		}
 	}
 }
