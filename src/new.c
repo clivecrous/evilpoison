@@ -29,6 +29,7 @@ void make_new_client(Window w, ScreenInfo *s) {
 	Client *c;
 	char *name;
 	XClassHint *class;
+	long eventmask;
 
 	XGrabServer(dpy);
 
@@ -88,11 +89,14 @@ void make_new_client(Window w, ScreenInfo *s) {
 	}
 #endif
 
+	eventmask = PropertyChangeMask;
 #ifdef COLOURMAP
-	XSelectInput(dpy, c->window, ColormapChangeMask | EnterWindowMask | PropertyChangeMask);
-#else
-	XSelectInput(dpy, c->window, EnterWindowMask | PropertyChangeMask);
+	eventmask |= ColormapChangeMask;
 #endif
+	if (atoi(settings_get("mouse.focus")))
+	    eventmask |= EnterWindowMask;
+
+	XSelectInput(dpy, c->window,  eventmask);
 
 	reparent(c);
 
@@ -148,8 +152,9 @@ void make_new_client(Window w, ScreenInfo *s) {
 #endif
 	{
 		unhide(c, RAISE);
+		if (!atoi(settings_get("mouse.focus")))
+		    select_client(c);
 #ifndef MOUSE
-		select_client(c);
 		setmouse(c->window, c->width + c->border - 1,
 				c->height + c->border - 1);
 		discard_enter_events();
@@ -262,7 +267,11 @@ static void reparent(Client *c) {
 
 	p_attr.border_pixel = border_colour_inactive.pixel;
 	p_attr.override_redirect = True;
-	p_attr.event_mask = ChildMask | ButtonPressMask | EnterWindowMask;
+	p_attr.event_mask = ChildMask | ButtonPressMask;
+
+	if (atoi(settings_get("mouse.focus")))
+	    p_attr.event_mask |= EnterWindowMask;
+
 	c->parent = XCreateWindow(dpy, c->screen->root, c->x-c->border, c->y-c->border,
 		c->width, c->height, c->border,
 		DefaultDepth(dpy, c->screen->screen), CopyFromParent,

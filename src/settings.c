@@ -31,6 +31,8 @@ void settings_init( void )
 
   settings_set( "mouse.warp", "0" );
 
+  settings_set( "mouse.focus", "1" );
+
   settings_set( "prefix", "c-t" );
 
   settings_set( "text.delay", "1000" );

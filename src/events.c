@@ -481,6 +481,8 @@ static void handle_property_change(XPropertyEvent *e) {
 static void handle_enter_event(XCrossingEvent *e) {
 	Client *c;
 
+	if (!atoi(settings_get("mouse.focus"))) return;
+
 	if ((c = find_client(e->window))) {
 #ifdef VWM
 		if (c->vdesk != c->screen->vdesk)

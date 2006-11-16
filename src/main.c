@@ -304,10 +304,12 @@ static void setup_display(void) {
 
 	/* set up root window attributes - same for each screen */
 #ifdef COLOURMAP
-	attr.event_mask = ChildMask | EnterWindowMask | ColormapChangeMask;
+	attr.event_mask = ChildMask | ColormapChangeMask;
 #else
-	attr.event_mask = ChildMask | EnterWindowMask;
+	attr.event_mask = ChildMask;
 #endif
+	if (atoi(settings_get("mouse.focus")))
+	    attr.event_mask |= EnterWindowMask;
 
 	/* SHAPE extension? */
 #ifdef SHAPE

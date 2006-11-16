@@ -37,6 +37,9 @@ set border.width 1
 # will mouse warp to the windows?  0 or 1
 set mouse.warp 1
 
+# will window focus follow mouse? 0 or 1
+set mouse.focus 1
+
 # will dragging windows be solid, or just outline?  0 or 1
 set window.move.display 1
 
