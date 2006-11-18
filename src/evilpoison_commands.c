@@ -86,6 +86,18 @@ char *evilpoison_command_max(char *commandline)
     return 0;
 }
 
+char *evilpoison_command_maxvert(char *commandline)
+{
+    if (current) maximise_client(current, MAXIMISE_VERT);
+    return 0;
+}
+
+char *evilpoison_command_maxhoriz(char *commandline)
+{
+    if (current) maximise_client(current, MAXIMISE_HORZ);
+    return 0;
+}
+
 void evilpoison_commands_init( void )
 {
   command_assign( "set",    evilpoison_command_set );
@@ -99,4 +111,6 @@ void evilpoison_commands_init( void )
   command_assign( "nextwin",   evilpoison_command_nextwin );
 
   command_assign( "max",    evilpoison_command_max );
+  command_assign( "maxvert",    evilpoison_command_maxvert );
+  command_assign( "maxhoriz",    evilpoison_command_maxhoriz );
 }
