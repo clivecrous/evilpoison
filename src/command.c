@@ -64,3 +64,38 @@ char *command_execute(const char *commandline)
 
   return return_value;
 }
+
+char *command_parameter_copy(
+    const char *parameters, const unsigned int which_parameter)
+{
+  const char *parameter_start_position;
+  const char *parameter_end_position;
+  unsigned int parameter_enum;
+  char *copyof_parameter;
+
+  if (!parameters) return 0;
+
+  for ( parameter_start_position=parameters;
+      *parameter_start_position && isblank(*parameter_start_position); parameter_start_position++);
+  if (!*parameter_start_position) return 0;
+
+  for ( parameter_enum=0; parameter_enum < which_parameter; parameter_enum++)
+  {
+    for (; *parameter_start_position && !isblank(*parameter_start_position); parameter_start_position++);
+    for (; *parameter_start_position && isblank(*parameter_start_position); parameter_start_position++);
+  }
+  if (!*parameter_start_position) return 0;
+
+  for (parameter_end_position=parameter_start_position;
+      *parameter_end_position && !isblank(*parameter_end_position);
+      parameter_end_position++);
+
+  if (parameter_end_position-parameter_start_position == 0) return 0;
+
+  copyof_parameter = malloc(parameter_end_position-parameter_start_position+1);
+  strncpy( copyof_parameter, parameter_start_position,
+      parameter_end_position-parameter_start_position );
+  copyof_parameter[parameter_end_position-parameter_start_position] = '\0';
+
+  return copyof_parameter;
+}

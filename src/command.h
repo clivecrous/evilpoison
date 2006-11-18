@@ -28,3 +28,14 @@ void command_unassign(const char *command);
  * \return A string result as returned by the command itself, or NULL.
  */
 char *command_execute(const char *commandline);
+
+/** Create a copy of a parameter.
+ * The caller is resposible for freeing the memory for the string returned by
+ * this function.
+ * Parameter enumeration begins at zero (0).
+ * \param parameters This is a whitespace seperated list of parameters.
+ * \param which_parameter The parameter enumeration to create a copy of.
+ * \return A copy of the parameter or NULL on failure.
+ */
+char *command_parameter_copy(
+    const char *parameters, const unsigned int which_parameter);
