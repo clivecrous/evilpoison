@@ -98,6 +98,14 @@ char *evilpoison_command_maxhoriz(char *commandline)
     return 0;
 }
 
+#ifdef VWM
+char *evilpoison_command_fix(char *commandline)
+{
+    if (current) fix_client(current);
+    return 0;
+}
+#endif
+
 void evilpoison_commands_init( void )
 {
   command_assign( "set",    evilpoison_command_set );
@@ -113,4 +121,8 @@ void evilpoison_commands_init( void )
   command_assign( "max",    evilpoison_command_max );
   command_assign( "maxvert",    evilpoison_command_maxvert );
   command_assign( "maxhoriz",    evilpoison_command_maxhoriz );
+
+#ifdef VWM
+  command_assign( "fix",    evilpoison_command_fix );
+#endif
 }

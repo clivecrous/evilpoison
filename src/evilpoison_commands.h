@@ -16,3 +16,7 @@ char *evilpoison_command_nextwin(char *commandline);
 char *evilpoison_command_max(char *commandline);
 char *evilpoison_command_maxhoriz(char *commandline);
 char *evilpoison_command_maxvert(char *commandline);
+
+#ifdef VWM
+char *evilpoison_command_fix(char *commandline);
+#endif

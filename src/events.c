@@ -300,7 +300,7 @@ static void handle_key_event(XKeyEvent *e) {
             break;
 #ifdef VWM
           case KEY_FIX:
-            if (c) fix_client(c);
+	      command_execute( key_conversions[key_enum].command );
             break;
           case KEY_DESK1: switch_vdesk(current_screen, 0); break;
           case KEY_DESK2: switch_vdesk(current_screen, 1); break;
