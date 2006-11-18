@@ -104,6 +104,22 @@ char *evilpoison_command_fix(char *commandline)
     if (current) fix_client(current);
     return 0;
 }
+
+char *evilpoison_command_prevdesk(char *commandline)
+{
+    ScreenInfo *current_screen = find_current_screen();
+    if (current_screen->vdesk > 0 )
+	switch_vdesk(current_screen, current_screen->vdesk - 1);
+    return 0;
+}
+
+char *evilpoison_command_nextdesk(char *commandline)
+{
+    ScreenInfo *current_screen = find_current_screen();
+    if (current_screen->vdesk < 7 )
+	switch_vdesk(current_screen, current_screen->vdesk + 1);
+    return 0;
+}
 #endif
 
 void evilpoison_commands_init( void )
@@ -124,5 +140,7 @@ void evilpoison_commands_init( void )
 
 #ifdef VWM
   command_assign( "fix",    evilpoison_command_fix );
+  command_assign( "nextdesk",    evilpoison_command_nextdesk );
+  command_assign( "prevdesk",    evilpoison_command_prevdesk );
 #endif
 }

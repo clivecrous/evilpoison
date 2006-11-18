@@ -19,4 +19,6 @@ char *evilpoison_command_maxvert(char *commandline);
 
 #ifdef VWM
 char *evilpoison_command_fix(char *commandline);
+char *evilpoison_command_prevdesk(char *commandline);
+char *evilpoison_command_nextdesk(char *commandline);
 #endif

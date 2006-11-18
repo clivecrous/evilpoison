@@ -311,12 +311,10 @@ static void handle_key_event(XKeyEvent *e) {
           case KEY_DESK7: switch_vdesk(current_screen, 6); break;
           case KEY_DESK8: switch_vdesk(current_screen, 7); break;
           case KEY_PREVDESK:
-            if (current_screen->vdesk > 0 )
-              switch_vdesk(current_screen, current_screen->vdesk - 1);
+	      command_execute( key_conversions[key_enum].command );
             break;
           case KEY_NEXTDESK:
-            if (current_screen->vdesk < 7 )
-              switch_vdesk(current_screen, current_screen->vdesk + 1);
+	      command_execute( key_conversions[key_enum].command );
             break;
 #endif
           case KEY_CMDMODE:
