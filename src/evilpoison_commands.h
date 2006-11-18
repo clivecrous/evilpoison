@@ -12,3 +12,5 @@ char *evilpoison_command_exec(char *commandline);
 char *evilpoison_command_info(char *commandline);
 
 char *evilpoison_command_nextwin(char *commandline);
+
+char *evilpoison_command_max(char *commandline);

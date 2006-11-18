@@ -278,7 +278,7 @@ static void handle_key_event(XKeyEvent *e) {
             command_execute( key_conversions[key_enum].command );
             break;
           case KEY_MAX:
-            if (c) maximise_client(c, MAXIMISE_HORZ|MAXIMISE_VERT);
+	      command_execute( key_conversions[key_enum].command );
             break;
           case KEY_MAXVERT:
             if (c) maximise_client(c, MAXIMISE_VERT);

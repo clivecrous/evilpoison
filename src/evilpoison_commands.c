@@ -80,6 +80,12 @@ char *evilpoison_command_nextwin(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_max(char *commandline)
+{
+    if (current) maximise_client(current, MAXIMISE_HORZ|MAXIMISE_VERT);
+    return 0;
+}
+
 void evilpoison_commands_init( void )
 {
   command_assign( "set",    evilpoison_command_set );
@@ -91,4 +97,6 @@ void evilpoison_commands_init( void )
   command_assign( "info",   evilpoison_command_info );
 
   command_assign( "nextwin",   evilpoison_command_nextwin );
+
+  command_assign( "max",    evilpoison_command_max );
 }
