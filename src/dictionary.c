@@ -1,3 +1,7 @@
+/** Dictionary implementation.
+ * \file dictionary.c
+ */
+
 #include <stdlib.h>
 #include <string.h>
 

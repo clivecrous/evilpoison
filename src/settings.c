@@ -1,3 +1,7 @@
+/** Settings implementation.
+ * \file settings.c
+ */
+
 #include <stdlib.h>
 #include <string.h>
 

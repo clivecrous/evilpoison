@@ -1,3 +1,7 @@
+/** EvilPoison Commands header.
+ * \file evilpoison_commands.h
+ */
+
 /** Initialize evilpoison commands.
  * This function sets up all default internal commands.
  */

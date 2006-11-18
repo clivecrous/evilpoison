@@ -1,3 +1,7 @@
+/** Command header.
+ * \file command.h
+ */
+
 typedef char *(* CommandFunction)(char *);
 
 /** Command initializer.

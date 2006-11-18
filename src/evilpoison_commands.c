@@ -1,3 +1,7 @@
+/** EvilPoison Commands implementation.
+ * \file evilpoison_commands.c
+ */
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>

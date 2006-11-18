@@ -1,3 +1,7 @@
+/** Dictionary header.
+ * \file dictionary.h
+ */
+
 typedef struct {
   char *key;
   void *value;

@@ -1,8 +1,8 @@
-.PHONY: default src tests clean all
+.PHONY: default doc src tests clean all
 
 default: src
 
-all: src tests
+all: src doc tests
 
 src:
 	$(MAKE) -C src
@@ -10,6 +10,10 @@ src:
 tests: src
 	$(MAKE) -C tests
 
+doc:
+	doxygen doxygen.config
+
 clean:
 	$(MAKE) -C src clean
 	$(MAKE) -C tests clean
+	rm -rf doc/html doc/latex

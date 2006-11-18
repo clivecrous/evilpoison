@@ -1,3 +1,7 @@
+/** Command implementation.
+ * \file command.c
+ */
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>

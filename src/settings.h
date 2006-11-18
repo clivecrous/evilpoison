@@ -1,3 +1,7 @@
+/** Settings header.
+ * \file settings.h
+ */
+
 /** Initialize settings.
  * This function should be called once only at or near the beginning of the
  * application's startup. It will initialize all internal storage and prepare
