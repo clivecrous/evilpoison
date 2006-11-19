@@ -8,6 +8,7 @@
 
 #include "dictionary.h"
 #include "command.h"
+#include "settings.h"
 
 Dictionary *_commands = 0;
 
@@ -49,8 +50,8 @@ void command_unassign(const char *command)
  */
 static char *command_parse_commandline( const char *commandline )
 {
-  char *seek_start;
-  char *seek_end;
+  const char *seek_start;
+  const char *seek_end;
 
   char *result;
   char *result_position;
