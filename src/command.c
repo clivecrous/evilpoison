@@ -4,6 +4,7 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "dictionary.h"
@@ -146,7 +147,10 @@ char *command_execute(const char *commandline)
   {
     char *aliased_commandline =
       malloc( strlen( alias ) + 1 + strlen( parameters ) + 1 );
-    sprintf( aliased_commandline, "%s%s", alias, parameters );
+    if (strlen(parameters))
+      sprintf( aliased_commandline, "%s %s", alias, parameters );
+    else
+      strcpy( aliased_commandline, alias );
     return_value = command_execute( aliased_commandline );
     free( aliased_commandline );
   }
