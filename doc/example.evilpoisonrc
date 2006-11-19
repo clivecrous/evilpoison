@@ -86,14 +86,14 @@ bind	y	window.moveto 0 0
 bind	u	window.moveto -0 0
 bind	b	window.moveto 0 -0
 bind	n	window.moveto -0 -0
-bind	h	window.move -$window.move.velocity$ 0
-bind	l	window.move $window.move.velocity$ 0
-bind	k	window.move 0 -$window.move.velocity$
-bind	j	window.move 0 $window.move.velocity$
-bind	Left	window.move -$window.move.velocity$ 0
-bind	Right	window.move $window.move.velocity$ 0
-bind	Up	window.move 0 -$window.move.velocity$
-bind	Down	window.move 0 $window.move.velocity$
+bind	h	window.move.left
+bind	l	window.move.right
+bind	k	window.move.up
+bind	j	window.move.down
+bind	Left	window.move.left
+bind	Right	window.move.right
+bind	Up	window.move.up
+bind	Down	window.move.down
 
 # changing window size
 bind	a	window.resize 0 0 -$window.resize.velocity$ 0
@@ -131,6 +131,13 @@ bind	8	desk.switch 8
 
 # kill window
 bind	Escape	window.close
+
+# Make an alias for displaying the version number whenever I like
+alias show_version echo EvilPoison $version$
+# Show the version now
+show_version
+# bind version showing to the 'v' key
+bind v show_version
 
 # Startup an xterm terminal for convenience.
 exec xterm -rv
