@@ -209,32 +209,16 @@ static void handle_key_event(XKeyEvent *e) {
             }
             break;
           case KEY_TOPLEFT:
-            if (c) {
-              c->x = c->border;
-              c->y = c->border;
-              move_client(c);
-            }
+            command_execute( "window.moveto 0 0" );
             break;
           case KEY_TOPRIGHT:
-            if (c) {
-              c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
-              c->y = c->border;
-              move_client(c);
-            }
+            command_execute( "window.moveto -0 0" );
             break;
           case KEY_BOTTOMLEFT:
-            if (c) {
-              c->x = c->border;
-              c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
-              move_client(c);
-            }
+            command_execute( "window.moveto 0 -0" );
             break;
           case KEY_BOTTOMRIGHT:
-            if (c) {
-              c->x = DisplayWidth(dpy, c->screen->screen) - c->width-c->border;
-              c->y = DisplayHeight(dpy, c->screen->screen) - c->height-c->border;
-              move_client(c);
-            }
+            command_execute( "window.moveto -0 -0" );
             break;
           case KEY_RESIZELEFT:
             if (c) {
