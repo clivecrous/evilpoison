@@ -37,14 +37,79 @@ void command_unassign(const char *command)
   dictionary_unset( _commands, command );
 }
 
+/** Parse commandline for variables.
+ * If a variable named 'foo' exists with the value of "bar" then the following
+ * commandline, as given to this parser:
+ *    hello $foo$ world
+ * will result in the following:
+ *    hello bar world
+ * a double $$ will result in a single $   
+ * \param commandline Any normal commandline.
+ * \return A commandline with variable values injected.
+ */
+static char *command_parse_commandline( const char *commandline )
+{
+  char *seek_start;
+  char *seek_end;
+
+  char *result;
+  char *result_position;
+  unsigned int result_size;
+
+  if (!commandline) return 0;
+
+  result = result_position = malloc( strlen( commandline) + 1 );
+  result_size = strlen( commandline );
+
+  for (seek_start = commandline;*seek_start;seek_start++)
+  {
+    if (*seek_start=='$')
+    {
+      for (seek_end=seek_start+1; *seek_end && *seek_end!='$'; seek_end++);
+      if (*seek_end)
+      {
+        if (seek_end-seek_start < 2 )
+          *result_position++='$';
+        else
+        {
+          char *variable_name = malloc( (seek_end-seek_start)-1 );
+          strncpy( variable_name, seek_start+1, (seek_end-seek_start)-1 );
+          variable_name[(seek_end-seek_start)-1]='\0';
+
+          char *variable_data = settings_get( variable_name );
+          if ( strlen( variable_name )+2 != strlen( variable_data ) )
+          {
+            unsigned int offset = result_position - result;
+            result=realloc( result,
+                result_size -
+                ( strlen( variable_name ) + 2 ) + strlen( variable_data ) );
+            result_size += strlen( variable_data) -
+              (strlen( variable_name ) + 2);
+          }
+
+          strcpy( result_position, variable_data );
+          result_position += strlen( variable_data );
+        }
+        seek_start+=seek_end-seek_start;
+      }
+      else
+      {
+        /* Miss-matched '$' assume it's a single and just send the rest out */
+      }
+    }
+    else *result_position++ = *seek_start;
+    *result_position='\0';
+  }
+  return result;
+}
+
 char *command_execute(const char *commandline)
 {
   char *return_value;
   CommandFunction *function;
   if (!commandline || !strlen(commandline)) return 0;
 
-  char *newcommandline = malloc( strlen( commandline ) + 1 );
-  strcpy( newcommandline, commandline );
+  char *newcommandline = command_parse_commandline( commandline );
 
   char *command = newcommandline;
   while (*command && isblank(*command)) command++;

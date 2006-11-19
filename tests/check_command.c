@@ -5,6 +5,7 @@
 
 #include "check_command.h"
 #include "command.h"
+#include "settings.h"
 
 char *greet(char *whom);
 char *greet(char *whom)
@@ -44,6 +45,28 @@ START_TEST ( test_command_execute_helloWorld )
       !strcmp( command_execute( "greet World" ), "Hello World!" ),
       "Greeting return value is not correct." );
   command_unassign( "greet" );
+}
+END_TEST
+
+START_TEST ( test_command_execute_doubleDollar )
+{
+  command_assign( "greet", greet );
+  fail_unless(
+      !strcmp( command_execute( "greet $$" ), "Hello $!" ),
+      "Greeting return value is not correct." );
+  command_unassign( "greet" );
+}
+END_TEST
+
+START_TEST ( test_command_execute_dollarFooDollar )
+{
+  settings_set( "foo", "bar" );
+  command_assign( "greet", greet );
+  fail_unless(
+      !strcmp( command_execute( "greet $foo$" ), "Hello bar!" ),
+      "Greeting return value is not correct." );
+  command_unassign( "greet" );
+  settings_unset( "foo" );
 }
 END_TEST
 
@@ -136,6 +159,8 @@ command_suite( void )
 
     tcase_add_test( tc_assign, test_command_execute_null );
     tcase_add_test( tc_assign, test_command_execute_helloWorld );
+    tcase_add_test( tc_assign, test_command_execute_doubleDollar );
+    tcase_add_test( tc_assign, test_command_execute_dollarFooDollar );
 
     tcase_add_test( tc_command_parameter,
         test_command_parameter_copy_whichOneOfOne );
