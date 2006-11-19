@@ -83,9 +83,9 @@ char *evilpoison_command_window_moveto(char *commandline);
  *      window.resize 0 0 10 0
  *    Resize the window left border 5 pixels to the left:
  *      window.resize -5 0 0 0
- * \param commandline consists of an X and Y delta co-ordinate by which the
+ * \param commandline consists of a Top,Left,Right and Bottom delta by which the
+ *    window's size will be adjusted.
  *    window's location is to be adjusted.
  * \return This should always return NULL.
  */
 char *evilpoison_command_window_resize(char *commandline);
-
