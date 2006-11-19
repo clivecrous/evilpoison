@@ -216,6 +216,19 @@ char *evilpoison_command_window_moveto(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_window_move_mouse(char *commandline)
+{
+  if ( current ) drag( current );
+  return 0;
+}
+
+char *evilpoison_command_window_resize_mouse(char *commandline)
+{
+  if ( current ) sweep( current );
+  return 0;
+}
+
+
 void evilpoison_commands_init( void )
 {
   command_assign( "set",    evilpoison_command_set );
@@ -240,5 +253,9 @@ void evilpoison_commands_init( void )
 
   command_assign( "window.move", evilpoison_command_window_move );
   command_assign( "window.moveto", evilpoison_command_window_moveto );
+
+  command_assign( "window.move.mouse",evilpoison_command_window_move_mouse );
+  command_assign( "window.resize.mouse",
+      evilpoison_command_window_resize_mouse );
 }
 

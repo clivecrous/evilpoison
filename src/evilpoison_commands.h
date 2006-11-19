@@ -21,6 +21,24 @@ char *evilpoison_command_max(char *commandline);
 char *evilpoison_command_maxhoriz(char *commandline);
 char *evilpoison_command_maxvert(char *commandline);
 
+/** window.move.mouse : Move a window with the mouse.
+ * \note This command will eventually be deprecated in favour of
+ *    window.move.mouse.start and window.move.mouse.stop once bindings allow for
+ *    binding to mouse events.
+ * \param commandline currently unused.
+ * \return This should always return NULL.
+ */
+char *evilpoison_command_window_move_mouse(char *commandline);
+
+/** window.resize.mouse : Move a window with the mouse.
+ * \note This command will eventually be deprecated in favour of
+ *    window.resize.mouse.start and window.resize.mouse.stop once bindings allow
+ *    for binding to mouse events.
+ * \param commandline currently unused.
+ * \return This should always return NULL.
+ */
+char *evilpoison_command_window_resize_mouse(char *commandline);
+
 #ifdef VWM
 char *evilpoison_command_fix(char *commandline);
 char *evilpoison_command_prevdesk(char *commandline);

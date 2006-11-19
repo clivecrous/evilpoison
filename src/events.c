@@ -179,10 +179,10 @@ static void handle_key_event(XKeyEvent *e) {
       {
         switch(key_conversions[key_enum].command_enum) {
           case KEY_MOUSEDRAG:
-            if (c) drag(c);
+            command_execute( "window.move.mouse" );
             break;
           case KEY_MOUSESWEEP:
-            if (c) sweep(c);
+            command_execute( "window.resize.mouse" );
             break;
           case KEY_LEFT:
             if (c) {
@@ -346,9 +346,11 @@ static void handle_button_event(XButtonEvent *e) {
 	if (c) {
 		switch (e->button) {
 			case Button1:
-				drag(c); break;
+        command_execute( "window.move.mouse" );
+        break;
 			case Button2:
-				sweep(c); break;
+        command_execute( "window.resize.mouse" );
+        break;
 			case Button3:
 				XLowerWindow(dpy, c->parent); break;
 			default: break;
