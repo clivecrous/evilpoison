@@ -221,9 +221,11 @@ static void handle_key_event(XKeyEvent *e) {
             command_execute( key_conversions[key_enum].command );
             break;
           case KEY_KILL:
+            /** \todo convert KEY_KILL */
             if (c) send_wm_delete(c, e->state & altmask);
             break;
           case KEY_LOWER:
+            /** \todo convert KEY_LOWER */
             if (c) XLowerWindow(dpy, c->parent);
             break;
           case KEY_NEXT:
@@ -234,21 +236,23 @@ static void handle_key_event(XKeyEvent *e) {
             command_execute( key_conversions[key_enum].command );
             break;
           case KEY_MAX:
-	      command_execute( key_conversions[key_enum].command );
+            command_execute( key_conversions[key_enum].command );
             break;
           case KEY_MAXVERT:
-	      command_execute( key_conversions[key_enum].command );
+            command_execute( key_conversions[key_enum].command );
             break;
           case KEY_MAXHORIZ:
-	      command_execute( key_conversions[key_enum].command );
+            command_execute( key_conversions[key_enum].command );
             break;
           case KEY_VSPLIT:
+            /** \todo convert KEY_VSPLIT */
             if (c) {
               c->width = c->width / 2;
               move_client(c);
             }
             break;
           case KEY_HSPLIT:
+            /** \todo convert KEY_HSPLIT */
             if (c) {
               c->height = c->height / 2;
               move_client(c);
@@ -256,8 +260,9 @@ static void handle_key_event(XKeyEvent *e) {
             break;
 #ifdef VWM
           case KEY_FIX:
-	      command_execute( key_conversions[key_enum].command );
+            command_execute( key_conversions[key_enum].command );
             break;
+          /** \todo convert all DESK commands */
           case KEY_DESK1: switch_vdesk(current_screen, 0); break;
           case KEY_DESK2: switch_vdesk(current_screen, 1); break;
           case KEY_DESK3: switch_vdesk(current_screen, 2); break;
@@ -267,10 +272,10 @@ static void handle_key_event(XKeyEvent *e) {
           case KEY_DESK7: switch_vdesk(current_screen, 6); break;
           case KEY_DESK8: switch_vdesk(current_screen, 7); break;
           case KEY_PREVDESK:
-	      command_execute( key_conversions[key_enum].command );
+            command_execute( key_conversions[key_enum].command );
             break;
           case KEY_NEXTDESK:
-	      command_execute( key_conversions[key_enum].command );
+            command_execute( key_conversions[key_enum].command );
             break;
 #endif
           case KEY_CMDMODE:
