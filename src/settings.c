@@ -17,6 +17,8 @@ void settings_init( void )
   _settings = dictionary_create();
   /** \todo All default settings should be loaded here */
 
+  settings_set( "version", VERSION );
+
   settings_set( "border.width", "1" );
 
   settings_set( "border.colour.active", "goldenrod" );
