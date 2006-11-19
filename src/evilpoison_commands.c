@@ -264,6 +264,8 @@ char *evilpoison_command_window_resize(char *commandline)
   free( left_str );
   free( right_str );
   free( bottom_str );
+
+  return 0;
 }
 
 char *evilpoison_command_window_move_mouse(char *commandline)
