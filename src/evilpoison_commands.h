@@ -102,6 +102,12 @@ char *evilpoison_command_window_close(char *commandline);
  */
 char *evilpoison_command_window_kill(char *commandline);
 
+/** window.lower : Lower the window below any other open clients.
+ * \param commandline currently unused.
+ * \return This should always return NULL.
+ */
+char *evilpoison_command_window_lower(char *commandline);
+
 /** desk.switch : Change to the given desktop.
  * desk.switch <desktop number>
  * \param commandline consists of a desktop number to switch to.

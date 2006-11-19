@@ -224,8 +224,7 @@ static void handle_key_event(XKeyEvent *e) {
             command_execute( "window.close" );
             break;
           case KEY_LOWER:
-            /** \todo convert KEY_LOWER */
-            if (c) XLowerWindow(dpy, c->parent);
+            command_execute( "window.lower" );
             break;
           case KEY_NEXT:
             command_execute( key_conversions[key_enum].command );
