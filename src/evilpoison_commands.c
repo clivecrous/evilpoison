@@ -216,6 +216,56 @@ char *evilpoison_command_window_moveto(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_window_resize(char *commandline)
+{
+  if (!current) return 0;
+
+  char *top_str = command_parameter_copy( commandline, 0 );
+  if ( !top_str )
+  {
+    /** \todo Should probably display an error once echo is implemented? */
+    return 0;
+  }
+
+  char *left_str = command_parameter_copy( commandline, 1 );
+  if ( !left_str )
+  {
+    free( top_str );
+    /** \todo Should probably display an error once echo is implemented? */
+    return 0;
+  }
+
+  char *right_str = command_parameter_copy( commandline, 2 );
+  if ( !right_str )
+  {
+    free( top_str );
+    free( left_str );
+    /** \todo Should probably display an error once echo is implemented? */
+    return 0;
+  }
+  char *bottom_str = command_parameter_copy( commandline, 3 );
+  if ( !bottom_str )
+  {
+    free( top_str );
+    free( left_str );
+    free( right_str );
+    /** \todo Should probably display an error once echo is implemented? */
+    return 0;
+  }
+
+  current->y += atoi( top_str );
+  current->x += atoi( left_str );
+  current->width += atoi( right_str );
+  current->height += atoi( bottom_str );
+
+  apply_client_position( current );
+
+  free( top_str );
+  free( left_str );
+  free( right_str );
+  free( bottom_str );
+}
+
 char *evilpoison_command_window_move_mouse(char *commandline)
 {
   if ( current ) drag( current );
@@ -253,6 +303,8 @@ void evilpoison_commands_init( void )
 
   command_assign( "window.move", evilpoison_command_window_move );
   command_assign( "window.moveto", evilpoison_command_window_moveto );
+
+  command_assign( "window.resize", evilpoison_command_window_resize );
 
   command_assign( "window.move.mouse",evilpoison_command_window_move_mouse );
   command_assign( "window.resize.mouse",

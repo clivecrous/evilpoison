@@ -74,3 +74,18 @@ char *evilpoison_command_window_move(char *commandline);
  * \return This should always return NULL.
  */
 char *evilpoison_command_window_moveto(char *commandline);
+
+/** window.resize : Resize a window by the given amount.
+ * window.resize <top> <left> <right> <bottom>
+ * The commandline consists of an Top,Left,Right and Bottom co-ordinate deltas
+ * as the followng examples demonstrate.
+ *    Resize the window right hand side border 10 pixels to the right:
+ *      window.resize 0 0 10 0
+ *    Resize the window left border 5 pixels to the left:
+ *      window.resize -5 0 0 0
+ * \param commandline consists of an X and Y delta co-ordinate by which the
+ *    window's location is to be adjusted.
+ * \return This should always return NULL.
+ */
+char *evilpoison_command_window_resize(char *commandline);
+

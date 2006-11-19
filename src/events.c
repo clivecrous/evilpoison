@@ -148,8 +148,6 @@ static void handle_key_event(XKeyEvent *e) {
   global_cmdmode = 0;
 	Client *c;
 
-  int window_resize_velocity = atoi( settings_get( "window.resize.velocity" ) );
-
 #ifdef VWM
   ScreenInfo *current_screen;
 #endif
@@ -208,30 +206,17 @@ static void handle_key_event(XKeyEvent *e) {
             command_execute( "window.moveto -0 -0" );
             break;
           case KEY_RESIZELEFT:
-            if (c) {
-              c->width -= window_resize_velocity;
-              move_client(c);
-            }
+            command_execute( "window.resize 0 0 -$window.resize.velocity$ 0" );
             break;
           case KEY_RESIZERIGHT:
-            if (c) {
-              c->width += window_resize_velocity;
-              move_client(c);
-            }
+            command_execute( "window.resize 0 0 $window.resize.velocity$ 0" );
             break;
           case KEY_RESIZEUP:
-            if (c) {
-              c->height -= window_resize_velocity;
-              move_client(c);
-            }
+            command_execute( "window.resize 0 0 0 -$window.resize.velocity$" );
             break;
           case KEY_RESIZEDOWN:
-            if (c) {
-              c->height += window_resize_velocity;
-              move_client(c);
-            }
+            command_execute( "window.resize 0 0 0 $window.resize.velocity$" );
             break;
-
           case KEY_EXEC:
             command_execute( key_conversions[key_enum].command );
             break;
