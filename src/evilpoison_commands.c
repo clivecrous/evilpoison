@@ -366,5 +366,20 @@ void evilpoison_commands_init( void )
   command_assign( "window.move.mouse",evilpoison_command_window_move_mouse );
   command_assign( "window.resize.mouse",
       evilpoison_command_window_resize_mouse );
+
+  /* Some useful aliases */
+
+  command_execute(
+      "alias window.move.left window.move -$$window.move.velocity$$ 0" );
+  command_execute(
+      "alias window.move.right window.move $$window.move.velocity$$ 0" );
+  command_execute(
+      "alias window.move.up window.move 0 -$$window.move.velocity$$" );
+  command_execute(
+      "alias window.move.down window.move 0 $$window.move.velocity$$" );
+
+  command_execute(
+      "alias echo exec xmessage -fn \"$$text.font$$\" -geometry +0+0 \
+      -buttons \"\" -timeout 2" );
 }
 
