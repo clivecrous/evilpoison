@@ -72,7 +72,7 @@ static char *command_parse_commandline( const char *commandline )
           *result_position++='$';
         else
         {
-          char *variable_name = malloc( (seek_end-seek_start)-1 );
+          char *variable_name = malloc( (seek_end-seek_start) );
           strncpy( variable_name, seek_start+1, (seek_end-seek_start)-1 );
           variable_name[(seek_end-seek_start)-1]='\0';
 
@@ -81,20 +81,21 @@ static char *command_parse_commandline( const char *commandline )
           {
             unsigned int offset = result_position - result;
             result=realloc( result,
-                result_size -
-                ( strlen( variable_name ) + 2 ) + strlen( variable_data ) );
+                ( result_size -
+                  ( strlen( variable_name ) + 2 ) ) +
+                strlen( variable_data ) );
+            result_position = result + offset;
+
             result_size += strlen( variable_data) -
               (strlen( variable_name ) + 2);
           }
 
           strcpy( result_position, variable_data );
           result_position += strlen( variable_data );
+
+          free( variable_name );
         }
         seek_start+=seek_end-seek_start;
-      }
-      else
-      {
-        /* Miss-matched '$' assume it's a single and just send the rest out */
       }
     }
     else *result_position++ = *seek_start;

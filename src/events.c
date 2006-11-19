@@ -148,7 +148,6 @@ static void handle_key_event(XKeyEvent *e) {
   global_cmdmode = 0;
 	Client *c;
 
-  int window_move_velocity = atoi( settings_get( "window.move.velocity" ) );
   int window_resize_velocity = atoi( settings_get( "window.resize.velocity" ) );
 
 #ifdef VWM
@@ -185,28 +184,16 @@ static void handle_key_event(XKeyEvent *e) {
             command_execute( "window.resize.mouse" );
             break;
           case KEY_LEFT:
-            if (c) {
-              c->x -= window_move_velocity;
-              move_client(c);
-            }
+            command_execute( "window.move -$window.move.velocity$ 0" );
             break;
           case KEY_DOWN:
-            if (c) {
-              c->y += window_move_velocity;
-              move_client(c);
-            }
+            command_execute( "window.move 0 $window.move.velocity$" );
             break;
           case KEY_UP:
-            if (c) {
-              c->y -= window_move_velocity;
-              move_client(c);
-            }
+            command_execute( "window.move 0 -$window.move.velocity$" );
             break;
           case KEY_RIGHT:
-            if (c) {
-              c->x += window_move_velocity;
-              move_client(c);
-            }
+            command_execute( "window.move $window.move.velocity$ 0" );
             break;
           case KEY_TOPLEFT:
             command_execute( "window.moveto 0 0" );
