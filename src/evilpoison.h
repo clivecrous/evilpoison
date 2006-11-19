@@ -7,8 +7,6 @@
 #include <X11/extensions/shape.h>
 #endif
 
-#include "keymap.h"
-
 /* Required for interpreting MWM hints: */
 #define _XA_MWM_HINTS           "_MOTIF_WM_HINTS"
 #define PROP_MWM_HINTS_ELEMENTS 3

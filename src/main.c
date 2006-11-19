@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) {
 #ifdef VWM
 		} else if (!strcmp(argv[i], "-v") && i+1<argc) {
 			int v = atoi(argv[++i]);
-			if (head_app && valid_vdesk(v))
+			if (head_app && v >=1 && v <= 8)
 				head_app->vdesk = v;
 		} else if (!strcmp(argv[i], "-s")) {
 			if (head_app)
@@ -346,7 +346,7 @@ static void setup_display(void) {
 		screens[i].screen = i;
 		screens[i].root = RootWindow(dpy, i);
 #ifdef VWM
-		screens[i].vdesk = KEY_TO_VDESK(KEY_DESK1);
+		screens[i].vdesk = 0;
 #endif
 
 		XChangeWindowAttributes(dpy, screens[i].root, CWEventMask, &attr);

@@ -197,7 +197,7 @@ static void init_geometry(Client *c) {
 #ifdef VWM
 	c->vdesk = c->screen->vdesk;
 	if ( (lprop = get_property(c->window, xa_net_wm_desktop, XA_CARDINAL, &nitems)) ) {
-		if (nitems && valid_vdesk(lprop[0]))
+		if (nitems && lprop[0] >=1 && lprop[0] <= 8)
 			c->vdesk = lprop[0];
 		XFree(lprop);
 	}

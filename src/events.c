@@ -13,51 +13,8 @@
 
 #include <X11/cursorfont.h>
 
-const char *command_names[NUM_COMMANDS] = {
-    "none",
-    "cmdmode",
-    "nextwin",
-    "exec",
-    "topleft",
-    "topright",
-    "bottomleft",
-    "bottomright",
-    "left",
-    "right",
-    "down",
-    "up",
-    "resizeleft",
-    "resizeright",
-    "resizedown",
-    "resizeup",
-    "mousedrag",
-    "mousesweep",
-    "lower",
-    "info",
-    "maxvert",
-    "maxhoriz",
-    "max",
-    "vsplit",
-    "hsplit",
-#ifdef VWM
-    "fix",
-    "prevdesk",
-    "nextdesk",
-    "desk1",
-    "desk2",
-    "desk3",
-    "desk4",
-    "desk5",
-    "desk6",
-    "desk7",
-    "desk8",
-#endif
-    "kill"
-};
-
 struct _ksconv {
     BindKeySymMask *chain;
-    unsigned int command_enum;
     char * command;
 };
 
@@ -65,25 +22,18 @@ static int num_keyconvs = 0;
 static struct _ksconv *key_conversions = NULL;
 
 void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
-    int i;
     struct _ksconv *tmpkc;
 
     if (!cmd) return;
-
-    for (i = 0; i < NUM_COMMANDS; i++)
-	if (!strncmp(cmd, command_names[i], strlen(command_names[i])))
-	    break;
-
-    if (i >= NUM_COMMANDS) return;
 
     tmpkc = malloc(sizeof(struct _ksconv) * (num_keyconvs+1));
 
     if (!tmpkc) return;
 
     if (key_conversions) {
-	if (num_keyconvs > 0)
-	    memcpy(tmpkc, key_conversions, sizeof(struct _ksconv) * num_keyconvs);
-	free(key_conversions);
+      if (num_keyconvs > 0)
+        memcpy(tmpkc, key_conversions, sizeof(struct _ksconv) * num_keyconvs);
+      free(key_conversions);
     }
 
     tmpkc[num_keyconvs].chain = malloc( sizeof( BindKeySymMask ) );
@@ -91,7 +41,6 @@ void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
     tmpkc[num_keyconvs].chain->mask = mask;
     // TODO This memory is never freed.
 
-    tmpkc[num_keyconvs].command_enum = i;
     tmpkc[num_keyconvs].command = malloc(strlen(cmd)+1);
     strcpy(tmpkc[num_keyconvs].command,cmd);
 
@@ -173,113 +122,8 @@ static void handle_key_event(XKeyEvent *e) {
       key_enum = find_key_binding(realkey, ev.xkey.state);
 
       if ( key_enum != -1 )
-      {
-        switch(key_conversions[key_enum].command_enum) {
-          case KEY_MOUSEDRAG:
-            command_execute( "window.move.mouse" );
-            break;
-          case KEY_MOUSESWEEP:
-            command_execute( "window.resize.mouse" );
-            break;
-          case KEY_LEFT:
-            command_execute( "window.move -$window.move.velocity$ 0" );
-            break;
-          case KEY_DOWN:
-            command_execute( "window.move 0 $window.move.velocity$" );
-            break;
-          case KEY_UP:
-            command_execute( "window.move 0 -$window.move.velocity$" );
-            break;
-          case KEY_RIGHT:
-            command_execute( "window.move $window.move.velocity$ 0" );
-            break;
-          case KEY_TOPLEFT:
-            command_execute( "window.moveto 0 0" );
-            break;
-          case KEY_TOPRIGHT:
-            command_execute( "window.moveto -0 0" );
-            break;
-          case KEY_BOTTOMLEFT:
-            command_execute( "window.moveto 0 -0" );
-            break;
-          case KEY_BOTTOMRIGHT:
-            command_execute( "window.moveto -0 -0" );
-            break;
-          case KEY_RESIZELEFT:
-            command_execute( "window.resize 0 0 -$window.resize.velocity$ 0" );
-            break;
-          case KEY_RESIZERIGHT:
-            command_execute( "window.resize 0 0 $window.resize.velocity$ 0" );
-            break;
-          case KEY_RESIZEUP:
-            command_execute( "window.resize 0 0 0 -$window.resize.velocity$" );
-            break;
-          case KEY_RESIZEDOWN:
-            command_execute( "window.resize 0 0 0 $window.resize.velocity$" );
-            break;
-          case KEY_EXEC:
-            command_execute( key_conversions[key_enum].command );
-            break;
-          case KEY_KILL:
-            command_execute( "window.close" );
-            break;
-          case KEY_LOWER:
-            command_execute( "window.lower" );
-            break;
-          case KEY_NEXT:
-            command_execute( key_conversions[key_enum].command );
-            command_execute( "info" );
-            break;
-          case KEY_INFO:
-            command_execute( key_conversions[key_enum].command );
-            break;
-          case KEY_MAX:
-            command_execute( key_conversions[key_enum].command );
-            break;
-          case KEY_MAXVERT:
-            command_execute( key_conversions[key_enum].command );
-            break;
-          case KEY_MAXHORIZ:
-            command_execute( key_conversions[key_enum].command );
-            break;
-          case KEY_VSPLIT:
-            /** \todo convert KEY_VSPLIT */
-            if (c) {
-              c->width = c->width / 2;
-              move_client(c);
-            }
-            break;
-          case KEY_HSPLIT:
-            /** \todo convert KEY_HSPLIT */
-            if (c) {
-              c->height = c->height / 2;
-              move_client(c);
-            }
-            break;
-#ifdef VWM
-          case KEY_FIX:
-            command_execute( key_conversions[key_enum].command );
-            break;
-          case KEY_DESK1: command_execute("desk.switch 0"); break;
-          case KEY_DESK2: command_execute("desk.switch 1"); break;
-          case KEY_DESK3: command_execute("desk.switch 2"); break;
-          case KEY_DESK4: command_execute("desk.switch 3"); break;
-          case KEY_DESK5: command_execute("desk.switch 4"); break;
-          case KEY_DESK6: command_execute("desk.switch 5"); break;
-          case KEY_DESK7: command_execute("desk.switch 6"); break;
-          case KEY_DESK8: command_execute("desk.switch 7"); break;
-          case KEY_PREVDESK:
-            command_execute( key_conversions[key_enum].command );
-            break;
-          case KEY_NEXTDESK:
-            command_execute( key_conversions[key_enum].command );
-            break;
-#endif
-          case KEY_CMDMODE:
-            command_execute( key_conversions[key_enum].command );
-            break;
-        }
-      } else {
+        command_execute( key_conversions[key_enum].command );
+      else {
         switch ( realkey )
         {
           /* Ignore Modifiers */
