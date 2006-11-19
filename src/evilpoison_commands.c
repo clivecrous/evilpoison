@@ -278,6 +278,16 @@ char *evilpoison_command_window_resize_mouse(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_desk_switch(char *commandline)
+{
+  ScreenInfo *current_screen = find_current_screen();
+
+  char *desk_str = command_parameter_copy( commandline, 0 );
+  if (!desk_str) return 0;
+
+  switch_vdesk(current_screen, atoi( desk_str ) );
+  return 0;
+}
 
 void evilpoison_commands_init( void )
 {
@@ -288,6 +298,8 @@ void evilpoison_commands_init( void )
   command_assign( "cmdmode",   evilpoison_command_cmdmode );
   command_assign( "exec",   evilpoison_command_exec );
   command_assign( "info",   evilpoison_command_info );
+
+  command_assign( "desk.switch",   evilpoison_command_desk_switch );
 
   command_assign( "nextwin",   evilpoison_command_nextwin );
 

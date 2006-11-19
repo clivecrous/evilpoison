@@ -262,15 +262,14 @@ static void handle_key_event(XKeyEvent *e) {
           case KEY_FIX:
             command_execute( key_conversions[key_enum].command );
             break;
-          /** \todo convert all DESK commands */
-          case KEY_DESK1: switch_vdesk(current_screen, 0); break;
-          case KEY_DESK2: switch_vdesk(current_screen, 1); break;
-          case KEY_DESK3: switch_vdesk(current_screen, 2); break;
-          case KEY_DESK4: switch_vdesk(current_screen, 3); break;
-          case KEY_DESK5: switch_vdesk(current_screen, 4); break;
-          case KEY_DESK6: switch_vdesk(current_screen, 5); break;
-          case KEY_DESK7: switch_vdesk(current_screen, 6); break;
-          case KEY_DESK8: switch_vdesk(current_screen, 7); break;
+          case KEY_DESK1: command_execute("desk.switch 0"); break;
+          case KEY_DESK2: command_execute("desk.switch 1"); break;
+          case KEY_DESK3: command_execute("desk.switch 2"); break;
+          case KEY_DESK4: command_execute("desk.switch 3"); break;
+          case KEY_DESK5: command_execute("desk.switch 4"); break;
+          case KEY_DESK6: command_execute("desk.switch 5"); break;
+          case KEY_DESK7: command_execute("desk.switch 6"); break;
+          case KEY_DESK8: command_execute("desk.switch 7"); break;
           case KEY_PREVDESK:
             command_execute( key_conversions[key_enum].command );
             break;

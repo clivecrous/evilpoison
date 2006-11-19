@@ -89,3 +89,10 @@ char *evilpoison_command_window_moveto(char *commandline);
  * \return This should always return NULL.
  */
 char *evilpoison_command_window_resize(char *commandline);
+
+/** desk.switch : Change to the given desktop.
+ * desk.switch <desktop number>
+ * \param commandline consists of a desktop number to switch to.
+ * \return This should always return NULL.
+ */
+char *evilpoison_command_desk_switch(char *commandline);
