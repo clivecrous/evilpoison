@@ -90,6 +90,18 @@ char *evilpoison_command_window_moveto(char *commandline);
  */
 char *evilpoison_command_window_resize(char *commandline);
 
+/** window.close : Send a close message to the window.
+ * \param commandline currently unused.
+ * \return This should always return NULL.
+ */
+char *evilpoison_command_window_close(char *commandline);
+
+/** window.kill : Forcibly close the window.
+ * \param commandline currently unused.
+ * \return This should always return NULL.
+ */
+char *evilpoison_command_window_kill(char *commandline);
+
 /** desk.switch : Change to the given desktop.
  * desk.switch <desktop number>
  * \param commandline consists of a desktop number to switch to.

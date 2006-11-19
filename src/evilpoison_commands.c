@@ -278,6 +278,18 @@ char *evilpoison_command_window_resize_mouse(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_window_close(char *commandline)
+{
+  if ( current ) send_wm_delete(current, 0);
+  return 0;
+}
+
+char *evilpoison_command_window_kill(char *commandline)
+{
+  if ( current ) send_wm_delete(current, 1);
+  return 0;
+}
+
 char *evilpoison_command_desk_switch(char *commandline)
 {
   ScreenInfo *current_screen = find_current_screen();
@@ -312,6 +324,9 @@ void evilpoison_commands_init( void )
   command_assign( "nextdesk",    evilpoison_command_nextdesk );
   command_assign( "prevdesk",    evilpoison_command_prevdesk );
 #endif
+
+  command_assign( "window.close", evilpoison_command_window_close );
+  command_assign( "window.kill", evilpoison_command_window_kill );
 
   command_assign( "window.move", evilpoison_command_window_move );
   command_assign( "window.moveto", evilpoison_command_window_moveto );

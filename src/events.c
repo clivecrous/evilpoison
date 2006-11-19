@@ -221,8 +221,7 @@ static void handle_key_event(XKeyEvent *e) {
             command_execute( key_conversions[key_enum].command );
             break;
           case KEY_KILL:
-            /** \todo convert KEY_KILL */
-            if (c) send_wm_delete(c, e->state & altmask);
+            command_execute( "window.close" );
             break;
           case KEY_LOWER:
             /** \todo convert KEY_LOWER */
