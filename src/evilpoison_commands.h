@@ -114,3 +114,11 @@ char *evilpoison_command_window_lower(char *commandline);
  * \return This should always return NULL.
  */
 char *evilpoison_command_desk_switch(char *commandline);
+
+/** alias : Create a new command alias.
+ * alias <alias> <full command to alias>
+ * \param commandline consists of an alias-name and the full command it will
+ *    execute.
+ * \return This should always return NULL.
+ */
+char *evilpoison_command_alias(char *commandline);

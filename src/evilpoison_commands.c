@@ -311,8 +311,26 @@ char *evilpoison_command_desk_switch(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_alias(char *commandline)
+{
+  char *command;
+  for ( command=commandline; *command && isblank(*command); command++ );
+  for ( ;*command && !isblank(*command); command++ );
+  for ( ;*command && isblank(*command); command++ );
+
+  if (!*command) return 0;
+
+  char *alias = command_parameter_copy( commandline, 0 );
+  alias_assign( alias, command );
+  free( alias );
+
+  return 0;
+}
+
 void evilpoison_commands_init( void )
 {
+  command_assign( "alias",    evilpoison_command_alias );
+
   command_assign( "set",    evilpoison_command_set );
   command_assign( "unset",  evilpoison_command_unset );
 

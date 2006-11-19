@@ -70,6 +70,18 @@ START_TEST ( test_command_execute_dollarFooDollar )
 }
 END_TEST
 
+START_TEST ( test_command_alias_exists )
+{
+  command_assign( "greet", greet );
+  alias_assign( "foo", "greet World" );
+  fail_unless(
+      !strcmp( command_execute( "foo" ), "Hello World!" ),
+      "Greeting return value is not correct." );
+  alias_unassign( "foo" );
+  command_unassign( "greet" );
+}
+END_TEST
+
 START_TEST ( test_command_parameter_copy_whichOneOfOne )
 {
   char * result = command_parameter_copy( "One", 0 );
@@ -147,11 +159,13 @@ command_suite( void )
     TCase *tc_assign   = tcase_create( "assign" );
     TCase *tc_unassign = tcase_create( "unassign" );
     TCase *tc_execute  = tcase_create( "execute" );
+    TCase *tc_alias  = tcase_create( "alias" );
     TCase *tc_command_parameter  = tcase_create( "command_parameter" );
 
     suite_add_tcase( suite, tc_assign );
     suite_add_tcase( suite, tc_unassign );
     suite_add_tcase( suite, tc_execute );
+    suite_add_tcase( suite, tc_alias );
     suite_add_tcase( suite, tc_command_parameter );
 
     tcase_add_test( tc_assign, test_command_assign_null );
@@ -161,6 +175,8 @@ command_suite( void )
     tcase_add_test( tc_assign, test_command_execute_helloWorld );
     tcase_add_test( tc_assign, test_command_execute_doubleDollar );
     tcase_add_test( tc_assign, test_command_execute_dollarFooDollar );
+
+    tcase_add_test( tc_alias, test_command_alias_exists );
 
     tcase_add_test( tc_command_parameter,
         test_command_parameter_copy_whichOneOfOne );

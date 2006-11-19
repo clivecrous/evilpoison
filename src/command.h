@@ -9,6 +9,17 @@ typedef char *(* CommandFunction)(char *);
  */
 void command_init( void );
 
+/** Assign an alias to a given commandline.
+ * \param alias The name of the alias to create.
+ * \param commandline The commandline to run when this alias is invoked.
+ */
+void alias_assign(const char *alias, const char *commandline);
+
+/** Unassign an alias.
+ * \param alias The name of the alias to remove.
+ */
+void alias_unassign(const char *alias);
+
 /** Assign a command function to a given command.
  * \param command The command to assign the given function to.
  * \param function A pointer to the function you wish to call when this command

@@ -10,6 +10,7 @@
 #include "command.h"
 #include "settings.h"
 
+Dictionary *_aliases = 0;
 Dictionary *_commands = 0;
 
 static void commands_done( void );
@@ -17,13 +18,28 @@ static void commands_done( void );
 void command_init( void )
 {
   if (_commands) return;
+  _aliases = dictionary_create();
   _commands = dictionary_create();
   atexit( commands_done );
 }
 
 static void commands_done( void )
 {
+  dictionary_destroy( _aliases );
   dictionary_destroy( _commands );
+}
+
+void alias_assign(const char *alias, const char *commandline)
+{
+  char *cmdline = malloc( strlen( commandline ) + 1 );
+  strcpy( cmdline, commandline );
+  cmdline[ strlen( commandline ) ] = '\0';
+  dictionary_set( _aliases, alias, cmdline );
+}
+
+void alias_unassign(const char *alias)
+{
+  dictionary_unset( _aliases, alias );
 }
 
 void command_assign(const char *command, CommandFunction function)
@@ -103,14 +119,15 @@ static char *command_parse_commandline( const char *commandline )
       }
     }
     else *result_position++ = *seek_start;
-    *result_position='\0';
   }
+  *result_position='\0';
   return result;
 }
 
 char *command_execute(const char *commandline)
 {
   char *return_value;
+  char *alias;
   CommandFunction *function;
   if (!commandline || !strlen(commandline)) return 0;
 
@@ -124,11 +141,22 @@ char *command_execute(const char *commandline)
   while (*parameters && isblank(*parameters))
   { *parameters='\0'; parameters++; };
 
-  function = dictionary_get( _commands, command );
-  if (function)
-    return_value = (*function)( parameters );
-  else
-    return_value = 0;
+  alias = dictionary_get( _aliases, command );
+  if (alias)
+  {
+    char *aliased_commandline =
+      malloc( strlen( alias ) + 1 + strlen( parameters ) + 1 );
+    sprintf( aliased_commandline, "%s%s", alias, parameters );
+    return_value = command_execute( aliased_commandline );
+    free( aliased_commandline );
+  }
+  else {
+    function = dictionary_get( _commands, command );
+    if (function)
+      return_value = (*function)( parameters );
+    else
+      return_value = 0;
+  }
 
   free( newcommandline );
 
