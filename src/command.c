@@ -78,21 +78,24 @@ static char *command_parse_commandline( const char *commandline )
           variable_name[(seek_end-seek_start)-1]='\0';
 
           char *variable_data = settings_get( variable_name );
-          if ( strlen( variable_name )+2 != strlen( variable_data ) )
+          if ( variable_data )
           {
-            unsigned int offset = result_position - result;
-            result=realloc( result,
-                ( result_size -
-                  ( strlen( variable_name ) + 2 ) ) +
-                strlen( variable_data ) );
-            result_position = result + offset;
+            if ( strlen( variable_name )+2 != strlen( variable_data ) )
+            {
+              unsigned int offset = result_position - result;
+              result=realloc( result,
+                  ( result_size -
+                    ( strlen( variable_name ) + 2 ) ) +
+                  strlen( variable_data ) );
+              result_position = result + offset;
 
-            result_size += strlen( variable_data) -
-              (strlen( variable_name ) + 2);
+              result_size += strlen( variable_data) -
+                (strlen( variable_name ) + 2);
+            }
+
+            strcpy( result_position, variable_data );
+            result_position += strlen( variable_data );
           }
-
-          strcpy( result_position, variable_data );
-          result_position += strlen( variable_data );
 
           free( variable_name );
         }
