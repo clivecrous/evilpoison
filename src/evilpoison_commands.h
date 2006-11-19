@@ -26,3 +26,33 @@ char *evilpoison_command_fix(char *commandline);
 char *evilpoison_command_prevdesk(char *commandline);
 char *evilpoison_command_nextdesk(char *commandline);
 #endif
+
+/** window.move : Move a window by the given amount.
+ * The commandline consists of an X and Y co-ordinate as the followng examples
+ * demonstrate.
+ *    Move the window right 10 pixels and down 20 pixels:
+ *      window.move 10 20
+ *    Move the window left 5 pixels:
+ *      window.move -5 0
+ * \param commandline consists of an X and Y delta co-ordinate by which the
+ *    window's location is to be adjusted.
+ * \return This should always return NULL.
+ */
+char *evilpoison_command_window_move(char *commandline);
+
+/** window.moveto : Move a window to an exact location.
+ * The commandline consists of an X and Y co-ordinate as the followng examples
+ * demonstrate.
+ *    Move the window to the location 10,20 :
+ *      window.moveto 10 20
+ *    Move the window to the location 20 pixels from the right of the screen
+ *    and 10 pixels above the bottom of the screen:
+ *      window.moveto -20 -10
+ *    Move the window 50 pixels from the left of the screen and centered
+ *    vertically:
+ *      window.moveto 50 X
+ * \param commandline consists of an X and Y co-ordinate to which the
+ *    window's location is to be moved.
+ * \return This should always return NULL.
+ */
+char *evilpoison_command_window_moveto(char *commandline);

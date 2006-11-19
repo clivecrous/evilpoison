@@ -126,6 +126,96 @@ char *evilpoison_command_nextdesk(char *commandline)
 }
 #endif
 
+static void apply_client_position(Client *client) {
+    moveresize(client);
+    if ( atoi( settings_get( "mouse.warp" ) ) )
+      setmouse( client->window,
+          client->width + client->border - 1,
+          client->height + client->border - 1);
+    discard_enter_events();
+}
+
+char *evilpoison_command_window_move(char *commandline)
+{
+  if (!current) return 0;
+
+  char *x_str = command_parameter_copy( commandline, 0 );
+  char *y_str = command_parameter_copy( commandline, 1 );
+
+  if ( !x_str ) {
+    if ( y_str ) free( y_str );
+    /** \todo Should probably display an error once echo is implemented? */
+    return 0;
+  }
+  if ( !y_str ) {
+    free( x_str );
+    /** \todo Should probably display an error once echo is implemented? */
+    return 0;
+  }
+
+  current->x += atoi( x_str );
+  current->y += atoi( y_str );
+  apply_client_position( current );
+
+  free( x_str );
+  free( y_str );
+
+  return 0;
+}
+
+char *evilpoison_command_window_moveto(char *commandline)
+{
+  if (!current) return 0;
+
+  char *x_str = command_parameter_copy( commandline, 0 );
+  char *y_str = command_parameter_copy( commandline, 1 );
+  int x,y;
+
+  if ( !x_str ) {
+    if ( y_str ) free( y_str );
+    /** \todo Should probably display an error once echo is implemented? */
+    return 0;
+  }
+  if ( !y_str ) {
+    free( x_str );
+    /** \todo Should probably display an error once echo is implemented? */
+    return 0;
+  }
+
+  if ( *x_str == 'X' )
+    x = DisplayWidth(dpy, current->screen->screen) -
+          ( current->width + current->border*2 ) / 2;
+  else
+    x = atoi( x_str );
+
+  if ( *y_str == 'X' )
+    y = DisplayHeight(dpy, current->screen->screen) -
+          ( current->height + current->border*2 ) / 2;
+  else
+    y = atoi( y_str );
+
+  /* It may seem strange that I check for the string negative instead of <0 for
+   * the integer value below. The "logic" of it is quite simple really: an
+   * atoi("-0") returns as 0. I want -0 to mean against-the-right or
+   * on-the-bottom so I need to check if there was a negative in the string.
+   */
+  if ( *x_str=='-' )
+    x += DisplayWidth(dpy, current->screen->screen) -
+      ( current->width + current->border );
+  if ( *y_str=='-' )
+    y += DisplayHeight(dpy, current->screen->screen) -
+      ( current->height + current->border );
+
+  current->x = x;
+  current->y = y;
+  apply_client_position( current );
+
+  free( x_str );
+  free( y_str );
+
+  return 0;
+}
+
 void evilpoison_commands_init( void )
 {
   command_assign( "set",    evilpoison_command_set );
@@ -147,4 +237,8 @@ void evilpoison_commands_init( void )
   command_assign( "nextdesk",    evilpoison_command_nextdesk );
   command_assign( "prevdesk",    evilpoison_command_prevdesk );
 #endif
+
+  command_assign( "window.move", evilpoison_command_window_move );
+  command_assign( "window.moveto", evilpoison_command_window_moveto );
 }
+
