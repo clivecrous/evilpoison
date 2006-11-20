@@ -72,7 +72,7 @@ char *evilpoison_command_exec(char *commandline)
   return 0;
 }
 
-char *evilpoison_command_info(char *commandline)
+char *evilpoison_command_window_info(char *commandline)
 {
   if (current) show_info(current);
   return 0;
@@ -337,7 +337,7 @@ void evilpoison_commands_init( void )
   command_assign( "bind",   evilpoison_command_bind );
   command_assign( "cmdmode",   evilpoison_command_cmdmode );
   command_assign( "exec",   evilpoison_command_exec );
-  command_assign( "info",   evilpoison_command_info );
+  command_assign( "window.info",   evilpoison_command_window.info );
 
   command_assign( "desk.switch",   evilpoison_command_desk_switch );
 
