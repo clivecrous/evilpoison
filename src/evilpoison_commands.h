@@ -17,9 +17,9 @@ char *evilpoison_command_info(char *commandline);
 
 char *evilpoison_command_window_next(char *commandline);
 
-char *evilpoison_command_max(char *commandline);
-char *evilpoison_command_maxhoriz(char *commandline);
-char *evilpoison_command_maxvert(char *commandline);
+char *evilpoison_command_window_maximize(char *commandline);
+char *evilpoison_command_window_maximize_vertical(char *commandline);
+char *evilpoison_command_window_maximize_horizontal(char *commandline);
 
 /** window.move.mouse : Move a window with the mouse.
  * \note This command will eventually be deprecated in favour of

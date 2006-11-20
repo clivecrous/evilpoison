@@ -84,19 +84,19 @@ char *evilpoison_command_nextwin(char *commandline)
   return 0;
 }
 
-char *evilpoison_command_max(char *commandline)
+char *evilpoison_command_window_maximize(char *commandline)
 {
     if (current) maximise_client(current, MAXIMISE_HORZ|MAXIMISE_VERT);
     return 0;
 }
 
-char *evilpoison_command_maxvert(char *commandline)
+char *evilpoison_command_window_maximize_vertical(char *commandline)
 {
     if (current) maximise_client(current, MAXIMISE_VERT);
     return 0;
 }
 
-char *evilpoison_command_maxhoriz(char *commandline)
+char *evilpoison_command_window_maximize_horizontal(char *commandline)
 {
     if (current) maximise_client(current, MAXIMISE_HORZ);
     return 0;
@@ -343,9 +343,12 @@ void evilpoison_commands_init( void )
 
   command_assign( "window.next",   evilpoison_command_window_next );
 
-  command_assign( "max",    evilpoison_command_max );
-  command_assign( "maxvert",    evilpoison_command_maxvert );
-  command_assign( "maxhoriz",    evilpoison_command_maxhoriz );
+  command_assign( "window.maximize",
+      evilpoison_command_window_maximize );
+  command_assign( "window.maximize.vertical",
+      evilpoison_command_window_maximize_vertical );
+  command_assign( "window.maximize.horizontal",
+      evilpoison_command_window_maximize_horizontal );
 
 #ifdef VWM
   command_assign( "fix",    evilpoison_command_fix );

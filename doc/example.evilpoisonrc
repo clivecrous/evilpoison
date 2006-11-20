@@ -101,9 +101,9 @@ bind	d	window.resize 0 0 $window.resize.velocity$ 0
 bind	s	window.resize 0 0 0 -$window.resize.velocity$
 bind	w	window.resize 0 0 0 $window.resize.velocity$
 
-bind	plus	maxvert
-bind	minus	maxhoriz
-bind	x	max
+bind	plus	window.maximize.vertical
+bind	minus	window.maximize.horizontal
+bind	x	window.maximize
 
 # mouse
 bind	comma	mouse.resize
