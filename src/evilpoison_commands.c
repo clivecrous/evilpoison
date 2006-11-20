@@ -78,7 +78,7 @@ char *evilpoison_command_info(char *commandline)
   return 0;
 }
 
-char *evilpoison_command_nextwin(char *commandline)
+char *evilpoison_command_window_next(char *commandline)
 {
   next();
   return 0;
