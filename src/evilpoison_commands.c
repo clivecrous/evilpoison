@@ -341,7 +341,7 @@ void evilpoison_commands_init( void )
 
   command_assign( "desk.switch",   evilpoison_command_desk_switch );
 
-  command_assign( "nextwin",   evilpoison_command_nextwin );
+  command_assign( "window.next",   evilpoison_command_window_next );
 
   command_assign( "max",    evilpoison_command_max );
   command_assign( "maxvert",    evilpoison_command_maxvert );

@@ -72,8 +72,8 @@ set border.colour.fixed.inactive grey50
 set prefix C-t
 
 # next window
-bind	Return	nextwin
-bind	Tab	nextwin
+bind	Return	window.next
+bind	Tab	window.next
 
 # command mode
 bind	m	cmdmode
