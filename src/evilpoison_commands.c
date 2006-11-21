@@ -4,6 +4,7 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <X11/Xlib.h>
 
@@ -70,6 +71,33 @@ char *evilpoison_command_execute_fork(char *commandline)
 {
   spawn( commandline );
   return 0;
+}
+
+char *evilpoison_command_execute_here(char *commandline)
+{
+#define MAX_LINE_LENGTH 1024
+  FILE *execution = popen( commandline, "r" );
+  if (!execution) return 0;
+
+  char *result = NULL;
+  char *line = malloc( MAX_LINE_LENGTH );
+
+  while (1)
+  {
+    fgets( line, MAX_LINE_LENGTH, execution );
+    if ( feof( execution ) ) break;
+
+    if ( strlen( line ) == 0 ) continue;
+
+    result = realloc( result, strlen( result ) + strlen( line ) + 1 );
+    strcat( result, line );
+  }
+
+  pclose( execution );
+  free( line );
+
+  return result;
+#undef MAX_LINE_LENGTH
 }
 
 char *evilpoison_command_window_info(char *commandline)
@@ -337,6 +365,7 @@ void evilpoison_commands_init( void )
   command_assign( "bind",   evilpoison_command_bind );
   command_assign( "cmdmode",   evilpoison_command_cmdmode );
   command_assign( "execute.fork",   evilpoison_command_execute_fork );
+  command_assign( "execute.here",   evilpoison_command_execute_here );
   command_assign( "window.info",   evilpoison_command_window_info );
 
   command_assign( "desk.switch",   evilpoison_command_desk_switch );
