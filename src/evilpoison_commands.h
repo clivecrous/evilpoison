@@ -12,7 +12,7 @@ char *evilpoison_command_unset(char *commandline);
 
 char *evilpoison_command_bind(char *commandline);
 char *evilpoison_command_cmdmode(char *commandline);
-char *evilpoison_command_exec(char *commandline);
+char *evilpoison_command_execute_fork(char *commandline);
 char *evilpoison_command_window_info(char *commandline);
 
 char *evilpoison_command_window_next(char *commandline);
