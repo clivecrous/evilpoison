@@ -337,7 +337,7 @@ void evilpoison_commands_init( void )
   command_assign( "bind",   evilpoison_command_bind );
   command_assign( "cmdmode",   evilpoison_command_cmdmode );
   command_assign( "execute.fork",   evilpoison_command_execute_fork );
-  command_assign( "window.info",   evilpoison_command_window.info );
+  command_assign( "window.info",   evilpoison_command_window_info );
 
   command_assign( "desk.switch",   evilpoison_command_desk_switch );
 
