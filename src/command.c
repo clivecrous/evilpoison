@@ -58,10 +58,17 @@ void command_unassign(const char *command)
 /** Parse commandline for variables.
  * If a variable named 'foo' exists with the value of "bar" then the following
  * commandline, as given to this parser:
- *    hello $foo$ world
+ *    echo hello $foo$ world
  * will result in the following:
- *    hello bar world
+ *    echo hello bar world
  * a double $$ will result in a single $   
+
+ * In the same way that $foo$ is handled one can call commands within commands
+ * using !! for example:
+ *    echo Today is !exec.here date! !!
+ * will result in something like:
+ *    echo Today is Sat Nov 25 14:36:23 SAST 2006 !
+ * a double !! will result in a single !
  * \param commandline Any normal commandline.
  * \return A commandline with variable values injected.
  */
@@ -74,6 +81,8 @@ static char *command_parse_commandline( const char *commandline )
   char *result_position;
   unsigned int result_size;
 
+  char special_char;
+
   if (!commandline) return 0;
 
   result = result_position = malloc( strlen( commandline) + 1 );
@@ -81,40 +90,53 @@ static char *command_parse_commandline( const char *commandline )
 
   for (seek_start = commandline;*seek_start;seek_start++)
   {
-    if (*seek_start=='$')
+    special_char = *seek_start;
+
+    if ( special_char == '$' || special_char == '!' )
     {
-      for (seek_end=seek_start+1; *seek_end && *seek_end!='$'; seek_end++);
+      for (seek_end=seek_start+1; *seek_end && *seek_end!=special_char; seek_end++);
       if (*seek_end)
       {
         if (seek_end-seek_start < 2 )
-          *result_position++='$';
+          *result_position++=special_char;
         else
         {
-          char *variable_name = malloc( (seek_end-seek_start) );
-          strncpy( variable_name, seek_start+1, (seek_end-seek_start)-1 );
-          variable_name[(seek_end-seek_start)-1]='\0';
+          char *process_text = malloc( (seek_end-seek_start) );
+          strncpy( process_text, seek_start+1, (seek_end-seek_start)-1 );
+          process_text[(seek_end-seek_start)-1]='\0';
 
-          char *variable_data = settings_get( variable_name );
-          if ( variable_data )
+          char *process_result = 0;
+
+          switch ( special_char )
           {
-            if ( strlen( variable_name )+2 != strlen( variable_data ) )
+            case '$':
+              process_result = settings_get( process_text );
+              break;
+            case '!':
+              process_result = command_execute( process_text );
+              break;
+          }
+
+          if ( process_result )
+          {
+            if ( strlen( process_text )+2 != strlen( process_result ) )
             {
               unsigned int offset = result_position - result;
               result=realloc( result,
                   ( result_size -
-                    ( strlen( variable_name ) + 2 ) ) +
-                  strlen( variable_data ) );
+                    ( strlen( process_text ) + 2 ) ) +
+                  strlen( process_result ) );
               result_position = result + offset;
 
-              result_size += strlen( variable_data) -
-                (strlen( variable_name ) + 2);
+              result_size += strlen( process_result) -
+                (strlen( process_text ) + 2);
             }
 
-            strcpy( result_position, variable_data );
-            result_position += strlen( variable_data );
+            strcpy( result_position, process_result );
+            result_position += strlen( process_result );
           }
 
-          free( variable_name );
+          free( process_text );
         }
         seek_start+=seek_end-seek_start;
       }
