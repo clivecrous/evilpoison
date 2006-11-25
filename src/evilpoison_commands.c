@@ -89,7 +89,13 @@ char *evilpoison_command_execute_here(char *commandline)
 
     if ( strlen( line ) == 0 ) continue;
 
-    result = realloc( result, strlen( result ) + strlen( line ) + 1 );
+    if ( result )
+      result = realloc( result, strlen( result ) + strlen( line ) + 1 );
+    else
+    {
+      result = malloc( strlen( line ) + 1 );
+      result[0]='\0';
+    }
     strcat( result, line );
   }
 
