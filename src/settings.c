@@ -19,27 +19,11 @@ void settings_init( void )
 
   settings_set( "version", VERSION );
 
-  settings_set( "border.width", "1" );
-
-  settings_set( "border.colour.active", "goldenrod" );
-  settings_set( "border.colour.inactive", "grey50" );
-
 #ifdef  VWM
-  settings_set( "border.colour.fixed.active", "blue" );
   settings_set( "border.colour.fixed.inactive", "grey50" );
 #endif
 
-#ifdef SNAP
-  settings_set( "border.snap", "0" );
-#endif
-
-  settings_set( "display", "" );
-
-  settings_set( "mouse.warp", "0" );
-
   settings_set( "mouse.focus", "1" );
-
-  settings_set( "prefix", "c-t" );
 
   settings_set( "text.delay", "1000" );
 
@@ -49,9 +33,6 @@ void settings_init( void )
   settings_set( "text.border.colour", "goldenrod" );
   settings_set( "text.border.width", "1" );
 
-  settings_set( "text.font", "-*-*-medium-r-*-*-14-*-*-*-*-*-*-*" );
-
-  settings_set( "window.move.display", "1" );
   settings_set( "window.move.velocity", "16" );
   settings_set( "window.resize.velocity", "16" );
 

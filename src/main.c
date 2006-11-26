@@ -16,6 +16,7 @@
 #include "command.h"
 #include "settings.h"
 #include "evilpoison_commands.h"
+#include "commandline.h"
 
 /* Commonly used X information */
 Display     *dpy;
@@ -97,8 +98,74 @@ int main(int argc, char *argv[]) {
   settings_init();
   command_init();
   evilpoison_commands_init();
+  commandline_init();
 
 	char *homedir = getenv("HOME");
+
+  commandline_add( "text.font",
+      "fn", "font",
+      "Font to use for any text displayed",
+      "This is an X Server style font setting.\nYou can select any font to \
+pass to this option by doing the following:\n\txfontsel -print\nUse the \
+output generated from this as a parameter. It is probably best to enclose \
+the font in quotes as some shells will attempt to expand the embedded `*'.",
+      "-*-*-medium-r-*-*-14-*-*-*-*-*-*-*", 0 );
+
+  commandline_add( "display",
+      "d", "display",
+      "X display to use",
+      "This is the X display you wish to use. Normally in the format of `:0' \
+or `:1.0'. The default empty value `' ensures that the current display is \
+used.",
+      "", 0 );
+
+  commandline_add( "border.colour.active",
+      "fg", "border-colour-active",
+      "Active window's border colour.", 0,
+      "goldenrod", 0 );
+
+  commandline_add( "border.colour.inactive",
+      "bg", "border-colour-inactive",
+      "Inactive window's border colour.", 0,
+      "grey50", 0 );
+
+#ifdef VWM
+  commandline_add( "border.colour.fixed.active",
+      "fc", "border-colour-fixed-active",
+      "Active window's border colour when it's fixed across desktops.", 0,
+      "blue", 0 );
+#endif
+
+  commandline_add( "border.width",
+      "bw", "border-width",
+      "Window border width", 0,
+      "1", 0 );
+
+  commandline_add( "prefix",
+      "p", "prefix",
+      "The command prefix keybinding", 0,
+      "c-t", 0 );
+
+  commandline_add( "mouse.warp",
+      "mw", "mousewarp",
+      "Should the mouse be \"warped\" to the active window when changing focus",
+      0,
+      "0", "1" );
+
+#ifdef SNAP
+  commandline_add( "border.snap",
+      "snap", "border-snap",
+      "Snap to window borders",
+      "The value given defines, in pixels, the width of the snap",
+      "0", 0 );
+#endif
+
+#ifdef SOLIDDRAG
+  commandline_add( "window.move.display",
+      "nswm", "no-solid-window-move",
+      "Don't display window contents when moving windows.", 0,
+      "1", "0" );
+#endif
 
 	if (homedir) {
 	    char *rcfile = (char *)malloc(strlen(homedir)+strlen("/.evilpoisonrc")+2);
@@ -115,32 +182,13 @@ int main(int argc, char *argv[]) {
 	    free(rcfile);
 	}
 
+  if ( !commandline_process( argc, argv ) ) exit( -1 );
 
+/*  
+ *  ---------------------------------------------------------------------------
+ *
 	for (i = 1; i < argc; i++) {
-		if (!strcmp(argv[i], "-fn") && i+1<argc)
-        settings_set( "text.font", argv[++i] );
-		else if (!strcmp(argv[i], "-display") && i+1<argc) {
-        settings_set( "display", argv[++i] );
-		}
-		else if (!strcmp(argv[i], "-fg") && i+1<argc) {
-        settings_set( "border.colour.active", argv[++i] );
-		} else if (!strcmp(argv[i], "-bg") && i+1<argc) {
-        settings_set( "border.colour.inactive", argv[++i] );
-#ifdef VWM
-		} else if (!strcmp(argv[i], "-fc") && i+1<argc) {
-        settings_set( "border.colour.fixed.active", argv[++i] );
-#endif
-		} else if (!strcmp(argv[i], "-bw") && i+1<argc)
-        settings_set( "border.width", argv[++i] );
-		else if (!strcmp(argv[i], "-prefix") && i+1<argc) {
-        settings_set( "prefix", argv[++i] );
-		} else if (!strcmp(argv[i], "-mousewarp") && i+1<argc) {
-        settings_set( "mouse.warp", argv[++i] );
-#ifdef SNAP
-		} else if (!strcmp(argv[i], "-snap") && i+1<argc) {
-        settings_set( "border.snap", argv[++i] );
-#endif
-		} else if (!strcmp(argv[i], "-app") && i+1<argc) {
+		if (!strcmp(argv[i], "-app") && i+1<argc) {
 			Application *new = xmalloc(sizeof(Application));
 			char *tmp;
 			i++;
@@ -188,34 +236,11 @@ int main(int argc, char *argv[]) {
 		} else if (!strcmp(argv[i], "-altmask") && i+1<argc) {
 			i++;
 			altmask = parse_modifiers(argv[i]);
-#ifdef SOLIDDRAG
-		} else if (!strcmp(argv[i], "-nosoliddrag")) {
-      settings_set( "window.move.display", "0" );
-#endif
-#ifdef STDIO
-		} else if (!strcmp(argv[i], "-V")) {
-			LOG_INFO("evilpoison version " VERSION "\n");
-			exit(0);
-#endif
-		} else {
-			LOG_INFO("usage: evilpoison [-display display] [-fn fontname]");
-			LOG_INFO(" [-fg foreground] [-bg background] [-bw borderwidth]");
-
-#ifdef VWM
-			LOG_INFO(" [-fc fixed]");
-#endif
-			LOG_INFO(" [-mask1 modifiers] [-mask2 modifiers] [-altmask modifiers]");
-			LOG_INFO(" [-snap num] [-mousewarp 0/1] [-prefix mod-key]");
-#ifdef VWM
-			LOG_INFO(" [-app name/class] [-g geometry] [-v vdesk] [-s]");
-#endif
-#ifdef SOLIDDRAG
-			LOG_INFO(" [-nosoliddrag]");
-#endif
-			LOG_INFO(" [-V]\n");
-			exit((!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))?0:1);
 		}
 	}
+ *  ---------------------------------------------------------------------------
+ *
+ */
 
 	act.sa_handler = handle_signal;
 	sigemptyset(&act.sa_mask);
@@ -225,6 +250,8 @@ int main(int argc, char *argv[]) {
 	sigaction(SIGHUP, &act, NULL);
 
 	setup_display();
+
+  command_execute("echo $text.font$" );
 
 	event_main_loop();
 
