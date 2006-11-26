@@ -181,55 +181,6 @@ used.",
 
   if ( !commandline_process( argc, argv ) ) exit( -1 );
 
-/*  
- *  ---------------------------------------------------------------------------
- *
-	for (i = 1; i < argc; i++) {
-		if (!strcmp(argv[i], "-app") && i+1<argc) {
-			Application *new = xmalloc(sizeof(Application));
-			char *tmp;
-			i++;
-			new->res_name = new->res_class = NULL;
-			new->geometry_mask = 0;
-#ifdef VWM
-			new->vdesk = -1;
-			new->sticky = 0;
-#endif
-			if ((tmp = strchr(argv[i], '/'))) {
-				*(tmp++) = 0;
-			}
-			if (strlen(argv[i]) > 0) {
-				new->res_name = xmalloc(strlen(argv[i])+1);
-				strcpy(new->res_name, argv[i]);
-			}
-			if (tmp && strlen(tmp) > 0) {
-				new->res_class = xmalloc(strlen(tmp)+1);
-				strcpy(new->res_class, tmp);
-			}
-			new->next = head_app;
-			head_app = new;
-		} else if (!strcmp(argv[i], "-g") && i+1<argc) {
-			i++;
-			if (!head_app)
-				continue;
-			head_app->geometry_mask = XParseGeometry(argv[i],
-					&head_app->x, &head_app->y,
-					&head_app->width, &head_app->height);
-#ifdef VWM
-		} else if (!strcmp(argv[i], "-v") && i+1<argc) {
-			int v = atoi(argv[++i]);
-			if (head_app && v >=1 && v <= 8)
-				head_app->vdesk = v;
-		} else if (!strcmp(argv[i], "-s")) {
-			if (head_app)
-				head_app->sticky = 1;
-#endif
-		}
-	}
- *  ---------------------------------------------------------------------------
- *
- */
-
 	act.sa_handler = handle_signal;
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;

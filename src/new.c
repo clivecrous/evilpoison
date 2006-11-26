@@ -28,7 +28,6 @@ static void debug_wm_normal_hints(XSizeHints *size);
 void make_new_client(Window w, ScreenInfo *s) {
 	Client *c;
 	char *name;
-	XClassHint *class;
 	long eventmask;
 
 	XGrabServer(dpy);
@@ -106,44 +105,6 @@ void make_new_client(Window w, ScreenInfo *s) {
 	    set_shape(c);
 	}
 #endif
-
-	/* Read instance/class information for client and check against list
-	 * built with -app options */
-	class = XAllocClassHint();
-	if (class) {
-		Application *a = head_app;
-		XGetClassHint(dpy, w, class);
-		while (a) {
-			if ((!a->res_name || (class->res_name && !strcmp(class->res_name, a->res_name)))
-					&& (!a->res_class || (class->res_class && !strcmp(class->res_class, a->res_class)))) {
-				if (a->geometry_mask & WidthValue)
-					c->width = a->width * c->width_inc;
-				if (a->geometry_mask & HeightValue)
-					c->height = a->height * c->height_inc;
-				if (a->geometry_mask & XValue) {
-					if (a->geometry_mask & XNegative)
-						c->x = a->x + DisplayWidth(dpy, s->screen)-c->width-c->border;
-					else
-						c->x = a->x + c->border;
-				}
-				if (a->geometry_mask & YValue) {
-					if (a->geometry_mask & YNegative)
-						c->y = a->y + DisplayHeight(dpy, s->screen)-c->height-c->border;
-					else
-						c->y = a->y + c->border;
-				}
-				moveresize(c);
-#ifdef VWM
-				if (a->vdesk != -1) c->vdesk = a->vdesk;
-				c->sticky = a->sticky;
-#endif
-			}
-			a = a->next;
-		}
-		XFree(class->res_name);
-		XFree(class->res_class);
-		XFree(class);
-	}
 
 	/* Only map the window frame (and thus the window) if it's supposed
 	 * to be visible on this virtual desktop. */
