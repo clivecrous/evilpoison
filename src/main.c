@@ -251,8 +251,6 @@ used.",
 
 	setup_display();
 
-  command_execute("echo $text.font$" );
-
 	event_main_loop();
 
 	return 1;
