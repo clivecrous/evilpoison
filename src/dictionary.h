@@ -51,6 +51,20 @@ void dictionary_set( Dictionary *dictionary, const char *key, void *value,
  */
 unsigned int dictionary_haskey( Dictionary *dictionary, const char *key );
 
+/** How many keys are assigned to this dictionary?.
+ * \param dictionary The dictionary you wish to check.
+ * \return The amount of keys associated in the given dictionary
+ */
+unsigned int dictionary_keyamount( Dictionary *dictionary );
+
+/** Get a key by number.
+ * \note Currently these are in any order. Once binary searching is implemented
+ *    for key injection and retrieval these will be in alphabetic order.
+ * \param dictionary The dictionary you wish to retrieve from.
+ * \param key_num The key enumeration of the key you wish to retrieve.
+ */
+char *dictionary_key( Dictionary *dictionary, unsigned int key_num );
+
 /** Retrieve the value associated with the given key.
  * \param dictionary The dictionary you wish to retrieve from.
  * \param key This is the key for which the associated data will be retrieved.

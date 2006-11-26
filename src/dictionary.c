@@ -80,7 +80,8 @@ void dictionary_set(
     if ( dictionary->size )
       dictionary->data =
         realloc(
-            dictionary->data, sizeof( DictionaryPair ) * ( dictionary->size + 1 ) );
+            dictionary->data, sizeof( DictionaryPair ) *
+            ( dictionary->size + 1 ) );
     else
       dictionary->data = malloc( sizeof( DictionaryPair ) );
 
@@ -100,6 +101,15 @@ void dictionary_set(
 
 unsigned int dictionary_haskey( Dictionary *dictionary, const char *key )
 { return dictionary_get( dictionary, key ) != 0; }
+
+unsigned int dictionary_keyamount( Dictionary *dictionary )
+{ return dictionary->size; }
+
+char *dictionary_key( Dictionary *dictionary, unsigned int key_num )
+{
+  if (key_num >= dictionary->size ) return 0;
+  return dictionary->data[ key_num ].key;
+}
 
 void *dictionary_get( Dictionary *dictionary, const char *key )
 {
