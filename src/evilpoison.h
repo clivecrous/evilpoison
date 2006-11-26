@@ -122,20 +122,6 @@ struct Client {
 	Client  *next;
 };
 
-typedef struct Application Application;
-struct Application {
-	char *res_name;
-	char *res_class;
-	int geometry_mask;
-	int x, y;
-	unsigned int width, height;
-#ifdef VWM
-	int vdesk;
-	int sticky;
-#endif
-	Application *next;
-};
-
 /* Declarations for global variables in main.c */
 
 /* Commonly used X information */
@@ -167,7 +153,6 @@ extern unsigned int     numlockmask;
 extern unsigned int     grabmask1;
 extern unsigned int     grabmask2;
 extern unsigned int     altmask;
-extern Application      *head_app;
 
 /* Client tracking information */
 extern Client           *head_client;

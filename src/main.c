@@ -47,7 +47,6 @@ unsigned int numlockmask = 0;
 unsigned int grabmask1 = ControlMask|Mod1Mask;
 unsigned int grabmask2 = Mod1Mask;
 unsigned int altmask = ShiftMask;
-Application  *head_app = NULL;
 
 /* Client tracking information */
 Client          *head_client = NULL;
