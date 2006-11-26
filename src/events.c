@@ -69,13 +69,6 @@ int find_key_binding(KeySym k, unsigned int mask) {
   return -1;
 }
 
-static void move_client(Client *c) {
-    moveresize(c);
-    if ( atoi( settings_get( "mouse.warp" ) ) )
-	setmouse(c->window, c->width + c->border - 1, c->height + c->border - 1);
-    discard_enter_events();
-}
-
 int global_cmdmode = 0;
 static void handle_key_event(XKeyEvent *e) {
   KeySym realkey = XKeycodeToKeysym(dpy,e->keycode,0);
