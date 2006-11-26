@@ -72,7 +72,12 @@ void commandline_add(
       strcpy( commandline->value_ifset, value_set );
     } else commandline->value_ifset = 0;
 
-  } else commandline->setting_key = 0;
+  } else
+  {
+    commandline->setting_key = 0;
+    commandline->value_ifset = 0;
+    commandline->value = 0;
+  }
 
   commandline->option_short = malloc( strlen( option_short ) + 1 );
   strcpy( commandline->option_short, option_short );
@@ -158,7 +163,7 @@ is:\n\t`%s'\n", commandline->value );
        * We only want to display help once for each item. */
       if ( !strcmp( key, commandline->option_long ) ) continue;
       
-      printf( commandline->value_ifset ?
+      printf( !commandline->setting_key || commandline->value_ifset ?
           "  -%s, --%s :\n    %s\n" : "  -%s <value>, --%s <value> :\n    %s\n",
         commandline->option_short, commandline->option_long,
         commandline->description_short );
