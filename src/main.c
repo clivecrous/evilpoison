@@ -56,7 +56,6 @@ volatile Window initialising = None;
 
 static void setup_display(void);
 static void *xmalloc(size_t size);
-static unsigned int parse_modifiers(char *s);
 static void parse_rcfile(FILE *fp);
 
 char *xstrcpy(const char *str);
@@ -93,7 +92,6 @@ void parse_rcfile(FILE *fp) {
 
 int main(int argc, char *argv[]) {
 	struct sigaction act;
-	int i;
 
   settings_init();
   command_init();
@@ -227,15 +225,6 @@ used.",
 			if (head_app)
 				head_app->sticky = 1;
 #endif
-		} else if (!strcmp(argv[i], "-mask1") && i+1<argc) {
-			i++;
-			grabmask1 = parse_modifiers(argv[i]);
-		} else if (!strcmp(argv[i], "-mask2") && i+1<argc) {
-			i++;
-			grabmask2 = parse_modifiers(argv[i]);
-		} else if (!strcmp(argv[i], "-altmask") && i+1<argc) {
-			i++;
-			altmask = parse_modifiers(argv[i]);
 		}
 	}
  *  ---------------------------------------------------------------------------
@@ -388,35 +377,4 @@ static void setup_display(void) {
 		}
 		XFree(wins);
 	}
-}
-
-/* Used for overriding the default WM modifiers */
-static unsigned int parse_modifiers(char *s) {
-	static struct {
-		const char *name;
-		unsigned int mask;
-	} modifiers[9] = {
-		{ "shift", ShiftMask },
-		{ "lock", LockMask },
-		{ "control", ControlMask },
-		{ "alt", Mod1Mask },
-		{ "mod1", Mod1Mask },
-		{ "mod2", Mod2Mask },
-		{ "mod3", Mod3Mask },
-		{ "mod4", Mod4Mask },
-		{ "mod5", Mod5Mask }
-	};
-	char *tmp = strtok(s, ",+");
-	unsigned int ret = 0;
-	int i;
-	if (!tmp)
-		return 0;
-	do {
-		for (i = 0; i < 9; i++) {
-			if (!strcmp(modifiers[i].name, tmp))
-				ret |= modifiers[i].mask;
-		}
-		tmp = strtok(NULL, ",+");
-	} while (tmp);
-	return ret;
 }
