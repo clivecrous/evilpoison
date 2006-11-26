@@ -5,6 +5,7 @@
 typedef struct {
   char *key;
   void *value;
+  unsigned char tobefreed;
 } DictionaryPair;
 
 typedef struct {
@@ -24,14 +25,22 @@ Dictionary *dictionary_create( void );
  */
 void dictionary_destroy( Dictionary *dictionary );
 
-/** Set a key-value pair
+/// Convenience macro, set as free.
+#define dictionary_set_free(d,k,v) dictionary_set(d,k,v,1)
+
+/// Convenience macro, set as no free.
+#define dictionary_set_nofree(d,k,v) dictionary_set(d,k,v,0)
+
+/** Set a key-value pair.
  * This function will either add a new key-value pair, or overwrite an existing
  * depending on the it's prior existance.
  * \param dictionary The dictionary you wish to alter.
  * \param key The key with which to associate the given value.
  * \param value The value to be stored and associated with the given key.
+ * \param tobefreed Should the value pointer be freed when this key is released.
  */
-void dictionary_set( Dictionary *dictionary, const char *key, void *value );
+void dictionary_set( Dictionary *dictionary, const char *key, void *value,
+    unsigned char tobefreed );
 
 /** Check whether a key exists.
  * The given key will be checked for existance.

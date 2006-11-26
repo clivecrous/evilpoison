@@ -35,7 +35,7 @@ void alias_assign(const char *alias, const char *commandline)
   char *cmdline = malloc( strlen( commandline ) + 1 );
   strcpy( cmdline, commandline );
   cmdline[ strlen( commandline ) ] = '\0';
-  dictionary_set( _aliases, alias, cmdline );
+  dictionary_set_free( _aliases, alias, cmdline );
 }
 
 void alias_unassign(const char *alias)
@@ -47,7 +47,7 @@ void command_assign(const char *command, CommandFunction function)
 {
   CommandFunction *func = malloc( sizeof( CommandFunction ) );
   *func = function;
-  dictionary_set( _commands, command, func );
+  dictionary_set_free( _commands, command, func );
 }
 
 void command_unassign(const char *command)

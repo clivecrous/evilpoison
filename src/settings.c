@@ -72,7 +72,7 @@ void settings_set( const char *key, const char *value )
   else
     newvalue = 0;
 
-  dictionary_set( _settings, key, newvalue );
+  dictionary_set_free( _settings, key, newvalue );
 }
 
 unsigned int settings_haskey( const char *key )

@@ -38,7 +38,7 @@ static void dictionary_remove(
     Dictionary *dictionary, const unsigned int key_enum )
 {
   free( dictionary->data[ key_enum ].key );
-  free( dictionary->data[ key_enum ].value );
+  if ( dictionary->data[ key_enum ].tobefreed ) free( dictionary->data[ key_enum ].value );
 
   if ( key_enum < dictionary->size-1 )
     memmove(
@@ -54,7 +54,8 @@ static void dictionary_remove(
 }
 
 void dictionary_set(
-    Dictionary *dictionary, const char *key, void *value )
+    Dictionary *dictionary, const char *key, void *value,
+    unsigned char tobefreed )
 {
   DictionaryPair *pair = dictionary_find( dictionary, key );
 
@@ -94,6 +95,7 @@ void dictionary_set(
   }
 
   pair->value = value;
+  pair->tobefreed = tobefreed;
 }
 
 unsigned int dictionary_haskey( Dictionary *dictionary, const char *key )
@@ -106,5 +108,5 @@ void *dictionary_get( Dictionary *dictionary, const char *key )
 }
 
 void dictionary_unset( Dictionary *dictionary, const char *key )
-{ dictionary_set( dictionary, key, 0 ); }
+{ dictionary_set( dictionary, key, 0, 0 ); }
 
