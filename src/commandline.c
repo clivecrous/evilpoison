@@ -36,6 +36,9 @@ about each option available. When passing an option remember to remove the \
 hyphenated prefix. Use `-h help' not `-h --help`.",
       0, 0 );
 
+  commandline_add( 0, "V", "version",
+      "Display version information", 0, 0, 0 );
+
   atexit( commandline_done );
 }
 
@@ -219,6 +222,13 @@ to it.\n\n", option_comparitive );
               commandline_help( argv[0], argv[ ++argument_enum ] );
             else
               commandline_help( argv[0], 0 );
+            return 0;
+          }
+          else if ( !strcmp( option_comparitive, "V" ) || 
+               !strcmp( option_comparitive, "version" ) )
+          {
+            printf("EvilPoison version " VERSION "\n");
+            return 0;
           }
         }
       }
