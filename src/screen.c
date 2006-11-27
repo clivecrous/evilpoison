@@ -439,36 +439,52 @@ void unhide(Client *c, int raise_win) {
 	set_wm_state(c, NormalState);
 }
 
-void next(void) {
-	Client *newc = current;
-	do {
-		if (newc) {
-			newc = newc->next;
-			if (!newc && !current)
-				return;
-		}
-		if (!newc)
-			newc = head_client;
-		if (!newc)
-			return;
-		if (newc == current)
-			return;
-	}
+static void nextprev( Client *change_to )
+{
+  if (!change_to) return;
+  if (change_to == current) return;
+
 #ifdef VWM
-	/* NOTE: Checking against newc->screen->vdesk implies we can Alt+Tab
+	/* NOTE: Checking against change_to->screen->vdesk implies we can Alt+Tab
 	 * across screen boundaries.  Is this what we want? */
-	while (newc->vdesk != newc->screen->vdesk);
+	while (change_to->vdesk != change_to->screen->vdesk);
 #endif
-	if (!newc)
-		return;
-	unhide(newc, RAISE);
-	select_client(newc);
+
+	if (!change_to) return;
+
+	unhide(change_to, RAISE);
+	select_client(change_to);
+
 	if ( atoi( settings_get( "mouse.warp" ) ) ) {
-	    setmouse(newc->window, 0, 0);
-	    setmouse(newc->window, newc->width + newc->border - 1,
-			newc->height + newc->border - 1);
+	    setmouse(change_to->window, 0, 0);
+	    setmouse(change_to->window, change_to->width + change_to->border - 1,
+			change_to->height + change_to->border - 1);
 	}
+
 	discard_enter_events();
+}
+
+void next(void)
+{
+	Client *newc = current;
+
+  if (newc) newc = newc->next;
+
+  if (!newc) newc = head_client;
+
+  nextprev( newc );
+}
+
+void previous(void)
+{
+	Client *newc = head_client;
+
+  while (newc && newc->next != current ) newc = newc->next;
+
+  if (!newc)
+    for (newc = head_client; newc && newc->next; newc = newc->next );
+
+  nextprev( newc );
 }
 
 #ifdef VWM

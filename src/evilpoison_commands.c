@@ -118,6 +118,12 @@ char *evilpoison_command_window_next(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_window_previous(char *commandline)
+{
+  previous();
+  return 0;
+}
+
 char *evilpoison_command_window_maximize(char *commandline)
 {
     if (current) maximise_client(current, MAXIMISE_HORZ|MAXIMISE_VERT);
@@ -377,6 +383,7 @@ void evilpoison_commands_init( void )
   command_assign( "desk.switch",   evilpoison_command_desk_switch );
 
   command_assign( "window.next",   evilpoison_command_window_next );
+  command_assign( "window.previous",   evilpoison_command_window_previous );
 
   command_assign( "window.maximize",
       evilpoison_command_window_maximize );
