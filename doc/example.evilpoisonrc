@@ -75,6 +75,10 @@ set prefix C-t
 bind	Return	window.next
 bind	Tab	window.next
 
+# previous window
+bind	s-Return	window.previous
+bind	s-Tab	window.previous
+
 # command mode
 bind	m	cmdmode
 
