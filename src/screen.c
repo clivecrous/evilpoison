@@ -458,8 +458,6 @@ void next(void) {
 	/* NOTE: Checking against newc->screen->vdesk implies we can Alt+Tab
 	 * across screen boundaries.  Is this what we want? */
 	while (newc->vdesk != newc->screen->vdesk);
-#else
-	while (0);
 #endif
 	if (!newc)
 		return;
