@@ -66,6 +66,8 @@ void commandline_add(
     commandline->value = malloc( strlen( value_default ) + 1 );
     strcpy( commandline->value, value_default );
 
+    settings_set( commandline->setting_key, value_default );
+
     if ( value_set )
     {
       commandline->value_ifset = malloc( strlen( value_set ) + 1 );
