@@ -93,76 +93,13 @@ int main(int argc, char *argv[]) {
 	struct sigaction act;
 
   settings_init();
+
+  if ( !commandline_process( argc, argv ) ) exit( -1 );
+
   command_init();
   evilpoison_commands_init();
-  commandline_init();
 
 	char *homedir = getenv("HOME");
-
-  commandline_add( "text.font",
-      "fn", "font",
-      "Font to use for any text displayed",
-      "This is an X Server style font setting.\nYou can select any font to \
-pass to this option by doing the following:\n\txfontsel -print\nUse the \
-output generated from this as a parameter. It is probably best to enclose \
-the font in quotes as some shells will attempt to expand the embedded `*'.",
-      "-*-*-medium-r-*-*-14-*-*-*-*-*-*-*", 0 );
-
-  commandline_add( "display",
-      "d", "display",
-      "X display to use",
-      "This is the X display you wish to use. Normally in the format of `:0' \
-or `:1.0'. The default empty value `' ensures that the current display is \
-used.",
-      "", 0 );
-
-  commandline_add( "border.colour.active",
-      "fg", "border-colour-active",
-      "Active window's border colour.", 0,
-      "goldenrod", 0 );
-
-  commandline_add( "border.colour.inactive",
-      "bg", "border-colour-inactive",
-      "Inactive window's border colour.", 0,
-      "grey50", 0 );
-
-#ifdef VWM
-  commandline_add( "border.colour.fixed.active",
-      "fc", "border-colour-fixed-active",
-      "Active window's border colour when it's fixed across desktops.", 0,
-      "blue", 0 );
-#endif
-
-  commandline_add( "border.width",
-      "bw", "border-width",
-      "Window border width", 0,
-      "1", 0 );
-
-  commandline_add( "prefix",
-      "p", "prefix",
-      "The command prefix keybinding", 0,
-      "c-t", 0 );
-
-  commandline_add( "mouse.warp",
-      "mw", "mousewarp",
-      "Should the mouse be \"warped\" to the active window when changing focus",
-      0,
-      "0", "1" );
-
-#ifdef SNAP
-  commandline_add( "border.snap",
-      "snap", "border-snap",
-      "Snap to window borders",
-      "The value given defines, in pixels, the width of the snap",
-      "0", 0 );
-#endif
-
-#ifdef SOLIDDRAG
-  commandline_add( "window.move.display",
-      "nswm", "no-solid-window-move",
-      "Don't display window contents when moving windows.", 0,
-      "1", "0" );
-#endif
 
 	if (homedir) {
 	    char *rcfile = (char *)malloc(strlen(homedir)+strlen("/.evilpoisonrc")+2);
@@ -178,8 +115,6 @@ used.",
 	    }
 	    free(rcfile);
 	}
-
-  if ( !commandline_process( argc, argv ) ) exit( -1 );
 
 	act.sa_handler = handle_signal;
 	sigemptyset(&act.sa_mask);
