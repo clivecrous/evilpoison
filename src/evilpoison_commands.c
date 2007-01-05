@@ -14,6 +14,13 @@
 #include "bind.h"
 #include "evilpoison.h"
 
+#ifdef UNUSED
+#elif defined(__GNUC__)
+# define UNUSED(x) UNUSED_ ## x __attribute__((unused))
+#else
+# define UNUSED(x) x
+#endif
+
 char *evilpoison_command_set(char *commandline)
 {
   char *newcommandline = malloc( strlen( commandline ) + 1 );
@@ -61,7 +68,7 @@ char *evilpoison_command_bind(char *commandline)
   return 0;
 }
 
-char *evilpoison_command_cmdmode(char *commandline)
+char *evilpoison_command_cmdmode(char *UNUSED(commandline))
 {
   global_cmdmode = !global_cmdmode;
   return 0;
@@ -106,44 +113,44 @@ char *evilpoison_command_execute_here(char *commandline)
 #undef MAX_LINE_LENGTH
 }
 
-char *evilpoison_command_window_info(char *commandline)
+char *evilpoison_command_window_info(char *UNUSED(commandline))
 {
   if (current) show_info(current);
   return 0;
 }
 
-char *evilpoison_command_window_next(char *commandline)
+char *evilpoison_command_window_next(char *UNUSED(commandline))
 {
   next();
   return 0;
 }
 
-char *evilpoison_command_window_maximize(char *commandline)
+char *evilpoison_command_window_maximize(char *UNUSED(commandline))
 {
     if (current) maximise_client(current, MAXIMISE_HORZ|MAXIMISE_VERT);
     return 0;
 }
 
-char *evilpoison_command_window_maximize_vertical(char *commandline)
+char *evilpoison_command_window_maximize_vertical(char *UNUSED(commandline))
 {
     if (current) maximise_client(current, MAXIMISE_VERT);
     return 0;
 }
 
-char *evilpoison_command_window_maximize_horizontal(char *commandline)
+char *evilpoison_command_window_maximize_horizontal(char *UNUSED(commandline))
 {
     if (current) maximise_client(current, MAXIMISE_HORZ);
     return 0;
 }
 
 #ifdef VWM
-char *evilpoison_command_fix(char *commandline)
+char *evilpoison_command_fix(char *UNUSED(commandline))
 {
     if (current) fix_client(current);
     return 0;
 }
 
-char *evilpoison_command_prevdesk(char *commandline)
+char *evilpoison_command_prevdesk(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->vdesk > 0 )
@@ -151,7 +158,7 @@ char *evilpoison_command_prevdesk(char *commandline)
     return 0;
 }
 
-char *evilpoison_command_nextdesk(char *commandline)
+char *evilpoison_command_nextdesk(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->vdesk < 7 )
@@ -302,31 +309,31 @@ char *evilpoison_command_window_resize(char *commandline)
   return 0;
 }
 
-char *evilpoison_command_window_move_mouse(char *commandline)
+char *evilpoison_command_window_move_mouse(char *UNUSED(commandline))
 {
   if ( current ) drag( current );
   return 0;
 }
 
-char *evilpoison_command_window_resize_mouse(char *commandline)
+char *evilpoison_command_window_resize_mouse(char *UNUSED(commandline))
 {
   if ( current ) sweep( current );
   return 0;
 }
 
-char *evilpoison_command_window_close(char *commandline)
+char *evilpoison_command_window_close(char *UNUSED(commandline))
 {
   if ( current ) send_wm_delete(current, 0);
   return 0;
 }
 
-char *evilpoison_command_window_kill(char *commandline)
+char *evilpoison_command_window_kill(char *UNUSED(commandline))
 {
   if ( current ) send_wm_delete(current, 1);
   return 0;
 }
 
-char *evilpoison_command_window_lower(char *commandline)
+char *evilpoison_command_window_lower(char *UNUSED(commandline))
 {
   if ( current ) XLowerWindow(dpy, current->parent);
   return 0;
