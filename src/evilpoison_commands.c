@@ -150,9 +150,9 @@ char *evilpoison_command_window_maximize_horizontal(char *UNUSED(commandline))
 }
 
 #ifdef VWM
-char *evilpoison_command_fix(char *UNUSED(commandline))
+char *evilpoison_command_window_float(char *UNUSED(commandline))
 {
-    if (current) fix_client(current);
+    if (current) float_client(current);
     return 0;
 }
 
@@ -400,7 +400,7 @@ void evilpoison_commands_init( void )
       evilpoison_command_window_maximize_horizontal );
 
 #ifdef VWM
-  command_assign( "fix",    evilpoison_command_fix );
+  command_assign( "window.float",    evilpoison_command_window_float );
   command_assign( "nextdesk",    evilpoison_command_nextdesk );
   command_assign( "prevdesk",    evilpoison_command_prevdesk );
 #endif

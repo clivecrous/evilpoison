@@ -62,9 +62,9 @@ set border.colour.active goldenrod
 # unfocused window border
 set border.colour.inactive grey50
 
-# fixed window border
-set border.colour.fixed.active blue
-set border.colour.fixed.inactive grey50
+# floating window border
+set border.colour.float.active blue
+set border.colour.float.inactive grey50
 
 # Key bindings
 
@@ -117,8 +117,8 @@ bind	period	mouse.move
 bind	Insert	window.lower
 
 # virtual desks
-# fix window
-bind	f	fix
+# float window
+bind	f	window.float
 
 # moving from desk to desk
 bind	o	prevdesk

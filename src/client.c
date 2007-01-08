@@ -98,7 +98,7 @@ void gravitate_client(Client *c, int sign) {
 
 void select_client(Client *c) {
   XColor border_colour_active, border_colour_inactive;
-  XColor border_colour_fixed_active, border_colour_fixed_inactive;
+  XColor border_colour_float_active, border_colour_float_inactive;
   XColor dummy;
   unsigned long bpixel;
 
@@ -106,9 +106,9 @@ void select_client(Client *c) {
   {
     XAllocNamedColor(dpy, DefaultColormap(dpy, current->screen->screen), settings_get( "border.colour.inactive" ), &border_colour_inactive, &dummy);
 #ifdef VWM
-    XAllocNamedColor(dpy, DefaultColormap(dpy, current->screen->screen), settings_get( "border.colour.fixed.inactive" ), &border_colour_fixed_inactive, &dummy);
+    XAllocNamedColor(dpy, DefaultColormap(dpy, current->screen->screen), settings_get( "border.colour.float.inactive" ), &border_colour_float_inactive, &dummy);
 		if (is_sticky(current))
-			bpixel = border_colour_fixed_inactive.pixel;
+			bpixel = border_colour_float_inactive.pixel;
 		else
 #endif
 			bpixel = border_colour_inactive.pixel;
@@ -117,9 +117,9 @@ void select_client(Client *c) {
 	if (c) {
     XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.active" ), &border_colour_active, &dummy);
 #ifdef VWM
-    XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.fixed.active" ), &border_colour_fixed_active, &dummy);
+    XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.float.active" ), &border_colour_float_active, &dummy);
 		if (is_sticky(c))
-			bpixel = border_colour_fixed_active.pixel;
+			bpixel = border_colour_float_active.pixel;
 		else
 #endif
 			bpixel = border_colour_active.pixel;
@@ -133,7 +133,7 @@ void select_client(Client *c) {
 }
 
 #ifdef VWM
-void fix_client(Client *c) {
+void float_client(Client *c) {
 	toggle_sticky(c);
 	select_client(c);
 	update_net_wm_state(c);

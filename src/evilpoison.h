@@ -165,7 +165,7 @@ Client *find_client(Window w);
 void gravitate_client(Client *c, int sign);
 void select_client(Client *c);
 #ifdef VWM
-void fix_client(Client *c);
+void float_client(Client *c);
 #endif
 void remove_client(Client *c);
 void send_config(Client *c);
