@@ -203,6 +203,7 @@ void show_info(Client *c);
 void sweep(Client *c);
 void unhide(Client *c, int raise_win);
 void next(void);
+void previous(void);
 #ifdef VWM
 void hide(Client *c);
 void switch_vdesk(ScreenInfo *s, int v);
