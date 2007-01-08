@@ -1,11 +1,23 @@
-BUILDING EVILWM
+BUILDING EvilPoison
+===================
 
-1) Edit Makefile to suit what you want.  Instructions are included by any
+Using GNU make to build
+-----------------------
+
+1) Edit settings.make to suit what you want.  Instructions are included by any
    user-editable option.
 
 2) Run 'make'
 
 3) Run 'make install'
 
-That's it.  The README file has information on starting evilwm.
+That's it.  The README file has information on starting evilpoison.
 
+Using CMake to build
+--------------------
+
+1) Run 'cmake .'
+
+2) Run 'make -f Makefile'
+
+3) Run 'make -f Makefile install' (this is not yet implemented)
