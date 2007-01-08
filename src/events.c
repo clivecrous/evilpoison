@@ -160,10 +160,10 @@ static void handle_button_event(XButtonEvent *e) {
         command_execute( "window.move.mouse" );
         break;
 			case Button2:
-        command_execute( "window.resize.mouse" );
+        command_execute( "window.lower" );
         break;
 			case Button3:
-				XLowerWindow(dpy, c->parent); break;
+        command_execute( "window.resize.mouse" );
 			default: break;
 		}
 	}
