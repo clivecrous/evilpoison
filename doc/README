@@ -1,3 +1,17 @@
+evilpoison <unreleased> by
+  Pasi Kallinen <paxed@alt.org>
+  Clive Crous <clive@darkarts.co.za>
+
+EvilPoison is a window manager based on evilwm's source code. For the latest
+evilpoison information you should check the wiki at:
+
+  http://www.darkarts.co.za/projects/evilpoison.
+
+Below follows the evilwm README information, be warned that much of what it
+says about evilwm is no longer applicable for evilpoison.
+
+--
+
 evilwm 1.0 by Ciaran Anscomb <evilwm@6809.org.uk>
 
 evilwm is a minimalist window manager for the X Window System.
