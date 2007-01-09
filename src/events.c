@@ -152,9 +152,18 @@ static void handle_button_event(XButtonEvent *e) {
         break;
 			case Button3:
         command_execute( "window.resize.mouse" );
+        break;
 			default: break;
 		}
 	}
+  switch (e->button) {
+    case Button4:
+      command_execute( "window.next" );
+      break;
+    case Button5:
+      command_execute( "window.previous" );
+      break;
+  }
 }
 #endif
 
