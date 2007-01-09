@@ -465,7 +465,8 @@ static void nextprev( Client *change_to )
 
 #ifdef VWM
   // Disallow changing across vdesks.
-  if (current && change_to->vdesk != current->vdesk) return;
+  ScreenInfo *current_screen = find_current_screen();
+  if ( !current_screen || change_to->vdesk != current_screen->vdesk ) return;
 #endif
 
 	unhide(change_to, RAISE);
