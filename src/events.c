@@ -22,39 +22,27 @@ static int num_keyconvs = 0;
 static struct _ksconv *key_conversions = NULL;
 
 void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
-    struct _ksconv *tmpkc;
+  if (!cmd) return;
 
-    if (!cmd) return;
+  key_conversions = realloc(key_conversions,
+      sizeof(struct _ksconv) * (num_keyconvs+1));
 
-    tmpkc = malloc(sizeof(struct _ksconv) * (num_keyconvs+1));
+  key_conversions[num_keyconvs].chain = malloc( sizeof( BindKeySymMask ) );
+  key_conversions[num_keyconvs].chain->symbol = k;
+  key_conversions[num_keyconvs].chain->mask = mask;
+  key_conversions[num_keyconvs].command = malloc( strlen( cmd ) + 1 );
+  strcpy( key_conversions[ num_keyconvs ].command, cmd );
 
-    if (!tmpkc) return;
-
-    if (key_conversions) {
-      if (num_keyconvs > 0)
-        memcpy(tmpkc, key_conversions, sizeof(struct _ksconv) * num_keyconvs);
-      free(key_conversions);
-    }
-
-    tmpkc[num_keyconvs].chain = malloc( sizeof( BindKeySymMask ) );
-    tmpkc[num_keyconvs].chain->symbol = k;
-    tmpkc[num_keyconvs].chain->mask = mask;
-    // TODO This memory is never freed.
-
-    tmpkc[num_keyconvs].command = malloc(strlen(cmd)+1);
-    strcpy(tmpkc[num_keyconvs].command,cmd);
-
-    num_keyconvs++;
-
-    key_conversions = tmpkc;
+  num_keyconvs++;
 }
 
 void free_key_bindings() {
-    if (key_conversions) {
-	free(key_conversions);
-	key_conversions = NULL;
-	num_keyconvs = 0;
-    }
+  if (key_conversions) {
+    // FIXME Inner allocations aren't freed yet.
+	  free(key_conversions);
+	  key_conversions = NULL;
+	  num_keyconvs = 0;
+  }
 }
 
 int find_key_binding(KeySym k, unsigned int mask) {
