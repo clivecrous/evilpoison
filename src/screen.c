@@ -484,16 +484,24 @@ static void nextprev( Client *change_to )
 void next(void)
 {
 	Client *newc = current;
+  ScreenInfo *current_screen = find_current_screen();
 
   if (newc) newc = newc->next;
-
   if (!newc) newc = head_client;
 
-  nextprev( newc );
+  while ( newc && newc->vdesk != current_screen->vdesk )
+  {
+    newc = newc->next;
+    if (!newc) newc = head_client;
+  }
+
+  if (newc) nextprev( newc );
 }
 
 void previous(void)
 {
+  // TODO This will not wrap around correctly when foreign vdesk clients are
+  // involved.
 	Client *newc = head_client;
 
   while (newc && newc->next != current ) newc = newc->next;
