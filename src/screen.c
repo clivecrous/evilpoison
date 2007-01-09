@@ -464,12 +464,9 @@ static void nextprev( Client *change_to )
   if (change_to == current) return;
 
 #ifdef VWM
-	/* NOTE: Checking against change_to->screen->vdesk implies we can Alt+Tab
-	 * across screen boundaries.  Is this what we want? */
-	while (change_to->vdesk != change_to->screen->vdesk);
+  // Disallow changing across vdesks.
+  if (change_to->vdesk != current->vdesk) return;
 #endif
-
-	if (!change_to) return;
 
 	unhide(change_to, RAISE);
 	select_client(change_to);
