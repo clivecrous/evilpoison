@@ -1,3 +1,5 @@
+find_package(X11 REQUIRED)
+
 # --- Edit the below definitions to customize your compile ---
 
 # Uncomment to enable solid window drags.  This can be slow on old systems.

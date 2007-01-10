@@ -1,11 +1,14 @@
 #include <X11/X.h>
 #include <X11/Xatom.h>
+#include <X11/Xlib.h>
 #include <X11/Xmd.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 #ifdef SHAPE
 #include <X11/extensions/shape.h>
 #endif
+
+#include "keymap.h"
 
 /* Required for interpreting MWM hints: */
 #define _XA_MWM_HINTS           "_MOTIF_WM_HINTS"
@@ -26,6 +29,11 @@ typedef struct {
 
 /* default settings */
 
+#define DEF_FONT        "variable"
+#define DEF_FG          "goldenrod"
+#define DEF_BG          "grey50"
+#define DEF_BW          1
+#define DEF_FC          "blue"
 #define SPACE           3
 
 #define DEF_PREFIX_KEY  XK_e
@@ -86,8 +94,11 @@ typedef struct ScreenInfo ScreenInfo;
 struct ScreenInfo {
 	int screen;
 	Window root;
+	GC invert_gc;
+	XColor fg, bg;
 #ifdef VWM
 	int vdesk;
+	XColor fc;
 #endif
 	char *display;
 };
@@ -122,10 +133,25 @@ struct Client {
 	Client  *next;
 };
 
+typedef struct Application Application;
+struct Application {
+	char *res_name;
+	char *res_class;
+	int geometry_mask;
+	int x, y;
+	unsigned int width, height;
+#ifdef VWM
+	int vdesk;
+	int sticky;
+#endif
+	Application *next;
+};
+
 /* Declarations for global variables in main.c */
 
 /* Commonly used X information */
 extern Display      *dpy;
+extern XFontStruct  *font;
 extern Cursor       move_curs;
 extern Cursor       resize_curs;
 extern int          num_screens;
@@ -149,10 +175,24 @@ extern Atom xa_net_wm_state_sticky;
 #endif
 
 /* Things that affect user interaction */
+extern unsigned long	opt_info_delay;
 extern unsigned int     numlockmask;
 extern unsigned int     grabmask1;
 extern unsigned int     grabmask2;
 extern unsigned int     altmask;
+extern int              opt_bw;
+extern int		opt_mousetowin;
+extern unsigned int	opt_prefix_mod;
+extern KeySym		opt_prefix_key;
+#ifdef SNAP
+extern int              opt_snap;
+#endif
+#ifdef SOLIDDRAG
+extern int              solid_drag;
+#else
+# define solid_drag (0)
+#endif
+extern Application      *head_app;
 
 /* Client tracking information */
 extern Client           *head_client;
