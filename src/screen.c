@@ -487,13 +487,11 @@ void next(void)
   ScreenInfo *current_screen = find_current_screen();
 
   if (newc) newc = newc->next;
-  if (!newc) newc = head_client;
-
   while ( newc && newc->vdesk != current_screen->vdesk )
-  {
     newc = newc->next;
-    if (!newc) newc = head_client;
-  }
+  if (!newc) newc = head_client;
+  while ( newc && newc->vdesk != current_screen->vdesk )
+    newc = newc->next;
 
   if (newc) nextprev( newc );
 }
