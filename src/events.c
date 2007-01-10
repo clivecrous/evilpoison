@@ -13,6 +13,7 @@
 
 #include <X11/cursorfont.h>
 
+    "bind"
 struct _ksconv {
     BindKeySymMask *chain;
     char * command;
@@ -20,6 +21,23 @@ struct _ksconv {
 
 static int num_keyconvs = 0;
 static struct _ksconv *key_conversions = NULL;
+
+static void add_binding(char *binding)
+{
+  KeySym keysym = NoSymbol;
+  unsigned int mask;
+
+  char *key_combination = binding;
+  while (*key_combination && *key_combination==' ')
+    key_combination++;
+
+  char *command = key_combination;
+  while (*command && *command!=' ') command++;
+  while (*command && *command==' ') { *command='\0'; command++; }
+
+  parse_key( key_combination, &keysym, &mask );
+  if ( keysym != NoSymbol ) add_key_binding( keysym, mask, command );
+}
 
 void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
   if (!cmd) return;
@@ -105,6 +123,10 @@ static void handle_key_event(XKeyEvent *e) {
       if ( key_enum != -1 )
         command_execute( key_conversions[key_enum].command );
       else {
+            break;
+
+          case KEY_BIND:
+            add_binding((char *)(((int)key_conversions[key_enum].command)+5));
         switch ( realkey )
         {
           /* Ignore Modifiers */

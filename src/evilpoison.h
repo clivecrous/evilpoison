@@ -194,6 +194,8 @@ extern int              solid_drag;
 #endif
 extern Application      *head_app;
 
+void parse_key(char *keystr, KeySym *key, unsigned int *mod);
+
 /* Client tracking information */
 extern Client           *head_client;
 extern Client           *current;
