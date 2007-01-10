@@ -22,7 +22,7 @@ add_definitions(-DINFOBANNER)
 
 # Uncomment to show the same banner on moves and resizes.  Note this can
 # make things very SLOW!
-# add_definitions(-DINFOBANNER_MOVERESIZE)
+add_definitions(-DINFOBANNER_MOVERESIZE)
 
 # To support virtual desktops, uncomment the following line.
 add_definitions(-DVWM)
