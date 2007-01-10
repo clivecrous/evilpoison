@@ -27,7 +27,7 @@ bind	Tab	nextwin
 bind	m	cmdmode
 
 # new terminal
-bind	c	new
+bind	c	exec xterm
 
 # moving windows
 bind	y	topleft
