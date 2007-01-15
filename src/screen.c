@@ -390,7 +390,7 @@ void drag(Client *c) {
  * \param client The client window to set.
  * \param hv Set horizontal, vertical or both.
  */
-static inline void unmaximise_client( Client *client, int hv )
+static void unmaximise_client( Client *client, int hv )
 { if ( hv & MAXIMISE_HORZ) client->oldw = 0;
   if ( hv & MAXIMISE_VERT) client->oldh = 0;
 }
@@ -400,7 +400,7 @@ static inline void unmaximise_client( Client *client, int hv )
  * \param hv Check horizontal, vertical or both.
  * \return A boolean indicating if the client is maximised.
  */
-static inline int client_maximised( Client *client, int hv )
+static int client_maximised( Client *client, int hv )
 { return hv & MAXIMISE_HORZ ? client->oldw != 0 : 1 &&
          hv & MAXIMISE_VERT ? client->oldh != 0 : 1; }
 
