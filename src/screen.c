@@ -411,7 +411,15 @@ void moveresize(Client *c) {
 	XMoveResizeWindow(dpy, c->parent, c->x - c->border, c->y - c->border,
 			c->width, c->height);
 	XMoveResizeWindow(dpy, c->window, 0, 0, c->width, c->height);
-  unmaximise_client( c, MAXIMISE_VERT|MAXIMISE_HORZ );
+  /* FIXME Setting the client as unmaximised on a move causes auto-resizing
+   * clients (eg: gvim, xterm) to be marked as not maximized right after a
+   * maximising action has happened. Strictly speaking this is "correct" but
+   * some research needs to be done to figure out how to differentiate between a
+   * true resize and a subtle tweak for rendering purposes.
+   * see also: http://www.darkarts.co.za/projects/evilpoison/ticket/23
+   *
+   * unmaximise_client( c, MAXIMISE_VERT|MAXIMISE_HORZ );
+   */
 	send_config(c);
 }
 
