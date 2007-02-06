@@ -389,6 +389,8 @@ void drag(Client *c) {
 /** Set a client as not-maximised.
  * \param client The client window to set.
  * \param hv Set horizontal, vertical or both.
+ * \todo Rename this function to something that implies a setting but not an
+ * action.
  */
 static void unmaximise_client( Client *client, int hv )
 { if ( hv & MAXIMISE_HORZ) client->oldw = 0;
