@@ -36,6 +36,8 @@ add_definitions(-DCOLOURMAP)
 
 add_definitions(-DVERSION='"${VERSION}"')
 
+find_package( X11 )
+
 add_executable(evilpoison
   bind.c client.c command.c commandline.c dictionary.c
   events.c evilpoison_commands.c ewmh.c
