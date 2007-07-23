@@ -43,8 +43,8 @@ char *evilpoison_command_window_resize_mouse(char *commandline);
 
 #ifdef VWM
 char *evilpoison_command_window_float(char *commandline);
-char *evilpoison_command_prevdesk(char *commandline);
-char *evilpoison_command_nextdesk(char *commandline);
+char *evilpoison_command_desk_prev(char *commandline);
+char *evilpoison_command_desk_next(char *commandline);
 #endif
 
 /** window.move : Move a window by the given amount.

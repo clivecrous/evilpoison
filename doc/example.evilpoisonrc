@@ -121,8 +121,8 @@ bind	Insert	window.lower
 bind	f	window.float
 
 # moving from desk to desk
-bind	o	prevdesk
-bind	p	nextdesk
+bind	o	desk.prev
+bind	p	desk.next
 
 bind	1	desk.switch 1
 bind	2	desk.switch 2

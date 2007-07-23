@@ -156,7 +156,7 @@ char *evilpoison_command_window_float(char *UNUSED(commandline))
     return 0;
 }
 
-char *evilpoison_command_prevdesk(char *UNUSED(commandline))
+char *evilpoison_command_desk_prev(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->vdesk > 0 )
@@ -164,7 +164,7 @@ char *evilpoison_command_prevdesk(char *UNUSED(commandline))
     return 0;
 }
 
-char *evilpoison_command_nextdesk(char *UNUSED(commandline))
+char *evilpoison_command_desk_next(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->vdesk < 7 )
@@ -387,8 +387,6 @@ void evilpoison_commands_init( void )
   command_assign( "execute.here",   evilpoison_command_execute_here );
   command_assign( "window.info",   evilpoison_command_window_info );
 
-  command_assign( "desk.switch",   evilpoison_command_desk_switch );
-
   command_assign( "window.next",   evilpoison_command_window_next );
   command_assign( "window.previous",   evilpoison_command_window_previous );
 
@@ -401,8 +399,9 @@ void evilpoison_commands_init( void )
 
 #ifdef VWM
   command_assign( "window.float",    evilpoison_command_window_float );
-  command_assign( "nextdesk",    evilpoison_command_nextdesk );
-  command_assign( "prevdesk",    evilpoison_command_prevdesk );
+  command_assign( "desk.next",    evilpoison_command_desk_next );
+  command_assign( "desk.prev",    evilpoison_command_desk_prev );
+  command_assign( "desk.switch",   evilpoison_command_desk_switch );
 #endif
 
   command_assign( "window.close", evilpoison_command_window_close );
