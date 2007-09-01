@@ -88,6 +88,7 @@ struct ScreenInfo {
 	Window root;
 #ifdef VWM
 	int vdesk;
+	int other_vdesk;
 #endif
 	char *display;
 };

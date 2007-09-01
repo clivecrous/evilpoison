@@ -246,6 +246,7 @@ static void setup_display(void) {
 		screens[i].root = RootWindow(dpy, i);
 #ifdef VWM
 		screens[i].vdesk = 0;
+		screens[i].other_vdesk = 0;
 #endif
 
 		XChangeWindowAttributes(dpy, screens[i].root, CWEventMask, &attr);

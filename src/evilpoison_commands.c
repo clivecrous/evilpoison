@@ -171,6 +171,14 @@ char *evilpoison_command_desk_next(char *UNUSED(commandline))
 	switch_vdesk(current_screen, current_screen->vdesk + 1);
     return 0;
 }
+
+char *evilpoison_command_desk_other(char *UNUSED(commandline))
+{
+    ScreenInfo *current_screen = find_current_screen();
+    if (current_screen->vdesk != current_screen->other_vdesk)
+	switch_vdesk(current_screen, current_screen->other_vdesk);
+    return 0;
+}
 #endif
 
 static void apply_client_position(Client *client) {
@@ -402,6 +410,7 @@ void evilpoison_commands_init( void )
   command_assign( "desk.next",    evilpoison_command_desk_next );
   command_assign( "desk.prev",    evilpoison_command_desk_prev );
   command_assign( "desk.switch",   evilpoison_command_desk_switch );
+  command_assign( "desk.other",   evilpoison_command_desk_other );
 #endif
 
   command_assign( "window.close", evilpoison_command_window_close );

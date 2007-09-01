@@ -552,6 +552,7 @@ void switch_vdesk(ScreenInfo *s, int v) {
 #endif
 		}
 	}
+	s->other_vdesk = s->vdesk;
 	s->vdesk = v;
 	LOG_DEBUG(" (%d hidden, %d raised)\n", hidden, raised);
 }

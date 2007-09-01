@@ -124,6 +124,8 @@ bind	f	window.float
 bind	o	desk.prev
 bind	p	desk.next
 
+bind	0	desk.other
+
 bind	1	desk.switch 1
 bind	2	desk.switch 2
 bind	3	desk.switch 3
