@@ -34,9 +34,15 @@ void spawn(const char * command) {
 		wait(NULL);
 }
 
+int handling_signal = 0; //TODO mutex this
+
 void handle_signal(int signo) {
 	int i;
 	(void)signo;  /* unused */
+
+  if ( handling_signal != 0 ) return;
+  handling_signal = 1;
+
 	/* SIGCHLD check no longer necessary */
 	/* Quit Nicely */
 	while(head_client) remove_client(head_client);
@@ -44,7 +50,7 @@ void handle_signal(int signo) {
 	for (i = 0; i < num_screens; i++)
 		XInstallColormap(dpy, DefaultColormap(dpy, i));
 	free(screens);
-	XCloseDisplay(dpy);
+  printf("Good Bye.\n");
 	exit(0);
 }
 

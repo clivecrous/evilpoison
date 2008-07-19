@@ -191,7 +191,7 @@ void remove_client(Client *c) {
 #endif
 
 	XUngrabServer(dpy);
-	XSync(dpy, False);
+	XFlush(dpy);
 	ignore_xerror = 0;
 	LOG_DEBUG("remove_client() returning\n");
 }
