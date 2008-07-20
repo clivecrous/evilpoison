@@ -13,8 +13,6 @@
 #include "log.h"
 #include "settings.h"
 
-#ifdef INFOBANNER
-
 static Window create_info_window(Client *c);
 static void update_info_window(Client *c, Window info_window);
 static void remove_info_window(Window info_window);
@@ -103,7 +101,6 @@ static void remove_info_window(Window info_window) {
 		XDestroyWindow(dpy, info_window);
 	info_window = None;
 }
-#endif  /* INFOBANNER */
 
 static void draw_outline(Client *c) {
   XGCValues gv;
@@ -173,38 +170,19 @@ void sweep(Client *c) {
 	}
 }
 
-#ifdef INFOBANNER
 void destroy_info_remove(Window *info_window);
 void destroy_info_remove(Window *info_window)
-#else
-void destroy_info_remove(Client *c);
-void destroy_info_remove(Client *c)
-#endif
 {
-#ifdef INFOBANNER
   remove_info_window(*info_window);
   free( info_window );
-#else
-  draw_outline(c);
-  XUngrabServer(dpy);
-#endif
   XFlush(dpy);
 }
 
-#ifdef INFOBANNER
 void *destroy_info(Window *info_window);
 void *destroy_info(Window *info_window)
-#else
-void *destroy_info(Client *c);
-void *destroy_info(Client *c)
-#endif
 {
   usleep( 1000 * atoi( settings_get( "text.delay" ) ) );
-#ifdef INFOBANNER
   destroy_info_remove( info_window );
-#else
-  destroy_info_remove( c );
-#endif
   pthread_exit( NULL );
   return NULL;
 }
@@ -213,22 +191,12 @@ void show_info(Client *c) {
 
   if (!atoi( settings_get( "text.delay" ) )) return;
 
-#ifdef INFOBANNER
   Window *info_window = malloc( sizeof( Window ) );
 	*info_window = create_info_window(c);
-#else
-	XGrabServer(dpy);
-	draw_outline(c);
-#endif
   XFlush(dpy);
   pthread_t thread;
-#ifdef INFOBANNER
   if ( pthread_create( &thread, NULL, (void *)destroy_info, (void *)info_window ) != 0 )
     destroy_info_remove( info_window );
-#else
-  if ( pthread_create( &thread, NULL, (void *)destroy_info, (void *)c ) != 0 )
-    destroy_info_remove( c );
-#endif
 }
 
 static int absmin(int a, int b) {

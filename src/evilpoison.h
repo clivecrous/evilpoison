@@ -17,9 +17,6 @@ typedef struct {
 	unsigned long decorations;
 } PropMwmHints;
 
-/* sanity on options */
-#define INFOBANNER
-
 /* default settings */
 
 #define SPACE           3
