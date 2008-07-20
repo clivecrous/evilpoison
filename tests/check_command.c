@@ -52,7 +52,27 @@ START_TEST ( test_command_execute_doubleDollar )
 {
   command_assign( "greet", greet );
   fail_unless(
-      !strcmp( command_execute( "greet $$" ), "Hello $!" ),
+      !strcmp( command_execute( "greet $$" ), "Hello !" ),
+      "Greeting return value is not correct." );
+  command_unassign( "greet" );
+}
+END_TEST
+
+START_TEST ( test_command_execute_escapedDollar )
+{
+  command_assign( "greet", greet );
+  fail_unless(
+      !strcmp( command_execute( "greet \\$" ), "Hello $!" ),
+      "Greeting return value is not correct." );
+  command_unassign( "greet" );
+}
+END_TEST
+
+START_TEST ( test_command_execute_escapedDoubleDollar )
+{
+  command_assign( "greet", greet );
+  fail_unless(
+      !strcmp( command_execute( "greet \\$\\$" ), "Hello $$!" ),
       "Greeting return value is not correct." );
   command_unassign( "greet" );
 }
@@ -174,6 +194,8 @@ command_suite( void )
     tcase_add_test( tc_assign, test_command_execute_null );
     tcase_add_test( tc_assign, test_command_execute_helloWorld );
     tcase_add_test( tc_assign, test_command_execute_doubleDollar );
+    tcase_add_test( tc_assign, test_command_execute_escapedDollar );
+    tcase_add_test( tc_assign, test_command_execute_escapedDoubleDollar );
     tcase_add_test( tc_assign, test_command_execute_dollarFooDollar );
 
     tcase_add_test( tc_alias, test_command_alias_exists );

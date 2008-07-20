@@ -97,53 +97,54 @@ static char *command_parse_commandline( const char *commandline )
       for (seek_end=seek_start+1; *seek_end && *seek_end!=special_char; seek_end++);
       if (*seek_end)
       {
-        if (seek_end-seek_start < 2 )
-          *result_position++=special_char;
-        else
+        char *process_text = malloc( (seek_end-seek_start) );
+        strncpy( process_text, seek_start+1, (seek_end-seek_start)-1 );
+        process_text[(seek_end-seek_start)-1]='\0';
+
+        char *process_result = 0;
+
+        switch ( special_char )
         {
-          char *process_text = malloc( (seek_end-seek_start) );
-          strncpy( process_text, seek_start+1, (seek_end-seek_start)-1 );
-          process_text[(seek_end-seek_start)-1]='\0';
-
-          char *process_result = 0;
-
-          switch ( special_char )
-          {
-            case '$':
-              process_result = settings_get( process_text );
-              break;
-            case '!':
-              process_result = command_execute( process_text );
-              break;
-          }
-
-          if ( process_result )
-          {
-            if ( strlen( process_text )+2 != strlen( process_result ) )
-            {
-              unsigned int offset = result_position - result;
-              result=realloc( result,
-                  ( result_size -
-                    ( strlen( process_text ) + 2 ) ) +
-                  strlen( process_result ) );
-              result_position = result + offset;
-
-              result_size += strlen( process_result) -
-                (strlen( process_text ) + 2);
-            }
-
-            strcpy( result_position, process_result );
-            result_position += strlen( process_result );
-          }
-
-          free( process_text );
+          case '$':
+            process_result = settings_get( process_text );
+            break;
+          case '!':
+            process_result = command_execute( process_text );
+            break;
         }
+
+        if ( process_result )
+        {
+          if ( strlen( process_text )+2 != strlen( process_result ) )
+          {
+            unsigned int offset = result_position - result;
+            result=realloc( result,
+                ( result_size -
+                  ( strlen( process_text ) + 2 ) ) +
+                strlen( process_result ) );
+            result_position = result + offset;
+
+            result_size += strlen( process_result) -
+              (strlen( process_text ) + 2);
+          }
+
+          strcpy( result_position, process_result );
+          result_position += strlen( process_result );
+        }
+
+        free( process_text );
+        
         seek_start+=seek_end-seek_start;
       }
     }
-    else *result_position++ = *seek_start;
+    else
+    {
+      if ( special_char == '\\' && *(seek_start+1)) seek_start++;
+      *result_position++ = *seek_start;
+    }
   }
   *result_position='\0';
+
   return result;
 }
 
