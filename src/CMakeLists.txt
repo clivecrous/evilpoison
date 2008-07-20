@@ -1,8 +1,5 @@
 # --- Edit the below definitions to customize your compile ---
 
-# Uncomment to enable solid window drags.  This can be slow on old systems.
-add_definitions(-DSOLIDDRAG)
-
 # Enable a more informative and clear banner to be displayed on Ctrl+Alt+I.
 add_definitions(-DINFOBANNER)
 

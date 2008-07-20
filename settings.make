@@ -17,8 +17,6 @@ DEFINES  = $(EXTRA_DEFINES)
 # add options by setting EXTRA_DEFINES on the make(1) command line,
 # e.g., make EXTRA_DEFINES="-DDEBUG".
 
-# Uncomment to enable solid window drags.  This can be slow on old systems.
-DEFINES += -DSOLIDDRAG
 # Enable a more informative and clear banner to be displayed on Ctrl+Alt+I.
 DEFINES += -DINFOBANNER
 # Uncomment to show the same banner on moves and resizes.  Note this can

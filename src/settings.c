@@ -94,12 +94,10 @@ used.",
       "The value given defines, in pixels, the width of the snap",
       "0", 0 );
 
-#ifdef SOLIDDRAG
   commandline_add( "window.move.display",
       "nswm", "no-solid-window-move",
       "Don't display window contents when moving windows.", 0,
       "1", "0" );
-#endif
 
   atexit( settings_done );
 }
