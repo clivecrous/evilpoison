@@ -1,0 +1,5 @@
+*.swp
+src/*.o
+tests/*.o
+src/evilpoison
+tests/tests
