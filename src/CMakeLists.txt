@@ -7,9 +7,6 @@ add_definitions(-DINFOBANNER)
 # make things very SLOW!
 add_definitions(-DINFOBANNER_MOVERESIZE)
 
-# To support shaped windows properly, uncomment the following two lines:
-add_definitions(-DSHAPE)
-
 # Uncomment to compile in certain text messages like help.  You want this too
 # unless you *really* want to trim the bytes.
 # Note that snprintf(3) is always part of the build.

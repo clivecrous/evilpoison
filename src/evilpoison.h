@@ -3,9 +3,7 @@
 #include <X11/Xmd.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
-#ifdef SHAPE
 #include <X11/extensions/shape.h>
-#endif
 
 /* Required for interpreting MWM hints: */
 #define _XA_MWM_HINTS           "_MOTIF_WM_HINTS"
@@ -125,9 +123,7 @@ extern Cursor       move_curs;
 extern Cursor       resize_curs;
 extern int          num_screens;
 extern ScreenInfo   *screens;
-#ifdef SHAPE
 extern int          have_shape, shape_event;
-#endif
 
 /* Standard X protocol atoms */
 extern Atom xa_wm_state;

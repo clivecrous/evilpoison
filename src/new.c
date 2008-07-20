@@ -97,12 +97,10 @@ void make_new_client(Window w, ScreenInfo *s) {
 
 	reparent(c);
 
-#ifdef SHAPE
 	if (have_shape) {
 	    XShapeSelectInput(dpy, c->window, ShapeNotifyMask);
 	    set_shape(c);
 	}
-#endif
 
 	/* Only map the window frame (and thus the window) if it's supposed
 	 * to be visible on this virtual desktop. */

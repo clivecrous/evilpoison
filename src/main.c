@@ -24,9 +24,7 @@ Cursor      move_curs;
 Cursor      resize_curs;
 int         num_screens;
 ScreenInfo  *screens;
-#ifdef SHAPE
 int         have_shape, shape_event;
-#endif
 
 /* Standard X protocol atoms */
 Atom xa_wm_state;
@@ -201,12 +199,10 @@ static void setup_display(void) {
 	    attr.event_mask |= EnterWindowMask;
 
 	/* SHAPE extension? */
-#ifdef SHAPE
 	{
 		int e_dummy;
 		have_shape = XShapeQueryExtension(dpy, &shape_event, &e_dummy);
 	}
-#endif
 
 	/* now set up each screen in turn */
 	num_screens = ScreenCount(dpy);

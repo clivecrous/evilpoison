@@ -10,7 +10,7 @@ prefix = $(DESTDIR)/usr
 XROOT    = /usr/X11R6
 INCLUDES = -I$(XROOT)/include
 LDPATH   = -L$(XROOT)/lib
-LIBS     = -lX11 -lpthread
+LIBS     = -lX11 -lpthread -lXext
 
 DEFINES  = $(EXTRA_DEFINES)
 # Configure evilpoison by editing the following DEFINES lines.  You can also
@@ -22,10 +22,6 @@ DEFINES += -DINFOBANNER
 # Uncomment to show the same banner on moves and resizes.  Note this can
 # make things very SLOW!
 DEFINES += -DINFOBANNER_MOVERESIZE
-
-# To support shaped windows properly, uncomment the following two lines:
-DEFINES += -DSHAPE
-LIBS	+= -lXext
 
 # Uncomment to compile in certain text messages like help.  You want this too
 # unless you *really* want to trim the bytes.

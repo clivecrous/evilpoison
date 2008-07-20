@@ -282,13 +282,11 @@ static void handle_mappingnotify_event(XMappingEvent *e) {
 	}
 }
 
-#ifdef SHAPE
 static void handle_shape_event(XShapeEvent *e) {
 	Client *c = find_client(e->window);
 	if (c)
 		set_shape(c);
 }
-#endif
 
 void event_main_loop(void) {
 	XEvent ev;
@@ -314,12 +312,10 @@ void event_main_loop(void) {
 				handle_unmap_event(&ev.xunmap); break;
 			case MappingNotify:
 				handle_mappingnotify_event(&ev.xmapping); break;
-#ifdef SHAPE
 			default:
 				if (have_shape && ev.type == shape_event) {
 					handle_shape_event((XShapeEvent *)&ev);
 				}
-#endif
 		}
 		if (need_client_tidy) {
 			Client *c, *nc;

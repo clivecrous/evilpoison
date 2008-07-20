@@ -215,7 +215,6 @@ static int send_xmessage(Window w, Atom a, long x) {
 	return XSendEvent(dpy, w, False, NoEventMask, &ev);
 }
 
-#ifdef SHAPE
 void set_shape(Client *c) {
 	int bounding_shaped;
 	int i, b;  unsigned int u;  /* dummies */
@@ -231,4 +230,3 @@ void set_shape(Client *c) {
 				c->window, ShapeBounding, ShapeSet);
 	}
 }
-#endif
