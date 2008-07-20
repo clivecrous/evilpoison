@@ -13,9 +13,6 @@ add_definitions(-DINFOBANNER_MOVERESIZE)
 # To support shaped windows properly, uncomment the following two lines:
 add_definitions(-DSHAPE)
 
-# Uncomment for mouse support.  You probably want this.
-add_definitions(-DMOUSE)
-
 # Uncomment for snap-to-border support (thanks, Neil Drumm)
 # Start evilpoison with -snap num to enable (num is proximity in pixels to snap to)
 add_definitions(-DSNAP)

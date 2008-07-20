@@ -134,7 +134,6 @@ static void handle_key_event(XKeyEvent *e) {
 
 }
 
-#ifdef MOUSE
 static void handle_button_event(XButtonEvent *e) {
 	Client *c = find_client(e->window);
 
@@ -161,7 +160,6 @@ static void handle_button_event(XButtonEvent *e) {
       break;
   }
 }
-#endif
 
 static void handle_configure_request(XConfigureRequestEvent *e) {
 	Client *c = find_client(e->window);
@@ -300,10 +298,8 @@ void event_main_loop(void) {
 		switch (ev.type) {
 			case KeyPress:
 				handle_key_event(&ev.xkey); break;
-#ifdef MOUSE
 			case ButtonPress:
 				handle_button_event(&ev.xbutton); break;
-#endif
 			case ConfigureRequest:
 				handle_configure_request(&ev.xconfigurerequest); break;
 			case MapRequest:

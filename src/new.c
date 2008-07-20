@@ -111,11 +111,6 @@ void make_new_client(Window w, ScreenInfo *s) {
 		unhide(c, RAISE);
 		if (!atoi(settings_get("mouse.focus")))
 		    select_client(c);
-#ifndef MOUSE
-		setmouse(c->window, c->width + c->border - 1,
-				c->height + c->border - 1);
-		discard_enter_events();
-#endif
 	}
 	else {
 		set_wm_state(c, IconicState);
@@ -186,16 +181,12 @@ static void init_geometry(Client *c) {
 		c->x = attr.x;
 		c->y = attr.y;
 	} else {
-#ifdef MOUSE
 		int xmax = DisplayWidth(dpy, c->screen->screen);
 		int ymax = DisplayHeight(dpy, c->screen->screen);
 		int x, y;
 		get_mouse_position(&x, &y, c->screen->root);
 		c->x = (x * (xmax - c->border - c->width)) / xmax;
 		c->y = (y * (ymax - c->border - c->height)) / ymax;
-#else
-		c->x = c->y = c->border;
-#endif
 		send_config(c);
 	}
 
@@ -231,9 +222,7 @@ static void reparent(Client *c) {
 	XSetWindowBorderWidth(dpy, c->window, 0);
 	XReparentWindow(dpy, c->window, c->parent, 0, 0);
 	XMapWindow(dpy, c->window);
-#ifdef MOUSE
 	grab_button(c->parent, grabmask2, AnyButton);
-#endif
 }
 
 /* Get WM_NORMAL_HINTS property */

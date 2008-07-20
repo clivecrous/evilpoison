@@ -105,7 +105,6 @@ static void remove_info_window(Window info_window) {
 }
 #endif  /* INFOBANNER */
 
-#if defined(MOUSE) || !defined(INFOBANNER)
 static void draw_outline(Client *c) {
   XGCValues gv;
   GC gc;
@@ -143,7 +142,6 @@ static void draw_outline(Client *c) {
 #endif  /* ndef INFOBANNER_MOVERESIZE */
   XFreeGC( dpy, gc );
 }
-#endif
 
 static void recalculate_sweep(Client *c, int x1, int y1, int x2, int y2) {
 	c->width = abs(x1 - x2);
@@ -158,7 +156,6 @@ static void recalculate_sweep(Client *c, int x1, int y1, int x2, int y2) {
 	c->y = (y1 <= y2) ? y1 : y1 - c->height;
 }
 
-#ifdef MOUSE
 void sweep(Client *c) {
 	XEvent ev;
 	int old_cx = c->x;
@@ -202,7 +199,6 @@ void sweep(Client *c) {
 		}
 	}
 }
-#endif
 
 #ifdef INFOBANNER
 void destroy_info_remove(Window *info_window);
@@ -262,7 +258,6 @@ void show_info(Client *c) {
 #endif
 }
 
-#ifdef MOUSE
 #ifdef SNAP
 static int absmin(int a, int b) {
 	if (abs(a) < abs(b))
@@ -382,7 +377,6 @@ void drag(Client *c) {
 		}
 	}
 }
-#endif /* def MOUSE */
 
 /** Set a client as not-maximised.
  * \param client The client window to set.

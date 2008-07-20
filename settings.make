@@ -29,9 +29,6 @@ DEFINES += -DINFOBANNER_MOVERESIZE
 DEFINES += -DSHAPE
 LIBS	+= -lXext
 
-# Uncomment for mouse support.  You probably want this.
-DEFINES += -DMOUSE
-
 # Uncomment for snap-to-border support (thanks, Neil Drumm)
 # Start evilpoison with -snap num to enable (num is proximity in pixels to snap to)
 DEFINES += -DSNAP
