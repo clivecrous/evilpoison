@@ -61,14 +61,15 @@ void command_unassign(const char *command)
  *    echo hello $foo$ world
  * will result in the following:
  *    echo hello bar world
- * a double $$ will result in a single $   
-
+ *
  * In the same way that $foo$ is handled one can call commands within commands
- * using !! for example:
+ * using !foo! for example:
  *    echo Today is !exec.here date! !!
  * will result in something like:
  *    echo Today is Sat Nov 25 14:36:23 SAST 2006 !
- * a double !! will result in a single !
+ *    
+ * backslash is used to escape the character following it.
+ *
  * \param commandline Any normal commandline.
  * \return A commandline with variable values injected.
  */
