@@ -3,3 +3,5 @@ src/*.o
 tests/*.o
 src/evilpoison
 tests/tests
+doc/html
+doc/latex
