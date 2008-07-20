@@ -149,7 +149,6 @@ char *evilpoison_command_window_maximize_horizontal(char *UNUSED(commandline))
     return 0;
 }
 
-#ifdef VWM
 char *evilpoison_command_window_float(char *UNUSED(commandline))
 {
     if (current) float_client(current);
@@ -179,7 +178,6 @@ char *evilpoison_command_desk_other(char *UNUSED(commandline))
 	switch_vdesk(current_screen, current_screen->other_vdesk);
     return 0;
 }
-#endif
 
 static void apply_client_position(Client *client) {
     moveresize(client);
@@ -403,13 +401,11 @@ void evilpoison_commands_init( void )
   command_assign( "window.maximize.horizontal",
       evilpoison_command_window_maximize_horizontal );
 
-#ifdef VWM
   command_assign( "window.float",    evilpoison_command_window_float );
   command_assign( "desk.next",    evilpoison_command_desk_next );
   command_assign( "desk.prev",    evilpoison_command_desk_prev );
   command_assign( "desk.switch",   evilpoison_command_desk_switch );
   command_assign( "desk.other",   evilpoison_command_desk_other );
-#endif
 
   command_assign( "window.close", evilpoison_command_window_close );
   command_assign( "window.kill", evilpoison_command_window_kill );

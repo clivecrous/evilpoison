@@ -86,10 +86,8 @@ typedef struct ScreenInfo ScreenInfo;
 struct ScreenInfo {
 	int screen;
 	Window root;
-#ifdef VWM
 	int vdesk;
 	int other_vdesk;
-#endif
 	char *display;
 };
 
@@ -115,10 +113,8 @@ struct Client {
 	int             base_width, base_height;
 	int             win_gravity;
 	int             old_border;
-#ifdef VWM
 	int             vdesk;
 	int             sticky;
-#endif
 	int             remove;  /* set when client needs to be removed */
 	Client  *next;
 };
@@ -143,11 +139,9 @@ extern Atom xa_wm_cmapwins;
 /* Motif atoms */
 extern Atom mwm_hints;
 /* EWMH atoms */
-#ifdef VWM
 extern Atom xa_net_wm_desktop;
 extern Atom xa_net_wm_state;
 extern Atom xa_net_wm_state_sticky;
-#endif
 
 /* Things that affect user interaction */
 extern unsigned int     numlockmask;
@@ -165,9 +159,7 @@ extern volatile Window  initialising;
 Client *find_client(Window w);
 void gravitate_client(Client *c, int sign);
 void select_client(Client *c);
-#ifdef VWM
 void float_client(Client *c);
-#endif
 void remove_client(Client *c);
 void send_config(Client *c);
 void send_wm_delete(Client *c, int kill_client);
@@ -205,17 +197,13 @@ void sweep(Client *c);
 void unhide(Client *c, int raise_win);
 void next(void);
 void previous(void);
-#ifdef VWM
 void hide(Client *c);
 void switch_vdesk(ScreenInfo *s, int v);
-#endif
 ScreenInfo *find_screen(Window root);
 ScreenInfo *find_current_screen(void);
 void grab_keys_for_screen(ScreenInfo *s);
 
 /* ewmh.c */
 
-#ifdef VWM
 void update_net_wm_desktop(Client *c);
 void update_net_wm_state(Client *c);
-#endif

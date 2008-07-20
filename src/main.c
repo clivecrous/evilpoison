@@ -36,11 +36,9 @@ Atom xa_wm_cmapwins;
 /* Motif atoms */
 Atom mwm_hints;
 /* EWMH atoms */
-#ifdef VWM
 Atom xa_net_wm_desktop;
 Atom xa_net_wm_state;
 Atom xa_net_wm_state_sticky;
-#endif
 
 /* Things that affect user interaction */
 unsigned int numlockmask = 0;
@@ -172,11 +170,9 @@ static void setup_display(void) {
 	/* Motif atoms */
 	mwm_hints = XInternAtom(dpy, _XA_MWM_HINTS, False);
 	/* EWMH atoms */
-#ifdef VWM
 	xa_net_wm_desktop = XInternAtom(dpy, "_NET_WM_DESKTOP", False);
 	xa_net_wm_state = XInternAtom(dpy, "_NET_WM_STATE", False);
 	xa_net_wm_state_sticky = XInternAtom(dpy, "_NET_WM_STATE_STICKY", False);
-#endif
 
   XFontStruct *font;
 	font = XLoadQueryFont(dpy, settings_get( "text.font" ) );
@@ -244,10 +240,8 @@ static void setup_display(void) {
 
 		screens[i].screen = i;
 		screens[i].root = RootWindow(dpy, i);
-#ifdef VWM
 		screens[i].vdesk = 0;
 		screens[i].other_vdesk = 0;
-#endif
 
 		XChangeWindowAttributes(dpy, screens[i].root, CWEventMask, &attr);
 		grab_keys_for_screen(&screens[i]);

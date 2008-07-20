@@ -290,9 +290,7 @@ static void snap_client(Client *c) {
 	for (ci = head_client; ci; ci = ci->next) {
 		if (ci != c
 				&& (ci->screen == c->screen)
-#ifdef VWM
 				&& (ci->vdesk == c->vdesk)
-#endif
 				) {
 			if (ci->y - ci->border - c->border - c->height - c->y <= border_snap && c->y - c->border - ci->border - ci->height - ci->y <= border_snap) {
 				dx = absmin(dx, ci->x + ci->width - c->x + c->border + ci->border);
@@ -452,7 +450,6 @@ void maximise_client(Client *c, int hv) {
 	discard_enter_events();
 }
 
-#ifdef VWM
 void hide(Client *c) {
 	/* This will generate an unmap event.  Tell event handler
 	 * to ignore it. */
@@ -461,7 +458,6 @@ void hide(Client *c) {
 	XUnmapWindow(dpy, c->parent);
 	set_wm_state(c, IconicState);
 }
-#endif
 
 void unhide(Client *c, int raise_win) {
 	raise_win ? XMapRaised(dpy, c->parent) : XMapWindow(dpy, c->parent);
@@ -473,11 +469,9 @@ static void nextprev( Client *change_to )
   if (!change_to) return;
   if (change_to == current) return;
 
-#ifdef VWM
   // Disallow changing across vdesks.
   ScreenInfo *current_screen = find_current_screen();
   if ( !current_screen || change_to->vdesk != current_screen->vdesk ) return;
-#endif
 
 	unhide(change_to, RAISE);
 	select_client(change_to);
@@ -520,7 +514,6 @@ void previous(void)
   nextprev( newc );
 }
 
-#ifdef VWM
 void switch_vdesk(ScreenInfo *s, int v) {
 	Client *c;
 #ifdef DEBUG
@@ -556,7 +549,6 @@ void switch_vdesk(ScreenInfo *s, int v) {
 	s->vdesk = v;
 	LOG_DEBUG(" (%d hidden, %d raised)\n", hidden, raised);
 }
-#endif /* def VWM */
 
 ScreenInfo *find_screen(Window root) {
 	int i;

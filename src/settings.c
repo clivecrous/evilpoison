@@ -21,9 +21,7 @@ void settings_init( void )
 
   settings_set( "version", VERSION );
 
-#ifdef  VWM
   settings_set( "border.colour.float.inactive", "grey50" );
-#endif
 
   settings_set( "mouse.focus", "1" );
 
@@ -65,7 +63,6 @@ used.",
       "Inactive window's border colour.", 0,
       "grey50", 0 );
 
-#ifdef VWM
   commandline_add( "border.colour.float.active",
       "fc", "border-colour-float-active",
       "Active window's border colour when it's floating across desktops.", 0,
@@ -74,7 +71,6 @@ used.",
       "bc", "border-colour-float-inactive",
       "Inactive window's border colour when it's floating across desktops.", 0,
       "grey50", 0 );
-#endif
 
   commandline_add( "border.width",
       "bw", "border-width",

@@ -25,9 +25,6 @@ DEFINES += -DINFOBANNER
 # make things very SLOW!
 DEFINES += -DINFOBANNER_MOVERESIZE
 
-# To support virtual desktops, uncomment the following line.
-DEFINES += -DVWM
-
 # To support shaped windows properly, uncomment the following two lines:
 DEFINES += -DSHAPE
 LIBS	+= -lXext

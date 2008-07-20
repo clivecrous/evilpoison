@@ -78,14 +78,10 @@ static void handle_key_event(XKeyEvent *e) {
   global_cmdmode = 0;
 	Client *c;
 
-#ifdef VWM
   ScreenInfo *current_screen;
-#endif
 
   c = current;
-#ifdef VWM
   current_screen = find_current_screen();
-#endif
 
   if (XGrabKeyboard(dpy, e->root, GrabModeAsync, False, GrabModeAsync, CurrentTime) == GrabSuccess) {
     Cursor command_mode_cursor = XCreateFontCursor( dpy, XC_icon );
@@ -218,10 +214,8 @@ static void handle_map_request(XMapRequestEvent *e) {
 	Client *c = find_client(e->window);
 
 	if (c) {
-#ifdef VWM
 		if (c->vdesk != c->screen->vdesk)
 			switch_vdesk(c->screen, c->vdesk);
-#endif
 		unhide(c, RAISE);
 	} else {
 		XWindowAttributes attr;
@@ -276,10 +270,8 @@ static void handle_enter_event(XCrossingEvent *e) {
 	if (!atoi(settings_get("mouse.focus"))) return;
 
 	if ((c = find_client(e->window))) {
-#ifdef VWM
 		if (c->vdesk != c->screen->vdesk)
 			return;
-#endif
 		select_client(c);
 	}
 }

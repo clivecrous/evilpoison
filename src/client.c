@@ -105,23 +105,19 @@ void select_client(Client *c) {
 	if (current)
   {
     XAllocNamedColor(dpy, DefaultColormap(dpy, current->screen->screen), settings_get( "border.colour.inactive" ), &border_colour_inactive, &dummy);
-#ifdef VWM
     XAllocNamedColor(dpy, DefaultColormap(dpy, current->screen->screen), settings_get( "border.colour.float.inactive" ), &border_colour_float_inactive, &dummy);
 		if (is_sticky(current))
 			bpixel = border_colour_float_inactive.pixel;
 		else
-#endif
 			bpixel = border_colour_inactive.pixel;
 		XSetWindowBorder(dpy, current->parent, bpixel);
   }
 	if (c) {
     XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.active" ), &border_colour_active, &dummy);
-#ifdef VWM
     XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.float.active" ), &border_colour_float_active, &dummy);
 		if (is_sticky(c))
 			bpixel = border_colour_float_active.pixel;
 		else
-#endif
 			bpixel = border_colour_active.pixel;
 		XSetWindowBorder(dpy, c->parent, bpixel);
 #ifdef COLOURMAP
@@ -132,13 +128,11 @@ void select_client(Client *c) {
 	current = c;
 }
 
-#ifdef VWM
 void float_client(Client *c) {
 	toggle_sticky(c);
 	select_client(c);
 	update_net_wm_state(c);
 }
-#endif
 
 void remove_client(Client *c) {
 	Client *p;
@@ -160,10 +154,8 @@ void remove_client(Client *c) {
 	if (c->remove) {
 		LOG_DEBUG("\tremove_client() : setting WithdrawnState\n");
 		set_wm_state(c, WithdrawnState);
-#ifdef VWM
 		XDeleteProperty(dpy, c->window, xa_net_wm_desktop);
 		XDeleteProperty(dpy, c->window, xa_net_wm_state);
-#endif
 	}
 
 	ungravitate(c);

@@ -8,7 +8,6 @@
 #include "evilpoison.h"
 #include "log.h"
 
-#ifdef VWM
 void update_net_wm_desktop(Client *c) {
 	XChangeProperty(dpy, c->window, xa_net_wm_desktop,
 			XA_CARDINAL, 32, PropModeReplace,
@@ -24,4 +23,3 @@ void update_net_wm_state(Client *c) {
 			XA_ATOM, 32, PropModeReplace,
 			(unsigned char *)&state, i);
 }
-#endif

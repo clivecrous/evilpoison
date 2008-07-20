@@ -10,9 +10,6 @@ add_definitions(-DINFOBANNER)
 # make things very SLOW!
 add_definitions(-DINFOBANNER_MOVERESIZE)
 
-# To support virtual desktops, uncomment the following line.
-add_definitions(-DVWM)
-
 # To support shaped windows properly, uncomment the following two lines:
 add_definitions(-DSHAPE)
 

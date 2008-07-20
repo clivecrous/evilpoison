@@ -108,9 +108,7 @@ void make_new_client(Window w, ScreenInfo *s) {
 
 	/* Only map the window frame (and thus the window) if it's supposed
 	 * to be visible on this virtual desktop. */
-#ifdef VWM
 	if (s->vdesk == c->vdesk)
-#endif
 	{
 		unhide(c, RAISE);
 		if (!atoi(settings_get("mouse.focus")))
@@ -121,12 +119,10 @@ void make_new_client(Window w, ScreenInfo *s) {
 		discard_enter_events();
 #endif
 	}
-#ifdef VWM
 	else {
 		set_wm_state(c, IconicState);
 	}
 	update_net_wm_desktop(c);
-#endif
 }
 
 /* Calls XGetWindowAttributes, XGetWMHints and XGetWMNormalHints to determine
@@ -139,11 +135,9 @@ static void init_geometry(Client *c) {
 	XWindowAttributes attr;
 	unsigned long nitems;
 	PropMwmHints *mprop;
-#ifdef VWM
 	unsigned long i;
 	unsigned long *lprop;
 	Atom *aprop;
-#endif
 
 	if ( (mprop = get_property(c->window, mwm_hints, mwm_hints, &nitems)) ) {
 		if (nitems >= PROP_MWM_HINTS_ELEMENTS
@@ -155,7 +149,6 @@ static void init_geometry(Client *c) {
 		XFree(mprop);
 	}
 
-#ifdef VWM
 	c->vdesk = c->screen->vdesk;
 	if ( (lprop = get_property(c->window, xa_net_wm_desktop, XA_CARDINAL, &nitems)) ) {
 		if (nitems && lprop[0] >=1 && lprop[0] <= 8)
@@ -170,7 +163,6 @@ static void init_geometry(Client *c) {
 		}
 		XFree(aprop);
 	}
-#endif
 
 	/* Get current window attributes */
 	LOG_XDEBUG("XGetWindowAttributes()\n");
