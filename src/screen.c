@@ -113,33 +113,12 @@ static void draw_outline(Client *c) {
 	gv.subwindow_mode = IncludeInferiors;
 	gv.line_width = atoi( settings_get( "border.width" ) );
 
-#ifndef INFOBANNER_MOVERESIZE
-	char buf[27];
-	int width_inc = c->width_inc, height_inc = c->height_inc;
-  XFontStruct *font;
-	gv.font = font->fid;
-  gc = XCreateGC(dpy, c->screen->root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont, &gv);
-#else
   gc = XCreateGC(dpy, c->screen->root, GCFunction | GCSubwindowMode | GCLineWidth, &gv);
-#endif  /* ndef INFOBANNER_MOVERESIZE */
 
 	XDrawRectangle(dpy, c->screen->root, gc,
 		c->x - c->border, c->y - c->border,
 		c->width + c->border, c->height + c->border);
 
-#ifndef INFOBANNER_MOVERESIZE
-	font = XLoadQueryFont(dpy, settings_get( "text.font" ) );
-  if (font)
-  {
-    snprintf(buf, sizeof(buf), "%dx%d+%d+%d", (c->width-c->base_width)/width_inc,
-        (c->height-c->base_height)/height_inc, c->x, c->y);
-    XDrawString(dpy, c->screen->root, gc,
-      c->x + c->width - XTextWidth(font, buf, strlen(buf)) - SPACE,
-      c->y + c->height - SPACE,
-      buf, strlen(buf));
-    XUnloadFont( dpy, font );
-  }
-#endif  /* ndef INFOBANNER_MOVERESIZE */
   XFreeGC( dpy, gc );
 }
 
@@ -164,9 +143,7 @@ void sweep(Client *c) {
 	if (!grab_pointer(c->screen->root, MouseMask, resize_curs)) return;
 
 	XRaiseWindow(dpy, c->parent);
-#ifdef INFOBANNER_MOVERESIZE
 	Window info_window = create_info_window(c);
-#endif
 	XGrabServer(dpy);
 	draw_outline(c);
 
@@ -179,9 +156,7 @@ void sweep(Client *c) {
 				draw_outline(c); /* clear */
 				XUngrabServer(dpy);
 				recalculate_sweep(c, old_cx, old_cy, ev.xmotion.x, ev.xmotion.y);
-#ifdef INFOBANNER_MOVERESIZE
 				update_info_window(c,info_window);
-#endif
 				XSync(dpy, False);
 				XGrabServer(dpy);
 				draw_outline(c);
@@ -189,9 +164,7 @@ void sweep(Client *c) {
 			case ButtonRelease:
 				draw_outline(c); /* clear */
 				XUngrabServer(dpy);
-#ifdef INFOBANNER_MOVERESIZE
 				remove_info_window(info_window);
-#endif
 				XUngrabPointer(dpy, CurrentTime);
 				moveresize(c);
 				return;
@@ -321,9 +294,7 @@ void drag(Client *c) {
 	if (!grab_pointer(c->screen->root, MouseMask, move_curs)) return;
 	XRaiseWindow(dpy, c->parent);
 	get_mouse_position(&x1, &y1, c->screen->root);
-#ifdef INFOBANNER_MOVERESIZE
 	Window info_window = create_info_window(c);
-#endif
 	if (!move_display) {
 		XGrabServer(dpy);
 		draw_outline(c);
@@ -342,9 +313,7 @@ void drag(Client *c) {
 				if ( atoi( settings_get( "border.snap" ) ) )
 					snap_client(c);
 
-#ifdef INFOBANNER_MOVERESIZE
 				update_info_window(c,info_window);
-#endif
 				if (!move_display) {
 					XSync(dpy, False);
 					XGrabServer(dpy);
@@ -361,9 +330,7 @@ void drag(Client *c) {
 					draw_outline(c); /* clear */
 					XUngrabServer(dpy);
 				}
-#ifdef INFOBANNER_MOVERESIZE
 				remove_info_window(info_window);
-#endif
 				XUngrabPointer(dpy, CurrentTime);
 				if (!move_display) {
 					moveresize(c);

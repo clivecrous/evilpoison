@@ -19,9 +19,6 @@ DEFINES  = $(EXTRA_DEFINES)
 
 # Enable a more informative and clear banner to be displayed on Ctrl+Alt+I.
 DEFINES += -DINFOBANNER
-# Uncomment to show the same banner on moves and resizes.  Note this can
-# make things very SLOW!
-DEFINES += -DINFOBANNER_MOVERESIZE
 
 # Uncomment to compile in certain text messages like help.  You want this too
 # unless you *really* want to trim the bytes.

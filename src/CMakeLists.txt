@@ -3,10 +3,6 @@
 # Enable a more informative and clear banner to be displayed on Ctrl+Alt+I.
 add_definitions(-DINFOBANNER)
 
-# Uncomment to show the same banner on moves and resizes.  Note this can
-# make things very SLOW!
-add_definitions(-DINFOBANNER_MOVERESIZE)
-
 # Uncomment to compile in certain text messages like help.  You want this too
 # unless you *really* want to trim the bytes.
 # Note that snprintf(3) is always part of the build.

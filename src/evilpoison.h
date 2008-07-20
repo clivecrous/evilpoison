@@ -18,9 +18,7 @@ typedef struct {
 } PropMwmHints;
 
 /* sanity on options */
-#if defined(INFOBANNER_MOVERESIZE) && !defined(INFOBANNER)
-# define INFOBANNER
-#endif
+#define INFOBANNER
 
 /* default settings */
 
