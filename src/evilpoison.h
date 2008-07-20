@@ -98,9 +98,7 @@ struct Client {
 	Window  window;
 	Window  parent;
 	ScreenInfo      *screen;
-#ifdef COLOURMAP
 	Colormap        cmap;
-#endif
 	int             ignore_unmap;
 
 	int             x, y, width, height;

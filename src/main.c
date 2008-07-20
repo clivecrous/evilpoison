@@ -164,9 +164,7 @@ static void setup_display(void) {
 	xa_wm_state = XInternAtom(dpy, "WM_STATE", False);
 	xa_wm_protos = XInternAtom(dpy, "WM_PROTOCOLS", False);
 	xa_wm_delete = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-#ifdef COLOURMAP
 	xa_wm_cmapwins = XInternAtom(dpy, "WM_COLORMAP_WINDOWS", False);
-#endif
 	/* Motif atoms */
 	mwm_hints = XInternAtom(dpy, _XA_MWM_HINTS, False);
 	/* EWMH atoms */
@@ -198,11 +196,7 @@ static void setup_display(void) {
 	XFreeModifiermap(modmap);
 
 	/* set up root window attributes - same for each screen */
-#ifdef COLOURMAP
 	attr.event_mask = ChildMask | ColormapChangeMask;
-#else
-	attr.event_mask = ChildMask;
-#endif
 	if (atoi(settings_get("mouse.focus")))
 	    attr.event_mask |= EnterWindowMask;
 

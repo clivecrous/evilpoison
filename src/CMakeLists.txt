@@ -25,10 +25,6 @@ add_definitions(-DSNAP)
 # Note that snprintf(3) is always part of the build.
 add_definitions(-DSTDIO)
 
-# You can save a few bytes if you know you won't need colour map support
-# (e.g., for 16 or more bit displays)
-add_definitions(-DCOLOURMAP)
-
 # === You should not be editing anything below this line ===
 
 add_definitions(-DVERSION='"${VERSION}"')

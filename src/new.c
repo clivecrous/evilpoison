@@ -89,9 +89,7 @@ void make_new_client(Window w, ScreenInfo *s) {
 #endif
 
 	eventmask = PropertyChangeMask;
-#ifdef COLOURMAP
 	eventmask |= ColormapChangeMask;
-#endif
 	if (atoi(settings_get("mouse.focus")))
 	    eventmask |= EnterWindowMask;
 
@@ -170,9 +168,7 @@ static void init_geometry(Client *c) {
 	LOG_XDEBUG("\t(%s) %dx%d+%d+%d, bw = %d\n", map_state_string(attr.map_state), attr.width, attr.height, attr.x, attr.y, attr.border_width);
 	c->old_border = attr.border_width;
 	c->oldw = c->oldh = 0;
-#ifdef COLOURMAP
 	c->cmap = attr.colormap;
-#endif
 
 	size_flags = get_wm_normal_hints(c);
 

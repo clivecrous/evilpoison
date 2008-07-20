@@ -120,9 +120,7 @@ void select_client(Client *c) {
 		else
 			bpixel = border_colour_active.pixel;
 		XSetWindowBorder(dpy, c->parent, bpixel);
-#ifdef COLOURMAP
 		XInstallColormap(dpy, c->cmap);
-#endif
 		XSetInputFocus(dpy, c->window, RevertToPointerRoot, CurrentTime);
 	}
 	current = c;
