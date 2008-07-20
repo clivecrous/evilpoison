@@ -1,4 +1,4 @@
-.PHONY: default doc src tests clean all
+.PHONY: default doc src test tests clean all
 
 default: src
 
@@ -9,6 +9,9 @@ src:
 
 tests: src
 	$(MAKE) -C tests
+
+test: tests
+	tests/tests
 
 doc:
 	doxygen doxygen.config
