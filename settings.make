@@ -45,11 +45,6 @@ DEFINES += -DSTDIO
 # (e.g., for 16 or more bit displays)
 DEFINES += -DCOLOURMAP
 
-# Uncomment the following line if you want to use Ctrl+Alt+q to kill windows
-# instead of Ctrl+Alt+Escape (or just set it to what you want).  This is
-# useful under XFree86/Cygwin and VMware (probably)
-#DEFINES += -DKEY_KILL=XK_q
-
 # Print whatever debugging messages I've left in this release.
 #DEFINES += -DDEBUG	# miscellaneous debugging
 
