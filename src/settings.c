@@ -88,13 +88,11 @@ used.",
       0,
       "0", "1" );
 
-#ifdef SNAP
   commandline_add( "border.snap",
       "snap", "border-snap",
       "Snap to window borders",
       "The value given defines, in pixels, the width of the snap",
       "0", 0 );
-#endif
 
 #ifdef SOLIDDRAG
   commandline_add( "window.move.display",

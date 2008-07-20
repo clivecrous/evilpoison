@@ -29,10 +29,6 @@ DEFINES += -DINFOBANNER_MOVERESIZE
 DEFINES += -DSHAPE
 LIBS	+= -lXext
 
-# Uncomment for snap-to-border support (thanks, Neil Drumm)
-# Start evilpoison with -snap num to enable (num is proximity in pixels to snap to)
-DEFINES += -DSNAP
-
 # Uncomment to compile in certain text messages like help.  You want this too
 # unless you *really* want to trim the bytes.
 # Note that snprintf(3) is always part of the build.
