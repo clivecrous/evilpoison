@@ -155,6 +155,17 @@ START_TEST ( test_command_execute_hashIgnored )
 }
 END_TEST
 
+START_TEST ( test_command_execute_hashEscaped )
+{
+  char *command_execute_result;
+  command_assign( "greet", greet );
+  fail_unless(
+      !strcmp( command_execute_result = command_execute( "greet \\#Hash\\#" ), "Hello #Hash#!" ),
+      "Result was '%s' instead of 'Hello #Hash#!'\n", command_execute_result );
+  command_unassign( "greet" );
+}
+END_TEST
+
 START_TEST ( test_command_alias_exists )
 {
   command_assign( "greet", greet );
@@ -265,6 +276,7 @@ command_suite( void )
     tcase_add_test( tc_assign, test_command_execute_set );
     tcase_add_test( tc_assign, test_command_execute_twoCommands );
     tcase_add_test( tc_assign, test_command_execute_hashIgnored );
+    tcase_add_test( tc_assign, test_command_execute_hashEscaped );
 
     tcase_add_test( tc_alias, test_command_alias_exists );
 
