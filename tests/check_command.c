@@ -138,6 +138,34 @@ START_TEST ( test_command_execute_twoCommands )
 }
 END_TEST
 
+START_TEST ( test_command_execute_hashIgnored )
+{
+  char *command_execute_result;
+  settings_set( "foo", "bar" );
+  command_assign( "greet", greet );
+  command_assign( "set", set );
+  fail_unless(
+      !strcmp( command_execute_result = command_execute( "greet $foo$#!set foo baz!" ), "Hello bar!" ),
+      "Result was '%s' instead of 'Hello bar!'\n", command_execute_result );
+  fail_unless( !strcmp( settings_get( "foo" ), "bar" ),
+      "Setting `foo` should be 'bar' not '%s'\n", settings_get( "foo" ) );
+  command_unassign( "set" );
+  command_unassign( "greet" );
+  settings_unset( "foo" );
+}
+END_TEST
+
+START_TEST ( test_command_execute_hashEscaped )
+{
+  char *command_execute_result;
+  command_assign( "greet", greet );
+  fail_unless(
+      !strcmp( command_execute_result = command_execute( "greet \\#Hash\\#" ), "Hello #Hash#!" ),
+      "Result was '%s' instead of 'Hello #Hash#!'\n", command_execute_result );
+  command_unassign( "greet" );
+}
+END_TEST
+
 START_TEST ( test_command_alias_exists )
 {
   command_assign( "greet", greet );
@@ -220,7 +248,7 @@ END_TEST
 Suite *
 command_suite( void )
 {
-    Suite *suite = suite_create( "Command" );
+    Suite *suite = suite_create( "command.c" );
     
     command_init();
 
@@ -247,6 +275,8 @@ command_suite( void )
     tcase_add_test( tc_assign, test_command_execute_dollarFooDollar );
     tcase_add_test( tc_assign, test_command_execute_set );
     tcase_add_test( tc_assign, test_command_execute_twoCommands );
+    tcase_add_test( tc_assign, test_command_execute_hashIgnored );
+    tcase_add_test( tc_assign, test_command_execute_hashEscaped );
 
     tcase_add_test( tc_alias, test_command_alias_exists );
 

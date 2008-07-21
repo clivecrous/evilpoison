@@ -108,7 +108,7 @@ END_TEST
 Suite *
 bind_suite( void )
 {
-    Suite *suite = suite_create( "bind" );
+    Suite *suite = suite_create( "bind.c" );
     
     TCase *tc_keycode_convert   = tcase_create( "keycode_convert" );
 
