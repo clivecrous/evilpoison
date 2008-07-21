@@ -13,43 +13,43 @@
 #include "log.h"
 #include "settings.h"
 
-static Window create_info_window(Client *c);
+static Window create_info_window(Client *client);
 static void update_info_window(Client *c, Window info_window);
 static void remove_info_window(Window info_window);
 static void grab_keysym(Window w, unsigned int mask, KeySym keysym);
 
-static Window create_info_window(Client *c) {
+static Window create_info_window(Client *client) {
   XColor text_colour_background;
   XColor text_border_colour;
   XColor dummy;
 
-  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "text.colour.background" ), &text_colour_background, &dummy);
-  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "text.border.colour" ), &text_border_colour, &dummy);
+  XAllocNamedColor(dpy, DefaultColormap(dpy, client->screen->screen), settings_get( "text.colour.background" ), &text_colour_background, &dummy);
+  XAllocNamedColor(dpy, DefaultColormap(dpy, client->screen->screen), settings_get( "text.border.colour" ), &text_border_colour, &dummy);
 
   Window info_window = None;
-	info_window = XCreateSimpleWindow(dpy, c->screen->root, -4, -4, 2, 2,
+	info_window = XCreateSimpleWindow(dpy, client->screen->root, -4, -4, 2, 2,
 			atoi( settings_get( "text.border.width" ) ), text_border_colour.pixel, text_colour_background.pixel);
 	XMapRaised(dpy, info_window);
-	update_info_window(c, info_window);
+	update_info_window(client, info_window);
   return info_window;
 }
 
-static void update_info_window(Client *c, Window info_window) {
+static void update_info_window(Client *client, Window info_window) {
 	char *name;
 	char buf[27];
 	int namew, iwinx, iwiny, iwinw, iwinh, iwinb;
-	int width_inc = c->width_inc, height_inc = c->height_inc;
+	int width_inc = client->width_inc, height_inc = client->height_inc;
   XFontStruct *font;
 
 	if (!info_window) return;
 	font = XLoadQueryFont(dpy, settings_get( "text.font" ) );
   if (!font) return;
   
-	snprintf(buf, sizeof(buf), "%dx%d+%d+%d", (c->width-c->base_width)/width_inc,
-		(c->height-c->base_height)/height_inc, c->x, c->y);
+	snprintf(buf, sizeof(buf), "%dx%d+%d+%d", (client->width-client->base_width)/width_inc,
+		(client->height-client->base_height)/height_inc, client->x, client->y);
 	iwinw = XTextWidth(font, buf, strlen(buf)) + 2;
 	iwinh = font->max_bounds.ascent + font->max_bounds.descent;
-	XFetchName(dpy, c->window, &name);
+	XFetchName(dpy, client->window, &name);
 	if (name) {
 		namew = XTextWidth(font, name, strlen(name));
 		if (namew > iwinw)
@@ -57,14 +57,14 @@ static void update_info_window(Client *c, Window info_window) {
 		iwinh = iwinh * 2;
 	}
   iwinb = atoi( settings_get( "text.border.width" ) )*2;
-	iwinx = c->x + c->width + c->border - ( iwinw + iwinb );
-	iwiny = c->y - c->border;
-	if (iwinx + iwinw + iwinb > DisplayWidth(dpy, c->screen->screen))
-		iwinx = DisplayWidth(dpy, c->screen->screen) - (iwinw + iwinb);
+	iwinx = client->x + client->width + client->border - ( iwinw + iwinb );
+	iwiny = client->y - client->border;
+	if (iwinx + iwinw + iwinb > DisplayWidth(dpy, client->screen->screen))
+		iwinx = DisplayWidth(dpy, client->screen->screen) - (iwinw + iwinb);
 	if (iwinx < 0)
 		iwinx = 0;
-	if (iwiny + iwinh > DisplayHeight(dpy, c->screen->screen))
-		iwiny = DisplayHeight(dpy, c->screen->screen) - iwinh;
+	if (iwiny + iwinh > DisplayHeight(dpy, client->screen->screen))
+		iwiny = DisplayHeight(dpy, client->screen->screen) - iwinh;
 	if (iwiny < 0)
 		iwiny = 0;
 	XMoveResizeWindow(dpy, info_window, iwinx, iwiny, iwinw, iwinh);
@@ -74,7 +74,7 @@ static void update_info_window(Client *c, Window info_window) {
   GC gc;
   XColor text_colour_foreground, dummy;
 
-  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "text.colour.foreground" ), &text_colour_foreground, &dummy);
+  XAllocNamedColor(dpy, DefaultColormap(dpy, client->screen->screen), settings_get( "text.colour.foreground" ), &text_colour_foreground, &dummy);
 
 	gv.function = GXcopy;
 	gv.subwindow_mode = IncludeInferiors;
@@ -82,7 +82,7 @@ static void update_info_window(Client *c, Window info_window) {
 	gv.font = font->fid;
   gv.foreground = text_colour_foreground.pixel;
 
-  gc = XCreateGC(dpy, c->screen->root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont | GCForeground, &gv);
+  gc = XCreateGC(dpy, client->screen->root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont | GCForeground, &gv);
 
 	if (name) {
 		XDrawString(dpy, info_window, gc,
