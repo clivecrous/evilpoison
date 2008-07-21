@@ -15,8 +15,87 @@
 
 static Window create_info_window(Client *client);
 static void update_info_window(Client *c, Window info_window);
-static void remove_info_window(Window info_window);
 static void grab_keysym(Window w, unsigned int mask, KeySym keysym);
+
+void remove_text_window(Window window);
+void remove_text_window(Window window) {
+	if ( window ) XDestroyWindow(dpy, window);
+	window = None;
+}
+
+void destroy_text_window(Window *window);
+void destroy_text_window(Window *window)
+{
+  remove_text_window( *window );
+  free( window );
+  XFlush( dpy );
+}
+
+void *delayed_destroy_text_window(Window *window);
+void *delayed_destroy_text_window(Window *window)
+{
+  usleep( 1000 * atoi( settings_get( "text.delay" ) ) );
+  destroy_text_window( window );
+  pthread_exit( NULL );
+  return NULL;
+}
+
+void internal_echo( char *message )
+{
+  XColor text_colour_background;
+  XColor text_border_colour;
+  XColor dummy;
+
+  ScreenInfo *current_screen = find_current_screen();
+  if (!current_screen) return; // No screen to echo to (yet)
+
+  XAllocNamedColor(dpy, DefaultColormap(dpy, current_screen->screen), settings_get( "text.colour.background" ), &text_colour_background, &dummy);
+  XAllocNamedColor(dpy, DefaultColormap(dpy, current_screen->screen), settings_get( "text.border.colour" ), &text_border_colour, &dummy);
+
+  Window *echo_message_window = malloc( sizeof( Window ) );
+  *echo_message_window = XCreateSimpleWindow(dpy, current_screen->root, -4, -4, 2, 2,
+			atoi( settings_get( "text.border.width" ) ), text_border_colour.pixel, text_colour_background.pixel);
+
+  if (!*echo_message_window) return;
+
+	XMapRaised(dpy, *echo_message_window);
+
+  XFontStruct * font = XLoadQueryFont(dpy, settings_get( "text.font" ) );
+  if (!font) return;
+
+	int window_width = XTextWidth( font, message, strlen(message)) + 8;
+	int window_height = font->max_bounds.ascent + font->max_bounds.descent;
+
+  XMoveResizeWindow(dpy, *echo_message_window, 0, 0, window_width, window_height);
+
+	XClearWindow(dpy, *echo_message_window);
+
+  XGCValues gv;
+  GC gc;
+  XColor text_colour_foreground;
+
+  XAllocNamedColor(dpy, DefaultColormap(dpy, current_screen->screen), settings_get( "text.colour.foreground" ), &text_colour_foreground, &dummy);
+
+	gv.function = GXcopy;
+	gv.subwindow_mode = IncludeInferiors;
+	gv.line_width = atoi( settings_get( "border.width" ) );
+	gv.font = font->fid;
+  gv.foreground = text_colour_foreground.pixel;
+
+  gc = XCreateGC(dpy, current_screen->root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont | GCForeground, &gv);
+
+	XDrawString(dpy, *echo_message_window, gc, 4, window_height - 2,
+			message, strlen(message));
+
+  XFreeGC( dpy, gc );
+  XFreeFont( dpy, font );
+
+  XFlush(dpy);
+
+  pthread_t thread;
+  if ( pthread_create( &thread, NULL, (void *)delayed_destroy_text_window, (void *)echo_message_window ) != 0 )
+    destroy_text_window( echo_message_window );
+}
 
 static Window create_info_window(Client *client) {
   XColor text_colour_background;
@@ -96,12 +175,6 @@ static void update_info_window(Client *client, Window info_window) {
   XFreeFont( dpy, font );
 }
 
-static void remove_info_window(Window info_window) {
-	if (info_window)
-		XDestroyWindow(dpy, info_window);
-	info_window = None;
-}
-
 static void draw_outline(Client *c) {
   XGCValues gv;
   GC gc;
@@ -161,7 +234,7 @@ void sweep(Client *c) {
 			case ButtonRelease:
 				draw_outline(c); /* clear */
 				XUngrabServer(dpy);
-				remove_info_window(info_window);
+				remove_text_window(info_window);
 				XUngrabPointer(dpy, CurrentTime);
 				moveresize(c);
 				return;
@@ -170,33 +243,16 @@ void sweep(Client *c) {
 	}
 }
 
-void destroy_info_remove(Window *info_window);
-void destroy_info_remove(Window *info_window)
-{
-  remove_info_window(*info_window);
-  free( info_window );
-  XFlush(dpy);
-}
-
-void *destroy_info(Window *info_window);
-void *destroy_info(Window *info_window)
-{
-  usleep( 1000 * atoi( settings_get( "text.delay" ) ) );
-  destroy_info_remove( info_window );
-  pthread_exit( NULL );
-  return NULL;
-}
-
-void show_info(Client *c) {
+void show_info(Client *client) {
 
   if (!atoi( settings_get( "text.delay" ) )) return;
 
   Window *info_window = malloc( sizeof( Window ) );
-	*info_window = create_info_window(c);
+	*info_window = create_info_window(client);
   XFlush(dpy);
   pthread_t thread;
-  if ( pthread_create( &thread, NULL, (void *)destroy_info, (void *)info_window ) != 0 )
-    destroy_info_remove( info_window );
+  if ( pthread_create( &thread, NULL, (void *)delayed_destroy_text_window, (void *)info_window ) != 0 )
+    destroy_text_window( info_window );
 }
 
 static int absmin(int a, int b) {
@@ -298,7 +354,7 @@ void drag(Client *c) {
 					draw_outline(c); /* clear */
 					XUngrabServer(dpy);
 				}
-				remove_info_window(info_window);
+				remove_text_window(info_window);
 				XUngrabPointer(dpy, CurrentTime);
 				if (!move_display) {
 					moveresize(c);

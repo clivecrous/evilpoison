@@ -40,6 +40,12 @@ char *evilpoison_command_set(char *commandline)
   return 0;
 }
 
+char *evilpoison_command_echo(char *commandline)
+{
+  internal_echo( commandline );
+  return 0;
+}
+
 char *evilpoison_command_unset(char *commandline)
 {
   settings_unset( commandline );
@@ -387,6 +393,7 @@ void evilpoison_commands_init( void )
 
   command_assign( "bind",   evilpoison_command_bind );
   command_assign( "cmdmode",   evilpoison_command_cmdmode );
+  command_assign( "echo",   evilpoison_command_echo );
   command_assign( "execute.fork",   evilpoison_command_execute_fork );
   command_assign( "execute.here",   evilpoison_command_execute_here );
   command_assign( "window.info",   evilpoison_command_window_info );
@@ -434,8 +441,5 @@ void evilpoison_commands_init( void )
   command_execute(
       "alias window.move.down window.move 0 \\$window.move.velocity\\$" );
 
-  command_execute(
-      "alias echo exec xmessage -fn \"\\$text.font\\$\" -geometry +0+0 \
-      -buttons \"\" -timeout 2" );
 }
 
