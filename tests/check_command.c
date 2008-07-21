@@ -220,7 +220,7 @@ END_TEST
 Suite *
 command_suite( void )
 {
-    Suite *suite = suite_create( "Command" );
+    Suite *suite = suite_create( "command.c" );
     
     command_init();
 

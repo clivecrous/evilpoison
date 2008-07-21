@@ -82,7 +82,7 @@ END_TEST
 Suite *
 settings_suite( void )
 {
-    Suite *suite = suite_create( "Settings" );
+    Suite *suite = suite_create( "settings.c" );
     
     settings_init();
 

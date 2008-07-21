@@ -162,7 +162,7 @@ END_TEST
 Suite *
 dictionary_suite( void )
 {
-    Suite *suite = suite_create( "Dictionary" );
+    Suite *suite = suite_create( "dictionary.c" );
 
     TCase *tc_create    = tcase_create( "create" );
     TCase *tc_set     = tcase_create( "set" );
