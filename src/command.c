@@ -55,6 +55,44 @@ void command_unassign(const char *command)
   dictionary_unset( _commands, command );
 }
 
+char *command_execute_run(const char *command)
+{
+  char *return_value;
+  char *alias;
+  CommandFunction *function;
+
+  while (*command && isblank(*command)) command++;
+
+  char *parameters = command;
+  while (*parameters && !isblank(*parameters)) parameters++;
+  while (*parameters && isblank(*parameters))
+  { *parameters='\0'; parameters++; };
+
+  alias = dictionary_get( _aliases, command );
+  if (alias)
+  {
+    char *aliased_commandline =
+      malloc( strlen( alias ) + 1 + strlen( parameters ) + 1 );
+    if (strlen(parameters))
+      sprintf( aliased_commandline, "%s %s", alias, parameters );
+    else
+      strcpy( aliased_commandline, alias );
+    return_value = command_execute( aliased_commandline );
+    free( aliased_commandline );
+  }
+  else {
+    function = dictionary_get( _commands, command );
+    if (function)
+    {
+      return_value = (*function)( parameters );
+    }
+    else
+      return_value = 0;
+  }
+
+  return return_value;
+}
+
 /** Parse commandline for variables.
  * If a variable named 'foo' exists with the value of "bar" then the following
  * commandline, as given to this parser:
@@ -78,7 +116,7 @@ static char *command_parse_commandline( const char *commandline )
   const char *seek_start;
   const char *seek_end;
 
-  char *result;
+  char *result = NULL;
   char *result_position;
   unsigned int result_size;
 
@@ -92,6 +130,14 @@ static char *command_parse_commandline( const char *commandline )
   for (seek_start = commandline;*seek_start;seek_start++)
   {
     special_char = *seek_start;
+
+    if ( special_char == ';' )
+    {
+      *result_position='\0';
+      command_execute_run( result );
+      free( result );
+      return command_parse_commandline( seek_start+1 );
+    }
 
     if ( special_char == '$' || special_char == '!' )
     {
@@ -151,40 +197,11 @@ static char *command_parse_commandline( const char *commandline )
 
 char *command_execute(const char *commandline)
 {
-  char *return_value;
-  char *alias;
-  CommandFunction *function;
   if (!commandline || !strlen(commandline)) return 0;
 
   char *newcommandline = command_parse_commandline( commandline );
 
-  char *command = newcommandline;
-  while (*command && isblank(*command)) command++;
-
-  char *parameters = command;
-  while (*parameters && !isblank(*parameters)) parameters++;
-  while (*parameters && isblank(*parameters))
-  { *parameters='\0'; parameters++; };
-
-  alias = dictionary_get( _aliases, command );
-  if (alias)
-  {
-    char *aliased_commandline =
-      malloc( strlen( alias ) + 1 + strlen( parameters ) + 1 );
-    if (strlen(parameters))
-      sprintf( aliased_commandline, "%s %s", alias, parameters );
-    else
-      strcpy( aliased_commandline, alias );
-    return_value = command_execute( aliased_commandline );
-    free( aliased_commandline );
-  }
-  else {
-    function = dictionary_get( _commands, command );
-    if (function)
-      return_value = (*function)( parameters );
-    else
-      return_value = 0;
-  }
+  char *return_value = command_execute_run( newcommandline );
 
   free( newcommandline );
 

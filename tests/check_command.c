@@ -15,6 +15,28 @@ char *greet(char *whom)
   return greeting;
 }
 
+char *set(char *commandline);
+char *set(char *commandline)
+{
+  char *newcommandline = malloc( strlen( commandline ) + 1 );
+  strcpy( newcommandline, commandline );
+
+  char *setting = newcommandline;
+  while (*setting && *setting==' ' ) setting++;
+
+  char *value = setting;
+  while (*value && !isblank(*value) ) value++;
+  while (*value && isblank(*value) ) { *value='\0'; value++; };
+
+  settings_set( setting, value );
+
+  free( newcommandline );
+
+  return 0;
+}
+
+/* ---------------------------------------------------------------------- */
+
 START_TEST ( test_command_assign_null )
 {
   command_assign( "foo", NULL );
@@ -85,6 +107,32 @@ START_TEST ( test_command_execute_dollarFooDollar )
   fail_unless(
       !strcmp( command_execute( "greet $foo$" ), "Hello bar!" ),
       "Greeting return value is not correct." );
+  command_unassign( "greet" );
+  settings_unset( "foo" );
+}
+END_TEST
+
+START_TEST ( test_command_execute_set )
+{
+
+  settings_set( "foo", "bar" );
+  command_assign( "set", set );
+  command_execute( "set foo baz" );
+  fail_unless( !strcmp( settings_get( "foo" ), "baz" ), NULL );
+  command_unassign( "set" );
+  settings_unset( "foo" );
+}
+END_TEST
+
+START_TEST ( test_command_execute_twoCommands )
+{
+  settings_set( "foo", "bar" );
+  command_assign( "greet", greet );
+  command_assign( "set", set );
+  fail_unless(
+      !strcmp( command_execute( "set foo baz;greet $foo$" ), "Hello baz!" ),
+      "Greeting return value is not correct." );
+  command_unassign( "set" );
   command_unassign( "greet" );
   settings_unset( "foo" );
 }
@@ -197,6 +245,8 @@ command_suite( void )
     tcase_add_test( tc_assign, test_command_execute_escapedDollar );
     tcase_add_test( tc_assign, test_command_execute_escapedDoubleDollar );
     tcase_add_test( tc_assign, test_command_execute_dollarFooDollar );
+    tcase_add_test( tc_assign, test_command_execute_set );
+    tcase_add_test( tc_assign, test_command_execute_twoCommands );
 
     tcase_add_test( tc_alias, test_command_alias_exists );
 
