@@ -149,7 +149,6 @@ bind v show_version
 exec xterm -rv
 
 # Create a date displaying alias
-alias display_date echo Today\'s date: !!execute.here date!!
+alias display_date echo Today\'s date: \!execute.here date\!
 # Show today's date/time when 'D' is pressed
 bind s-d display_date
-
