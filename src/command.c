@@ -107,6 +107,7 @@ char *command_execute_run(const char *command)
  *    echo Today is Sat Nov 25 14:36:23 SAST 2006 !
  *    
  * backslash is used to escape the character following it.
+ * anything on a line after a hash is ignored.
  *
  * \param commandline Any normal commandline.
  * \return A commandline with variable values injected.
@@ -130,6 +131,12 @@ static char *command_parse_commandline( const char *commandline )
   for (seek_start = commandline;*seek_start;seek_start++)
   {
     special_char = *seek_start;
+
+    if ( special_char == '#' )
+    {
+      *result_position='\0';
+      return result;
+    }
 
     if ( special_char == ';' )
     {
