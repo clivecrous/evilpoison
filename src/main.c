@@ -121,6 +121,8 @@ int main(int argc, char *argv[]) {
 
 	setup_display();
 
+  command_execute( "echo Welcome to EvilPoison $version$" );
+
 	event_main_loop();
 
 	return 1;

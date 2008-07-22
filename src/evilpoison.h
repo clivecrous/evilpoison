@@ -191,6 +191,7 @@ void switch_vdesk(ScreenInfo *s, int v);
 ScreenInfo *find_screen(Window root);
 ScreenInfo *find_current_screen(void);
 void grab_keys_for_screen(ScreenInfo *s);
+void internal_echo( char * message );
 
 /* ewmh.c */
 
