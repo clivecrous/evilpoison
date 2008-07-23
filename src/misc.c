@@ -62,10 +62,17 @@ int handle_xerror(Display *dsply, XErrorEvent *e) {
 
   XGetErrorText( dpy, e->error_code, errorText, sizeof(errorText) );
 
+  if ( e->error_code == 3 )
+  {
+    LOG_DEBUG("handle_xerror() - ignoring BadWindow error, this is probably just a window that was recently closed\n");
+    return 0;
+  }
+
 	if (ignore_xerror) {
 		LOG_DEBUG("handle_xerror() ignored an XErrorEvent: %d\n", e->error_code);
 		return 0;
 	}
+
 	/* If this error actually occurred while setting up the new
 	 * window, best let make_new_client() know not to bother */
 	if (initialising != None && e->resourceid == initialising) {
@@ -77,7 +84,9 @@ int handle_xerror(Display *dsply, XErrorEvent *e) {
   LOG_DEBUG("**********************************************************\n");
   LOG_DEBUG("X ERROR:\n");
   LOG_DEBUG("\t%s\n",errorText);
-  LOG_DEBUG("\trequest code: %d\n",e->request_code);
+  LOG_DEBUG("\ttype: %d\n",e->type);
+  LOG_DEBUG("\terror code: %d\n",e->error_code);
+  LOG_DEBUG("\trequest code: %d.%d\n",e->request_code, e->minor_code);
   LOG_DEBUG("**********************************************************\n");
 
 	if (e->error_code == BadAccess && e->request_code == X_ChangeWindowAttributes) {
