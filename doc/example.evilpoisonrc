@@ -110,8 +110,8 @@ bind	minus	window.maximize.horizontal
 bind	x	window.maximize
 
 # mouse
-bind	comma	mouse.resize
-bind	period	mouse.move
+bind	comma	window.resize.mouse
+bind	period	window.move.mouse
 
 # window stacking
 bind	Insert	window.lower
