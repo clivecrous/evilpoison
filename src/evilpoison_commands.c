@@ -21,6 +21,12 @@
 # define UNUSED(x) x
 #endif
 
+char *evilpoison_command_echo(char *commandline)
+{
+  internal_echo( commandline );
+  return 0;
+}
+
 char *evilpoison_command_set(char *commandline)
 {
   char *newcommandline = malloc( strlen( commandline ) + 1 );
@@ -37,12 +43,6 @@ char *evilpoison_command_set(char *commandline)
 
   free( newcommandline );
 
-  return 0;
-}
-
-char *evilpoison_command_echo(char *commandline)
-{
-  internal_echo( commandline );
   return 0;
 }
 
