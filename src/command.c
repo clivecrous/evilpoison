@@ -15,6 +15,7 @@ Dictionary *_aliases = 0;
 Dictionary *_commands = 0;
 
 static void commands_done( void );
+static char *command_execute_run(char *command);
 
 void command_init( void )
 {
@@ -55,7 +56,7 @@ void command_unassign(const char *command)
   dictionary_unset( _commands, command );
 }
 
-char *command_execute_run(const char *command)
+static char *command_execute_run(char *command)
 {
   char *return_value;
   char *alias;
