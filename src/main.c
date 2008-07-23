@@ -17,6 +17,7 @@
 #include "settings.h"
 #include "evilpoison_commands.h"
 #include "commandline.h"
+#include "xinerama.h"
 
 /* Commonly used X information */
 Display     *dpy;
@@ -205,6 +206,8 @@ static void setup_display(void) {
 		int e_dummy;
 		have_shape = XShapeQueryExtension(dpy, &shape_event, &e_dummy);
 	}
+
+  xinerama_init();
 
 	/* now set up each screen in turn */
 	num_screens = ScreenCount(dpy);
