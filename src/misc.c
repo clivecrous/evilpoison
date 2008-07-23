@@ -58,10 +58,21 @@ int handle_xerror(Display *dsply, XErrorEvent *e) {
 	Client *c;
 	(void)dsply;  /* unused */
 
+  char errorText[1024];
+
+  XGetErrorText( dpy, e->error_code, errorText, sizeof(errorText) );
+
+  if ( e->error_code == 3 )
+  {
+    LOG_DEBUG("handle_xerror() - ignoring BadWindow error, this is probably just a window that was recently closed\n");
+    return 0;
+  }
+
 	if (ignore_xerror) {
 		LOG_DEBUG("handle_xerror() ignored an XErrorEvent: %d\n", e->error_code);
 		return 0;
 	}
+
 	/* If this error actually occurred while setting up the new
 	 * window, best let make_new_client() know not to bother */
 	if (initialising != None && e->resourceid == initialising) {
@@ -69,8 +80,15 @@ int handle_xerror(Display *dsply, XErrorEvent *e) {
 		initialising = None;
 		return 0;
 	}
-	LOG_DEBUG("**ERK** handle_xerror() caught an XErrorEvent: error_code=%d request_code=%d minor_code=%d\n",
-			e->error_code, e->request_code, e->minor_code);
+
+  LOG_DEBUG("**********************************************************\n");
+  LOG_DEBUG("X ERROR:\n");
+  LOG_DEBUG("\t%s\n",errorText);
+  LOG_DEBUG("\ttype: %d\n",e->type);
+  LOG_DEBUG("\terror code: %d\n",e->error_code);
+  LOG_DEBUG("\trequest code: %d.%d\n",e->request_code, e->minor_code);
+  LOG_DEBUG("**********************************************************\n");
+
 	if (e->error_code == BadAccess && e->request_code == X_ChangeWindowAttributes) {
 		LOG_ERROR("root window unavailable (maybe another wm is running?)\n");
 		exit(1);

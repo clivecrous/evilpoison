@@ -7,6 +7,8 @@
  */
 void evilpoison_commands_init( void );
 
+char *evilpoison_command_echo(char *commandline);
+
 char *evilpoison_command_set(char *commandline);
 char *evilpoison_command_unset(char *commandline);
 

@@ -10,7 +10,7 @@ prefix = $(DESTDIR)/usr
 XROOT    = /usr/X11R6
 INCLUDES = -I$(XROOT)/include
 LDPATH   = -L$(XROOT)/lib
-LIBS     = -lX11 -lpthread -lXext
+LIBS     = -lX11 -lpthread -lXext -lXinerama
 
 DEFINES  = $(EXTRA_DEFINES)
 # Configure evilpoison by editing the following DEFINES lines.  You can also
@@ -27,7 +27,7 @@ DEFINES += -DSTDIO
 
 # ----- You shouldn't need to change anything under this line ------ #
 
-version = 0.9.$(shell git-rev-list --all|wc -l)
+version = 0.9.$(shell git-rev-list origin/master|wc -l)
 
 distname = evilpoison-$(version)
 

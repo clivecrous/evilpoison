@@ -9,22 +9,24 @@
 # include <stdio.h>
 #endif
 
+#define LOG_PREFIX fprintf(stderr,"[evilpoison] ")
+
 #ifdef STDIO
 # define LOG_INFO(...) printf(__VA_ARGS__);
-# define LOG_ERROR(...) fprintf(stderr, __VA_ARGS__);
+# define LOG_ERROR(...) {LOG_PREFIX;fprintf(stderr, __VA_ARGS__);}
 #else
 # define LOG_INFO(...)
 # define LOG_ERROR(...)
 #endif
 
 #ifdef DEBUG
-# define LOG_DEBUG(...) fprintf(stderr, __VA_ARGS__);
+# define LOG_DEBUG(...) {LOG_PREFIX;fprintf(stderr, __VA_ARGS__);}
 #else
 # define LOG_DEBUG(...)
 #endif
 
 #ifdef XDEBUG
-# define LOG_XDEBUG(...) fprintf(stderr, __VA_ARGS__);
+# define LOG_XDEBUG(...) {LOG_PREFIX;fprintf(stderr, __VA_ARGS__);}
 #else
 # define LOG_XDEBUG(...)
 #endif

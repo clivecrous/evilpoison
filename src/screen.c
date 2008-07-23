@@ -13,6 +13,8 @@
 #include "log.h"
 #include "settings.h"
 
+#include "xinerama.h"
+
 static Window create_info_window(Client *client);
 static void update_info_window(Client *c, Window info_window);
 static void grab_keysym(Window w, unsigned int mask, KeySym keysym);
@@ -411,8 +413,8 @@ void maximise_client(Client *c, int hv) {
 		} else {
 			c->oldx = c->x;
 			c->oldw = c->width;
-			c->x = 0;
-			c->width = DisplayWidth(dpy, c->screen->screen);
+			c->x = xinerama_screen_origin_x();
+			c->width = xinerama_screen_width();
 		}
 	}
 	if (hv & MAXIMISE_VERT) {
@@ -423,8 +425,8 @@ void maximise_client(Client *c, int hv) {
 		} else {
 			c->oldy = c->y;
 			c->oldh = c->height;
-			c->y = 0;
-			c->height = DisplayHeight(dpy, c->screen->screen);
+			c->y = xinerama_screen_origin_y();
+			c->height = xinerama_screen_height();
 		}
 	}
 	moveresize(c);
@@ -435,7 +437,7 @@ void hide(Client *c) {
 	/* This will generate an unmap event.  Tell event handler
 	 * to ignore it. */
 	c->ignore_unmap++;
-	LOG_XDEBUG("screen:XUnmapWindow(parent); ");
+	LOG_XDEBUG("screen:XUnmapWindow(parent);\n");
 	XUnmapWindow(dpy, c->parent);
 	set_wm_state(c, IconicState);
 }
@@ -506,7 +508,7 @@ void switch_vdesk(ScreenInfo *s, int v) {
 	if (current && !is_sticky(current)) {
 		select_client(NULL);
 	}
-	LOG_DEBUG("switch_vdesk(): Switching screen %d to desk %d", s->screen, v);
+	LOG_DEBUG("switch_vdesk(): Switching screen %d to desk %d\n", s->screen, v);
 	for (c = head_client; c; c = c->next) {
 		if (c->screen != s)
 			continue;
@@ -528,7 +530,7 @@ void switch_vdesk(ScreenInfo *s, int v) {
 	}
 	s->other_vdesk = s->vdesk;
 	s->vdesk = v;
-	LOG_DEBUG(" (%d hidden, %d raised)\n", hidden, raised);
+	LOG_DEBUG("\t(%d hidden, %d raised)\n", hidden, raised);
 }
 
 ScreenInfo *find_screen(Window root) {
