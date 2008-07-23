@@ -58,6 +58,10 @@ int handle_xerror(Display *dsply, XErrorEvent *e) {
 	Client *c;
 	(void)dsply;  /* unused */
 
+  char errorText[1024];
+
+  XGetErrorText( dpy, e->error_code, errorText, sizeof(errorText) );
+
 	if (ignore_xerror) {
 		LOG_DEBUG("handle_xerror() ignored an XErrorEvent: %d\n", e->error_code);
 		return 0;
@@ -69,8 +73,13 @@ int handle_xerror(Display *dsply, XErrorEvent *e) {
 		initialising = None;
 		return 0;
 	}
-	LOG_DEBUG("**ERK** handle_xerror() caught an XErrorEvent: error_code=%d request_code=%d minor_code=%d\n",
-			e->error_code, e->request_code, e->minor_code);
+
+  LOG_DEBUG("**********************************************************\n");
+  LOG_DEBUG("X ERROR:\n");
+  LOG_DEBUG("\t%s\n",errorText);
+  LOG_DEBUG("\trequest code: %d\n",e->request_code);
+  LOG_DEBUG("**********************************************************\n");
+
 	if (e->error_code == BadAccess && e->request_code == X_ChangeWindowAttributes) {
 		LOG_ERROR("root window unavailable (maybe another wm is running?)\n");
 		exit(1);
