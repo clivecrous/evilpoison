@@ -161,7 +161,7 @@ char *evilpoison_command_window_float(char *UNUSED(commandline))
     return 0;
 }
 
-char *evilpoison_command_desktop_previous(char *UNUSED(commandline))
+char *evilpoison_command_desktop_navigate_previous(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->virtual_desktop > 0 )
@@ -169,7 +169,7 @@ char *evilpoison_command_desktop_previous(char *UNUSED(commandline))
     return 0;
 }
 
-char *evilpoison_command_desktop_next(char *UNUSED(commandline))
+char *evilpoison_command_desktop_navigate_next(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->virtual_desktop < 7 )
@@ -177,7 +177,7 @@ char *evilpoison_command_desktop_next(char *UNUSED(commandline))
     return 0;
 }
 
-char *evilpoison_command_desktop_other(char *UNUSED(commandline))
+char *evilpoison_command_desktop_history_back(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->virtual_desktop != current_screen->other_virtual_desktop)
@@ -355,7 +355,7 @@ char *evilpoison_command_window_lower(char *UNUSED(commandline))
   return 0;
 }
 
-char *evilpoison_command_desktop_switch(char *commandline)
+char *evilpoison_command_desktop_navigate_to(char *commandline)
 {
   ScreenInfo *current_screen = find_current_screen();
 
@@ -409,10 +409,11 @@ void evilpoison_commands_init( void )
       evilpoison_command_window_maximize_horizontal );
 
   command_assign( "window.float",    evilpoison_command_window_float );
-  command_assign( "desktop.next",    evilpoison_command_desktop_next );
-  command_assign( "desktop.previous",    evilpoison_command_desktop_previous );
-  command_assign( "desktop.switch",   evilpoison_command_desktop_switch );
-  command_assign( "desktop.other",   evilpoison_command_desktop_other );
+
+  command_assign( "desktop.navigate.next",    evilpoison_command_desktop_navigate_next );
+  command_assign( "desktop.navigate.previous",    evilpoison_command_desktop_navigate_previous );
+  command_assign( "desktop.navigate.to",   evilpoison_command_desktop_navigate_to );
+  command_assign( "desktop.history.back",   evilpoison_command_desktop_history_back );
 
   command_assign( "window.close", evilpoison_command_window_close );
   command_assign( "window.kill", evilpoison_command_window_kill );
