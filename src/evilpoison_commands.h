@@ -12,7 +12,7 @@ char *evilpoison_command_echo(char *commandline);
 char *evilpoison_command_set(char *commandline);
 char *evilpoison_command_unset(char *commandline);
 
-char *evilpoison_command_bind(char *commandline);
+char *evilpoison_command_bind_keyboard(char *commandline);
 char *evilpoison_command_cmdmode(char *commandline);
 char *evilpoison_command_execute_fork(char *commandline);
 char *evilpoison_command_execute_here(char *commandline);

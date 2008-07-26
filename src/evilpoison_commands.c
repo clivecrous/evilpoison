@@ -53,7 +53,7 @@ char *evilpoison_command_unset(char *commandline)
   return 0;
 }
 
-char *evilpoison_command_bind(char *commandline)
+char *evilpoison_command_bind_keyboard(char *commandline)
 {
   BindKeySymMask *binding;
   char *params = malloc( strlen( commandline ) + 1 );
@@ -391,7 +391,7 @@ void evilpoison_commands_init( void )
   command_assign( "set",    evilpoison_command_set );
   command_assign( "unset",  evilpoison_command_unset );
 
-  command_assign( "bind",   evilpoison_command_bind );
+  command_assign( "bind.keyboard",   evilpoison_command_bind_keyboard );
   command_assign( "cmdmode",   evilpoison_command_cmdmode );
   command_assign( "echo",   evilpoison_command_echo );
   command_assign( "execute.fork",   evilpoison_command_execute_fork );
