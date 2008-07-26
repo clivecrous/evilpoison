@@ -19,6 +19,11 @@ typedef struct {
 
 /* default settings */
 
+typedef enum {
+  mode_normal,
+  mode_command
+} Mode;
+
 #define SPACE           3
 
 #define DEF_PREFIX_KEY  XK_e
@@ -157,7 +162,7 @@ void set_shape(Client *c);
 
 /* events.c */
 
-extern int global_cmdmode;
+extern Mode global_mode;
 void event_main_loop(void);
 void add_key_binding(KeySym k, unsigned int mask, char *cmd);
 void free_key_bindings(void);

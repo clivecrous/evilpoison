@@ -74,9 +74,9 @@ char *evilpoison_command_bind_keyboard(char *commandline)
   return 0;
 }
 
-char *evilpoison_command_cmdmode(char *UNUSED(commandline))
+char *evilpoison_command_mode_command(char *UNUSED(commandline))
 {
-  global_cmdmode = !global_cmdmode;
+  global_mode = mode_command;
   return 0;
 }
 
@@ -392,7 +392,7 @@ void evilpoison_commands_init( void )
   command_assign( "unset",  evilpoison_command_unset );
 
   command_assign( "bind.keyboard",   evilpoison_command_bind_keyboard );
-  command_assign( "cmdmode",   evilpoison_command_cmdmode );
+  command_assign( "mode.command",   evilpoison_command_mode_command );
   command_assign( "echo",   evilpoison_command_echo );
   command_assign( "execute.fork",   evilpoison_command_execute_fork );
   command_assign( "execute.here",   evilpoison_command_execute_here );
