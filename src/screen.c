@@ -447,7 +447,7 @@ void unhide(Client *c, int raise_win) {
 	set_wm_state(c, NormalState);
 }
 
-static void nextprev( Client *change_to )
+static void nextprevious( Client *change_to )
 {
   if (!change_to) return;
   if (change_to == current) return;
@@ -480,7 +480,7 @@ void next(void)
   while ( newc && newc->virtual_desktop != current_screen->virtual_desktop )
     newc = newc->next;
 
-  if (newc) nextprev( newc );
+  if (newc) nextprevious( newc );
 }
 
 void previous(void)
@@ -494,7 +494,7 @@ void previous(void)
   if (!newc)
     for (newc = head_client; newc && newc->next; newc = newc->next );
 
-  nextprev( newc );
+  nextprevious( newc );
 }
 
 void switch_virtual_desktop(ScreenInfo *s, int v) {

@@ -161,7 +161,7 @@ char *evilpoison_command_window_float(char *UNUSED(commandline))
     return 0;
 }
 
-char *evilpoison_command_desktop_prev(char *UNUSED(commandline))
+char *evilpoison_command_desktop_previous(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->virtual_desktop > 0 )
@@ -410,7 +410,7 @@ void evilpoison_commands_init( void )
 
   command_assign( "window.float",    evilpoison_command_window_float );
   command_assign( "desktop.next",    evilpoison_command_desktop_next );
-  command_assign( "desktop.prev",    evilpoison_command_desktop_prev );
+  command_assign( "desktop.previous",    evilpoison_command_desktop_previous );
   command_assign( "desktop.switch",   evilpoison_command_desktop_switch );
   command_assign( "desktop.other",   evilpoison_command_desktop_other );
 

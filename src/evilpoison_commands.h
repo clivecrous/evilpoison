@@ -44,7 +44,7 @@ char *evilpoison_command_window_move_mouse(char *commandline);
 char *evilpoison_command_window_resize_mouse(char *commandline);
 
 char *evilpoison_command_window_float(char *commandline);
-char *evilpoison_command_desktop_prev(char *commandline);
+char *evilpoison_command_desktop_previous(char *commandline);
 char *evilpoison_command_desktop_next(char *commandline);
 char *evilpoison_command_desktop_other(char *commandline);
 
