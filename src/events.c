@@ -212,8 +212,8 @@ static void handle_map_request(XMapRequestEvent *e) {
 	Client *c = find_client(e->window);
 
 	if (c) {
-		if (c->vdesk != c->screen->vdesk)
-			switch_vdesk(c->screen, c->vdesk);
+		if (c->virtual_desktop != c->screen->virtual_desktop)
+			switch_virtual_desktop(c->screen, c->virtual_desktop);
 		unhide(c, RAISE);
 	} else {
 		XWindowAttributes attr;
@@ -266,7 +266,7 @@ static void handle_enter_event(XCrossingEvent *e) {
 	if (!atoi(settings_get("mouse.focus"))) return;
 
 	if ((c = find_client(e->window))) {
-		if (c->vdesk != c->screen->vdesk)
+		if (c->virtual_desktop != c->screen->virtual_desktop)
 			return;
 		select_client(c);
 	}

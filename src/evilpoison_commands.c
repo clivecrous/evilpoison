@@ -164,24 +164,24 @@ char *evilpoison_command_window_float(char *UNUSED(commandline))
 char *evilpoison_command_desk_prev(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
-    if (current_screen->vdesk > 0 )
-	switch_vdesk(current_screen, current_screen->vdesk - 1);
+    if (current_screen->virtual_desktop > 0 )
+	switch_virtual_desktop(current_screen, current_screen->virtual_desktop - 1);
     return 0;
 }
 
 char *evilpoison_command_desk_next(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
-    if (current_screen->vdesk < 7 )
-	switch_vdesk(current_screen, current_screen->vdesk + 1);
+    if (current_screen->virtual_desktop < 7 )
+	switch_virtual_desktop(current_screen, current_screen->virtual_desktop + 1);
     return 0;
 }
 
 char *evilpoison_command_desk_other(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
-    if (current_screen->vdesk != current_screen->other_vdesk)
-	switch_vdesk(current_screen, current_screen->other_vdesk);
+    if (current_screen->virtual_desktop != current_screen->other_virtual_desktop)
+	switch_virtual_desktop(current_screen, current_screen->other_virtual_desktop);
     return 0;
 }
 
@@ -363,7 +363,7 @@ char *evilpoison_command_desk_switch(char *commandline)
   if (!desk_str) return 0;
 
   int desktop = atoi( desk_str ) - 1;
-  if ( desktop >= 0 && desktop <= 7 ) switch_vdesk( current_screen, desktop );
+  if ( desktop >= 0 && desktop <= 7 ) switch_virtual_desktop( current_screen, desktop );
 
   return 0;
 }

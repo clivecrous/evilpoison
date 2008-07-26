@@ -11,7 +11,7 @@
 void update_net_wm_desktop(Client *c) {
 	XChangeProperty(dpy, c->window, xa_net_wm_desktop,
 			XA_CARDINAL, 32, PropModeReplace,
-			(unsigned char *)&c->vdesk, 1);
+			(unsigned char *)&c->virtual_desktop, 1);
 }
 
 void update_net_wm_state(Client *c) {

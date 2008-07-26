@@ -79,8 +79,8 @@ typedef struct ScreenInfo ScreenInfo;
 struct ScreenInfo {
 	int screen;
 	Window root;
-	int vdesk;
-	int other_vdesk;
+	int virtual_desktop;
+	int other_virtual_desktop;
 	char *display;
 };
 
@@ -104,7 +104,7 @@ struct Client {
 	int             base_width, base_height;
 	int             win_gravity;
 	int             old_border;
-	int             vdesk;
+	int             virtual_desktop;
 	int             sticky;
 	int             remove;  /* set when client needs to be removed */
 	Client  *next;
@@ -187,7 +187,7 @@ void unhide(Client *c, int raise_win);
 void next(void);
 void previous(void);
 void hide(Client *c);
-void switch_vdesk(ScreenInfo *s, int v);
+void switch_virtual_desktop(ScreenInfo *s, int v);
 ScreenInfo *find_screen(Window root);
 ScreenInfo *find_current_screen(void);
 void grab_keys_for_screen(ScreenInfo *s);
