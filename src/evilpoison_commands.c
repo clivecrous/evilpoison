@@ -161,7 +161,7 @@ char *evilpoison_command_window_float(char *UNUSED(commandline))
     return 0;
 }
 
-char *evilpoison_command_desk_prev(char *UNUSED(commandline))
+char *evilpoison_command_desktop_prev(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->virtual_desktop > 0 )
@@ -169,7 +169,7 @@ char *evilpoison_command_desk_prev(char *UNUSED(commandline))
     return 0;
 }
 
-char *evilpoison_command_desk_next(char *UNUSED(commandline))
+char *evilpoison_command_desktop_next(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->virtual_desktop < 7 )
@@ -177,7 +177,7 @@ char *evilpoison_command_desk_next(char *UNUSED(commandline))
     return 0;
 }
 
-char *evilpoison_command_desk_other(char *UNUSED(commandline))
+char *evilpoison_command_desktop_other(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->virtual_desktop != current_screen->other_virtual_desktop)
@@ -355,14 +355,14 @@ char *evilpoison_command_window_lower(char *UNUSED(commandline))
   return 0;
 }
 
-char *evilpoison_command_desk_switch(char *commandline)
+char *evilpoison_command_desktop_switch(char *commandline)
 {
   ScreenInfo *current_screen = find_current_screen();
 
-  char *desk_str = command_parameter_copy( commandline, 0 );
-  if (!desk_str) return 0;
+  char *desktop_str = command_parameter_copy( commandline, 0 );
+  if (!desktop_str) return 0;
 
-  int desktop = atoi( desk_str ) - 1;
+  int desktop = atoi( desktop_str ) - 1;
   if ( desktop >= 0 && desktop <= 7 ) switch_virtual_desktop( current_screen, desktop );
 
   return 0;
@@ -409,10 +409,10 @@ void evilpoison_commands_init( void )
       evilpoison_command_window_maximize_horizontal );
 
   command_assign( "window.float",    evilpoison_command_window_float );
-  command_assign( "desk.next",    evilpoison_command_desk_next );
-  command_assign( "desk.prev",    evilpoison_command_desk_prev );
-  command_assign( "desk.switch",   evilpoison_command_desk_switch );
-  command_assign( "desk.other",   evilpoison_command_desk_other );
+  command_assign( "desktop.next",    evilpoison_command_desktop_next );
+  command_assign( "desktop.prev",    evilpoison_command_desktop_prev );
+  command_assign( "desktop.switch",   evilpoison_command_desktop_switch );
+  command_assign( "desktop.other",   evilpoison_command_desktop_other );
 
   command_assign( "window.close", evilpoison_command_window_close );
   command_assign( "window.kill", evilpoison_command_window_kill );

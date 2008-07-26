@@ -508,7 +508,7 @@ void switch_virtual_desktop(ScreenInfo *s, int v) {
 	if (current && !is_sticky(current)) {
 		select_client(NULL);
 	}
-	LOG_DEBUG("switch_virtual_desktop(): Switching screen %d to desk %d\n", s->screen, v);
+	LOG_DEBUG("switch_virtual_desktop(): Switching screen %d's desktop to desktop %d\n", s->screen, v);
 	for (c = head_client; c; c = c->next) {
 		if (c->screen != s)
 			continue;
