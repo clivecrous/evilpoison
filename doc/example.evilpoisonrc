@@ -81,7 +81,7 @@ bind.keyboard	s-Tab	window.previous
 bind.keyboard	m	cmdmode
 
 # new terminal
-bind.keyboard	c	exec xterm
+bind.keyboard	c	execute.fork xterm
 
 # moving windows
 bind.keyboard	y	window.moveto 0 0
@@ -144,7 +144,7 @@ show_version
 bind.keyboard v show_version
 
 # Startup an xterm terminal for convenience.
-exec xterm -rv
+execute.fork xterm -rv
 
 # Create a date displaying alias
 alias display_date echo Today\'s date: \!execute.here date\!
