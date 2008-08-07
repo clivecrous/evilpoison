@@ -119,19 +119,19 @@ bind.keyboard	Insert	window.lower
 bind.keyboard	f	window.float
 
 # moving from desk to desk
-bind.keyboard	o	desk.prev
-bind.keyboard	p	desk.next
+bind.keyboard	o	desktop.navigate.previous
+bind.keyboard	p	desktop.navigate.next
 
-bind.keyboard	0	desk.other
+bind.keyboard	0	desktop.other
 
-bind.keyboard	1	desk.switch 1
-bind.keyboard	2	desk.switch 2
-bind.keyboard	3	desk.switch 3
-bind.keyboard	4	desk.switch 4
-bind.keyboard	5	desk.switch 5
-bind.keyboard	6	desk.switch 6
-bind.keyboard	7	desk.switch 7
-bind.keyboard	8	desk.switch 8
+bind.keyboard	1	desktop.navigate.to 1
+bind.keyboard	2	desktop.navigate.to 2
+bind.keyboard	3	desktop.navigate.to 3
+bind.keyboard	4	desktop.navigate.to 4
+bind.keyboard	5	desktop.navigate.to 5
+bind.keyboard	6	desktop.navigate.to 6
+bind.keyboard	7	desktop.navigate.to 7
+bind.keyboard	8	desktop.navigate.to 8
 
 # kill window
 bind.keyboard	Escape	window.close
