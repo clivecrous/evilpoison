@@ -480,6 +480,9 @@ void next(void)
   while ( newc && newc->virtual_desktop != current_screen->virtual_desktop )
     newc = newc->next;
 
+  if (newc && newc->virtual_desktop != current_screen->virtual_desktop)
+    newc = NULL;
+
   if (newc) nextprevious( newc );
 }
 
