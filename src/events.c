@@ -329,8 +329,7 @@ void event_main_loop(void) {
 					remove_client(c);
 				}
 			}
-			if (donext)
-			    next();
+			if (donext) next(0);
 		}
 	}
 }

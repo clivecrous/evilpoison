@@ -132,13 +132,13 @@ char *evilpoison_command_window_info(char *UNUSED(commandline))
 
 char *evilpoison_command_window_next(char *UNUSED(commandline))
 {
-  next();
+  next(0);
   return 0;
 }
 
 char *evilpoison_command_window_previous(char *UNUSED(commandline))
 {
-  previous();
+  previous(0);
   return 0;
 }
 

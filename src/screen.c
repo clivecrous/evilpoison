@@ -436,7 +436,7 @@ void unhide(Client *c, int raise_win) {
 	set_wm_state(c, NormalState);
 }
 
-static void nextprevious( Client *change_to )
+static void nextprevious( Client *change_to, int reshuffle )
 {
   if (!change_to) return;
   if (change_to == current) return;
@@ -448,6 +448,19 @@ static void nextprevious( Client *change_to )
 	unhide(change_to, RAISE);
 	select_client(change_to);
 
+  // Move the new current client to the front of the window queue
+  if ( reshuffle )
+  {
+    Client * prev = head_client;
+    while ( prev && prev->next != change_to ) prev = prev->next;
+    if ( prev ) 
+    {
+      prev->next = change_to->next;
+      change_to->next = head_client;
+      head_client = change_to;
+    }
+  }
+
 	if ( atoi( settings_get( "mouse.warp" ) ) ) {
 	    setmouse(change_to->window, 0, 0);
 	    setmouse(change_to->window, change_to->width + change_to->border - 1,
@@ -457,7 +470,7 @@ static void nextprevious( Client *change_to )
 	discard_enter_events();
 }
 
-void next(void)
+void next( int reshuffle )
 {
 	Client *newc = current;
   ScreenInfo *current_screen = find_current_screen();
@@ -472,10 +485,10 @@ void next(void)
   if (newc && newc->virtual_desktop != current_screen->virtual_desktop)
     newc = NULL;
 
-  if (newc) nextprevious( newc );
+  if (newc) nextprevious( newc, reshuffle );
 }
 
-void previous(void)
+void previous( int reshuffle )
 {
   // TODO This will not wrap around correctly when foreign virtual_desktop clients are
   // involved.
@@ -486,7 +499,7 @@ void previous(void)
   if (!newc)
     for (newc = head_client; newc && newc->next; newc = newc->next );
 
-  nextprevious( newc );
+  nextprevious( newc, reshuffle );
 }
 
 void switch_virtual_desktop(ScreenInfo *s, int v) {

@@ -140,6 +140,8 @@ void remove_client(Client *c) {
 	XGrabServer(dpy);
 	ignore_xerror = 1;
 
+  next(1);
+
 	/* ICCCM 4.1.3.1
 	 * "When the window is withdrawn, the window manager will either
 	 *  change the state field's value to WithdrawnState or it will
@@ -167,9 +169,8 @@ void remove_client(Client *c) {
 	else for (p = head_client; p && p->next; p = p->next)
 		if (p->next == c) p->next = c->next;
 
-	if (current == c)
-		current = NULL;  /* an enter event should set this up again */
 	free(c);
+
 #ifdef DEBUG
 	{
 		Client *pp;
