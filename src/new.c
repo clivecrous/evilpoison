@@ -104,7 +104,7 @@ void make_new_client(Window w, ScreenInfo *s) {
 
 	/* Only map the window frame (and thus the window) if it's supposed
 	 * to be visible on this virtual desktop. */
-	if (s->vdesk == c->vdesk)
+	if (s->virtual_desktop == c->virtual_desktop)
 	{
 		unhide(c, RAISE);
 		if (!atoi(settings_get("mouse.focus")))
@@ -140,10 +140,10 @@ static void init_geometry(Client *c) {
 		XFree(mprop);
 	}
 
-	c->vdesk = c->screen->vdesk;
+	c->virtual_desktop = c->screen->virtual_desktop;
 	if ( (lprop = get_property(c->window, xa_net_wm_desktop, XA_CARDINAL, &nitems)) ) {
 		if (nitems && lprop[0] >=1 && lprop[0] <= 8)
-			c->vdesk = lprop[0];
+			c->virtual_desktop = lprop[0];
 		XFree(lprop);
 	}
 	remove_sticky(c);

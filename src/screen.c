@@ -283,7 +283,7 @@ static void snap_client(Client *c) {
 	for (ci = head_client; ci; ci = ci->next) {
 		if (ci != c
 				&& (ci->screen == c->screen)
-				&& (ci->vdesk == c->vdesk)
+				&& (ci->virtual_desktop == c->virtual_desktop)
 				) {
 			if (ci->y - ci->border - c->border - c->height - c->y <= border_snap && c->y - c->border - ci->border - ci->height - ci->y <= border_snap) {
 				dx = absmin(dx, ci->x + ci->width - c->x + c->border + ci->border);
@@ -447,14 +447,14 @@ void unhide(Client *c, int raise_win) {
 	set_wm_state(c, NormalState);
 }
 
-static void nextprev( Client *change_to )
+static void nextprevious( Client *change_to )
 {
   if (!change_to) return;
   if (change_to == current) return;
 
-  // Disallow changing across vdesks.
+  // Disallow changing across virtual_desktops.
   ScreenInfo *current_screen = find_current_screen();
-  if ( !current_screen || change_to->vdesk != current_screen->vdesk ) return;
+  if ( !current_screen || change_to->virtual_desktop != current_screen->virtual_desktop ) return;
 
 	unhide(change_to, RAISE);
 	select_client(change_to);
@@ -474,18 +474,21 @@ void next(void)
   ScreenInfo *current_screen = find_current_screen();
 
   if (newc) newc = newc->next;
-  while ( newc && newc->vdesk != current_screen->vdesk )
+  while ( newc && newc->virtual_desktop != current_screen->virtual_desktop )
     newc = newc->next;
   if (!newc) newc = head_client;
-  while ( newc && newc->vdesk != current_screen->vdesk )
+  while ( newc && newc->virtual_desktop != current_screen->virtual_desktop )
     newc = newc->next;
 
-  if (newc) nextprev( newc );
+  if (newc && newc->virtual_desktop != current_screen->virtual_desktop)
+    newc = NULL;
+
+  if (newc) nextprevious( newc );
 }
 
 void previous(void)
 {
-  // TODO This will not wrap around correctly when foreign vdesk clients are
+  // TODO This will not wrap around correctly when foreign virtual_desktop clients are
   // involved.
 	Client *newc = head_client;
 
@@ -494,42 +497,42 @@ void previous(void)
   if (!newc)
     for (newc = head_client; newc && newc->next; newc = newc->next );
 
-  nextprev( newc );
+  nextprevious( newc );
 }
 
-void switch_vdesk(ScreenInfo *s, int v) {
+void switch_virtual_desktop(ScreenInfo *s, int v) {
 	Client *c;
 #ifdef DEBUG
 	int hidden = 0, raised = 0;
 #endif
 
-	if (v == s->vdesk)
+	if (v == s->virtual_desktop)
 		return;
 	if (current && !is_sticky(current)) {
 		select_client(NULL);
 	}
-	LOG_DEBUG("switch_vdesk(): Switching screen %d to desk %d\n", s->screen, v);
+	LOG_DEBUG("switch_virtual_desktop(): Switching screen %d's desktop to desktop %d\n", s->screen, v);
 	for (c = head_client; c; c = c->next) {
 		if (c->screen != s)
 			continue;
-		if (is_sticky(c) && c->vdesk != v) {
-			c->vdesk = v;
+		if (is_sticky(c) && c->virtual_desktop != v) {
+			c->virtual_desktop = v;
 			update_net_wm_desktop(c);
 		}
-		if (c->vdesk == s->vdesk) {
+		if (c->virtual_desktop == s->virtual_desktop) {
 			hide(c);
 #ifdef DEBUG
 			hidden++;
 #endif
-		} else if (c->vdesk == v) {
+		} else if (c->virtual_desktop == v) {
 			unhide(c, NO_RAISE);
 #ifdef DEBUG
 			raised++;
 #endif
 		}
 	}
-	s->other_vdesk = s->vdesk;
-	s->vdesk = v;
+	s->other_virtual_desktop = s->virtual_desktop;
+	s->virtual_desktop = v;
 	LOG_DEBUG("\t(%d hidden, %d raised)\n", hidden, raised);
 }
 

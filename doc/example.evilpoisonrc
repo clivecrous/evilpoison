@@ -5,17 +5,15 @@
 # 
 # Every line begins with a command and is optionally followed by that command's
 # parameters. For a full listing of the available internal commands see the
-# wiki page at:
-# http://www.darkarts.co.za/projects/evilpoison/wiki/InternalCommands
+# wiki page.
 #
 # Most of the commands within this file will be setting internal variables or
 # binding keys. For a full list of the available internal variables see the
-# wiki page at:
-# http://www.darkarts.co.za/projects/evilpoison/wiki/InternalVariables
+# wiki page.
 #
 #------------------------------------------------------------------------------
 # Because most of the commands run within this file will be either 'set' or
-# 'bind', here is a brief description of their use:
+# 'bind.keyboard', here is a brief description of their use:
 #
 #  set <variable name> <value>
 #
@@ -23,7 +21,7 @@
 #    InternalVariables on the wiki page, and "value" is the value you wish to
 #    set it to.
 #
-#  bind <key combination> <command>
+#  bind.keyboard <key combination> <command>
 #
 #    Where "key combination" is the keyboard combination to bind the given
 #    command to and "command" is a command just like the listing of
@@ -72,83 +70,83 @@ set border.colour.float.inactive grey50
 set prefix C-t
 
 # next window
-bind	Return	window.next
-bind	Tab	window.next
+bind.keyboard	Return	window.next
+bind.keyboard	Tab	window.next
 
 # previous window
-bind	s-Return	window.previous
-bind	s-Tab	window.previous
+bind.keyboard	s-Return	window.previous
+bind.keyboard	s-Tab	window.previous
 
 # command mode
-bind	m	cmdmode
+bind.keyboard	m	cmdmode
 
 # new terminal
-bind	c	exec xterm
+bind.keyboard	c	execute.fork xterm
 
 # moving windows
-bind	y	window.moveto 0 0
-bind	u	window.moveto -0 0
-bind	b	window.moveto 0 -0
-bind	n	window.moveto -0 -0
-bind	h	window.move.left
-bind	l	window.move.right
-bind	k	window.move.up
-bind	j	window.move.down
-bind	Left	window.move.left
-bind	Right	window.move.right
-bind	Up	window.move.up
-bind	Down	window.move.down
+bind.keyboard	y	window.moveto 0 0
+bind.keyboard	u	window.moveto -0 0
+bind.keyboard	b	window.moveto 0 -0
+bind.keyboard	n	window.moveto -0 -0
+bind.keyboard	h	window.move.left
+bind.keyboard	l	window.move.right
+bind.keyboard	k	window.move.up
+bind.keyboard	j	window.move.down
+bind.keyboard	Left	window.move.left
+bind.keyboard	Right	window.move.right
+bind.keyboard	Up	window.move.up
+bind.keyboard	Down	window.move.down
 
 # changing window size
-bind	a	window.resize 0 0 -$window.resize.velocity$ 0
-bind	d	window.resize 0 0 $window.resize.velocity$ 0
-bind	s	window.resize 0 0 0 -$window.resize.velocity$
-bind	w	window.resize 0 0 0 $window.resize.velocity$
+bind.keyboard	a	window.resize 0 0 -$window.resize.velocity$ 0
+bind.keyboard	d	window.resize 0 0 $window.resize.velocity$ 0
+bind.keyboard	s	window.resize 0 0 0 -$window.resize.velocity$
+bind.keyboard	w	window.resize 0 0 0 $window.resize.velocity$
 
-bind	plus	window.maximize.vertical
-bind	minus	window.maximize.horizontal
-bind	x	window.maximize
+bind.keyboard	plus	window.maximize.vertical
+bind.keyboard	minus	window.maximize.horizontal
+bind.keyboard	x	window.maximize
 
 # mouse
-bind	comma	window.resize.mouse
-bind	period	window.move.mouse
+bind.keyboard	comma	window.resize.mouse
+bind.keyboard	period	window.move.mouse
 
 # window stacking
-bind	Insert	window.lower
+bind.keyboard	Insert	window.lower
 
 # virtual desks
 # float window
-bind	f	window.float
+bind.keyboard	f	window.float
 
 # moving from desk to desk
-bind	o	desk.prev
-bind	p	desk.next
+bind.keyboard	o	desktop.navigate.previous
+bind.keyboard	p	desktop.navigate.next
 
-bind	0	desk.other
+bind.keyboard	0	desktop.other
 
-bind	1	desk.switch 1
-bind	2	desk.switch 2
-bind	3	desk.switch 3
-bind	4	desk.switch 4
-bind	5	desk.switch 5
-bind	6	desk.switch 6
-bind	7	desk.switch 7
-bind	8	desk.switch 8
+bind.keyboard	1	desktop.navigate.to 1
+bind.keyboard	2	desktop.navigate.to 2
+bind.keyboard	3	desktop.navigate.to 3
+bind.keyboard	4	desktop.navigate.to 4
+bind.keyboard	5	desktop.navigate.to 5
+bind.keyboard	6	desktop.navigate.to 6
+bind.keyboard	7	desktop.navigate.to 7
+bind.keyboard	8	desktop.navigate.to 8
 
 # kill window
-bind	Escape	window.close
+bind.keyboard	Escape	window.close
 
 # Make an alias for displaying the version number whenever I like
 alias show_version echo EvilPoison $version$
 # Show the version now
 show_version
 # bind version showing to the 'v' key
-bind v show_version
+bind.keyboard v show_version
 
 # Startup an xterm terminal for convenience.
-exec xterm -rv
+execute.fork xterm -rv
 
 # Create a date displaying alias
 alias display_date echo Today\'s date: \!execute.here date\!
 # Show today's date/time when 'D' is pressed
-bind s-d display_date
+bind.keyboard s-d display_date

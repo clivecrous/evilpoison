@@ -53,7 +53,7 @@ char *evilpoison_command_unset(char *commandline)
   return 0;
 }
 
-char *evilpoison_command_bind(char *commandline)
+char *evilpoison_command_bind_keyboard(char *commandline)
 {
   BindKeySymMask *binding;
   char *params = malloc( strlen( commandline ) + 1 );
@@ -74,9 +74,9 @@ char *evilpoison_command_bind(char *commandline)
   return 0;
 }
 
-char *evilpoison_command_cmdmode(char *UNUSED(commandline))
+char *evilpoison_command_mode_command(char *UNUSED(commandline))
 {
-  global_cmdmode = !global_cmdmode;
+  global_mode = mode_command;
   return 0;
 }
 
@@ -161,27 +161,27 @@ char *evilpoison_command_window_float(char *UNUSED(commandline))
     return 0;
 }
 
-char *evilpoison_command_desk_prev(char *UNUSED(commandline))
+char *evilpoison_command_desktop_navigate_previous(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
-    if (current_screen->vdesk > 0 )
-	switch_vdesk(current_screen, current_screen->vdesk - 1);
+    if (current_screen->virtual_desktop > 0 )
+	switch_virtual_desktop(current_screen, current_screen->virtual_desktop - 1);
     return 0;
 }
 
-char *evilpoison_command_desk_next(char *UNUSED(commandline))
+char *evilpoison_command_desktop_navigate_next(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
-    if (current_screen->vdesk < 7 )
-	switch_vdesk(current_screen, current_screen->vdesk + 1);
+    if (current_screen->virtual_desktop < 7 )
+	switch_virtual_desktop(current_screen, current_screen->virtual_desktop + 1);
     return 0;
 }
 
-char *evilpoison_command_desk_other(char *UNUSED(commandline))
+char *evilpoison_command_desktop_history_back(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
-    if (current_screen->vdesk != current_screen->other_vdesk)
-	switch_vdesk(current_screen, current_screen->other_vdesk);
+    if (current_screen->virtual_desktop != current_screen->other_virtual_desktop)
+	switch_virtual_desktop(current_screen, current_screen->other_virtual_desktop);
     return 0;
 }
 
@@ -355,15 +355,15 @@ char *evilpoison_command_window_lower(char *UNUSED(commandline))
   return 0;
 }
 
-char *evilpoison_command_desk_switch(char *commandline)
+char *evilpoison_command_desktop_navigate_to(char *commandline)
 {
   ScreenInfo *current_screen = find_current_screen();
 
-  char *desk_str = command_parameter_copy( commandline, 0 );
-  if (!desk_str) return 0;
+  char *desktop_str = command_parameter_copy( commandline, 0 );
+  if (!desktop_str) return 0;
 
-  int desktop = atoi( desk_str ) - 1;
-  if ( desktop >= 0 && desktop <= 7 ) switch_vdesk( current_screen, desktop );
+  int desktop = atoi( desktop_str ) - 1;
+  if ( desktop >= 0 && desktop <= 7 ) switch_virtual_desktop( current_screen, desktop );
 
   return 0;
 }
@@ -391,8 +391,8 @@ void evilpoison_commands_init( void )
   command_assign( "set",    evilpoison_command_set );
   command_assign( "unset",  evilpoison_command_unset );
 
-  command_assign( "bind",   evilpoison_command_bind );
-  command_assign( "cmdmode",   evilpoison_command_cmdmode );
+  command_assign( "bind.keyboard",   evilpoison_command_bind_keyboard );
+  command_assign( "mode.command",   evilpoison_command_mode_command );
   command_assign( "echo",   evilpoison_command_echo );
   command_assign( "execute.fork",   evilpoison_command_execute_fork );
   command_assign( "execute.here",   evilpoison_command_execute_here );
@@ -409,10 +409,11 @@ void evilpoison_commands_init( void )
       evilpoison_command_window_maximize_horizontal );
 
   command_assign( "window.float",    evilpoison_command_window_float );
-  command_assign( "desk.next",    evilpoison_command_desk_next );
-  command_assign( "desk.prev",    evilpoison_command_desk_prev );
-  command_assign( "desk.switch",   evilpoison_command_desk_switch );
-  command_assign( "desk.other",   evilpoison_command_desk_other );
+
+  command_assign( "desktop.navigate.next",    evilpoison_command_desktop_navigate_next );
+  command_assign( "desktop.navigate.previous",    evilpoison_command_desktop_navigate_previous );
+  command_assign( "desktop.navigate.to",   evilpoison_command_desktop_navigate_to );
+  command_assign( "desktop.history.back",   evilpoison_command_desktop_history_back );
 
   command_assign( "window.close", evilpoison_command_window_close );
   command_assign( "window.kill", evilpoison_command_window_kill );
@@ -427,19 +428,5 @@ void evilpoison_commands_init( void )
   command_assign( "window.move.mouse",evilpoison_command_window_move_mouse );
   command_assign( "window.resize.mouse",
       evilpoison_command_window_resize_mouse );
-
-  /* Some useful aliases */
-
-  command_execute( "alias exec execute.fork" );
-
-  command_execute(
-      "alias window.move.left window.move -\\$window.move.velocity\\$ 0" );
-  command_execute(
-      "alias window.move.right window.move \\$window.move.velocity\\$ 0" );
-  command_execute(
-      "alias window.move.up window.move 0 -\\$window.move.velocity\\$" );
-  command_execute(
-      "alias window.move.down window.move 0 \\$window.move.velocity\\$" );
-
 }
 

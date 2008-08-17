@@ -57,7 +57,8 @@ int find_key_binding(KeySym k, unsigned int mask) {
   return -1;
 }
 
-int global_cmdmode = 0;
+Mode global_mode = mode_normal;
+
 static void handle_key_event(XKeyEvent *e) {
   KeySym realkey = XKeycodeToKeysym(dpy,e->keycode,0);
   BindKeySymMask *prefix = keycode_convert( settings_get( "prefix" ) );
@@ -75,7 +76,8 @@ static void handle_key_event(XKeyEvent *e) {
   int key_enum;
   XEvent ev;
 
-  global_cmdmode = 0;
+  global_mode = mode_normal;
+
 	Client *c;
 
   ScreenInfo *current_screen;
@@ -121,12 +123,12 @@ static void handle_key_event(XKeyEvent *e) {
             modifier = 1;
             break;
           default:
-            global_cmdmode = 0;
+            global_mode = mode_normal;
             break;
         }
       }
 
-    } while ( global_cmdmode || modifier );
+    } while ( (global_mode == mode_command) || modifier );
 
 		XUngrabKeyboard(dpy, CurrentTime);
 		XUngrabPointer(dpy, CurrentTime);
@@ -212,8 +214,8 @@ static void handle_map_request(XMapRequestEvent *e) {
 	Client *c = find_client(e->window);
 
 	if (c) {
-		if (c->vdesk != c->screen->vdesk)
-			switch_vdesk(c->screen, c->vdesk);
+		if (c->virtual_desktop != c->screen->virtual_desktop)
+			switch_virtual_desktop(c->screen, c->virtual_desktop);
 		unhide(c, RAISE);
 	} else {
 		XWindowAttributes attr;
@@ -266,7 +268,7 @@ static void handle_enter_event(XCrossingEvent *e) {
 	if (!atoi(settings_get("mouse.focus"))) return;
 
 	if ((c = find_client(e->window))) {
-		if (c->vdesk != c->screen->vdesk)
+		if (c->virtual_desktop != c->screen->virtual_desktop)
 			return;
 		select_client(c);
 	}

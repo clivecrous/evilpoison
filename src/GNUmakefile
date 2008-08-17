@@ -23,17 +23,5 @@ install: evilpoison
 	install evilpoison.1 $(prefix)/share/man/man1
 	#gzip -9 $(prefix)/share/man/man1/evilpoison.1
 
-dist:
-	darcs dist --dist-name $(distname)
-	mv $(distname).tar.gz ..
-
-debuild: dist
-	-cd ..; rm -rf $(distname)/ $(distname).orig/
-	cd ..; mv $(distname).tar.gz evilpoison$(version).orig.tar.gz
-	cd ..; tar xfz evilpoison$(version).orig.tar.gz
-	cp -a debian ../$(distname)/
-	rm -rf ../$(distname)/debian/_darcs/
-	cd ../$(distname); debuild
-
 clean:
 	rm -f evilpoison evilpoison.exe $(OBJS)

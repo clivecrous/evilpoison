@@ -12,8 +12,8 @@ char *evilpoison_command_echo(char *commandline);
 char *evilpoison_command_set(char *commandline);
 char *evilpoison_command_unset(char *commandline);
 
-char *evilpoison_command_bind(char *commandline);
-char *evilpoison_command_cmdmode(char *commandline);
+char *evilpoison_command_bind_keyboard(char *commandline);
+char *evilpoison_command_mode_command(char *commandline);
 char *evilpoison_command_execute_fork(char *commandline);
 char *evilpoison_command_execute_here(char *commandline);
 char *evilpoison_command_window_info(char *commandline);
@@ -44,9 +44,9 @@ char *evilpoison_command_window_move_mouse(char *commandline);
 char *evilpoison_command_window_resize_mouse(char *commandline);
 
 char *evilpoison_command_window_float(char *commandline);
-char *evilpoison_command_desk_prev(char *commandline);
-char *evilpoison_command_desk_next(char *commandline);
-char *evilpoison_command_desk_other(char *commandline);
+char *evilpoison_command_desktop_navigate_previous(char *commandline);
+char *evilpoison_command_desktop_navigate_next(char *commandline);
+char *evilpoison_command_desktop_history_back(char *commandline);
 
 /** window.move : Move a window by the given amount.
  * The commandline consists of an X and Y co-ordinate as the followng examples
@@ -111,12 +111,12 @@ char *evilpoison_command_window_kill(char *commandline);
  */
 char *evilpoison_command_window_lower(char *commandline);
 
-/** desk.switch : Change to the given desktop.
- * desk.switch <desktop number>
+/** desktop.navigate.to : Change to the given desktop.
+ * desktop.navigate.to <desktop number>
  * \param commandline consists of a desktop number to switch to.
  * \return This should always return NULL.
  */
-char *evilpoison_command_desk_switch(char *commandline);
+char *evilpoison_command_desktop_navigate_to(char *commandline);
 
 /** alias : Create a new command alias.
  * alias <alias> <full command to alias>
