@@ -13,8 +13,13 @@ all: evilpoison
 evilpoison: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
-%.o: %.c $(HEADERS)
+%.o: %.c $(HEADERS) revision
 	$(CC) $(CFLAGS) -c $<
+
+revision:
+ifneq "$(git_revision)" "$(file_revision)"
+	echo "$(git_revision)" > revision
+endif
 
 install: evilpoison
 	if [ -f evilpoison.exe ]; then mv evilpoison.exe evilpoison; fi
@@ -24,4 +29,4 @@ install: evilpoison
 	#gzip -9 $(prefix)/share/man/man1/evilpoison.1
 
 clean:
-	rm -f evilpoison evilpoison.exe $(OBJS)
+	rm -f evilpoison evilpoison.exe $(OBJS) revision
