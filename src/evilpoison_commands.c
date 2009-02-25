@@ -13,6 +13,7 @@
 #include "evilpoison_commands.h"
 #include "bind.h"
 #include "evilpoison.h"
+#include "xinerama.h"
 
 #ifdef UNUSED
 #elif defined(__GNUC__)
@@ -234,6 +235,12 @@ char *evilpoison_command_window_moveto(char *commandline)
   char *y_str = command_parameter_copy( commandline, 1 );
   int x,y;
 
+  int screen_origin_x = xinerama_screen_origin_x();
+  int screen_origin_y = xinerama_screen_origin_y();
+
+  int screen_width = xinerama_screen_width();
+  int screen_height = xinerama_screen_height();
+
   if ( !x_str ) {
     if ( y_str ) free( y_str );
     /** \todo Should probably display an error once echo is implemented? */
@@ -246,14 +253,12 @@ char *evilpoison_command_window_moveto(char *commandline)
   }
 
   if ( *x_str == 'X' )
-    x = DisplayWidth(dpy, current->screen->screen) -
-          ( current->width + current->border*2 ) / 2;
+    x = ( screen_width - ( current->width + current->border*2 ) ) / 2;
   else
     x = atoi( x_str );
 
   if ( *y_str == 'X' )
-    y = DisplayHeight(dpy, current->screen->screen) -
-          ( current->height + current->border*2 ) / 2;
+    y = ( screen_height - ( current->height + current->border*2 ) ) / 2;
   else
     y = atoi( y_str );
 
@@ -263,16 +268,17 @@ char *evilpoison_command_window_moveto(char *commandline)
    * on-the-bottom so I need to check if there was a negative in the string.
    */
   if ( *x_str=='-' )
-    x += DisplayWidth(dpy, current->screen->screen) - (current->width + current->border);
+    x += screen_width - (current->width + current->border);
   else
     x += current->border;
   if ( *y_str=='-' )
-    y += DisplayHeight(dpy, current->screen->screen) - (current->height + current->border );
+    y += screen_height - (current->height + current->border );
   else
     y += current->border;
 
-  current->x = x;
-  current->y = y;
+  current->x = screen_origin_x + x;
+  current->y = screen_origin_y + y;
+
   apply_client_position( current );
 
   free( x_str );
