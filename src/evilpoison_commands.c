@@ -259,9 +259,13 @@ char *evilpoison_command_window_moveto(char *commandline)
    * on-the-bottom so I need to check if there was a negative in the string.
    */
   if ( *x_str=='-' )
-    x += DisplayWidth(dpy, current->screen->screen) - current->width;
+    x += DisplayWidth(dpy, current->screen->screen) - (current->width + current->border);
+  else
+    x += current->border;
   if ( *y_str=='-' )
-    y += DisplayHeight(dpy, current->screen->screen) - current->height ;
+    y += DisplayHeight(dpy, current->screen->screen) - (current->height + current->border );
+  else
+    y += current->border;
 
   current->x = x;
   current->y = y;
