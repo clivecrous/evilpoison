@@ -100,6 +100,10 @@ char *evilpoison_command_execute_here(char *commandline)
     fgets( line, MAX_LINE_LENGTH, execution );
     if ( feof( execution ) ) break;
 
+    /* strip newline characters from the end of the line */
+    while ( strlen( line ) > 0 && ( line[strlen(line)-1] == 0x0D || line[strlen(line)-1] == 0x0A ) )
+      line[strlen(line)-1] = 0x00;
+
     if ( strlen( line ) == 0 ) continue;
 
     if ( result )
