@@ -265,18 +265,28 @@ static int absmin(int a, int b) {
 
 static void snap_client(Client *c) {
 	int dx, dy;
-	int dpy_width = DisplayWidth(dpy, c->screen->screen);
-	int dpy_height = DisplayHeight(dpy, c->screen->screen);
 	Client *ci;
+
+  int screen_origin_x = xinerama_screen_origin_x();
+  int screen_origin_y = xinerama_screen_origin_y();
+
+  int screen_width = xinerama_screen_width();
+  int screen_height = xinerama_screen_height();
+
   int border_snap = atoi( settings_get( "border.snap" ) );
 
-	/* snap to screen border */
-	if (abs(c->x - c->border) < border_snap) c->x = c->border;
-	if (abs(c->y - c->border) < border_snap) c->y = c->border;
-	if (abs(c->x + c->width + c->border - dpy_width) < border_snap)
-		c->x = dpy_width - c->width - c->border;
-	if (abs(c->y + c->height + c->border - dpy_height) < border_snap)
-		c->y = dpy_height - c->height - c->border;
+	/* snap to screen left border */
+	if (abs(c->x - (screen_origin_x + c->border) ) < border_snap)
+    c->x = screen_origin_x + c->border;
+	/* snap to screen top border */
+	if (abs(c->y - (screen_origin_y + c->border) ) < border_snap)
+    c->y = screen_origin_y + c->border;
+	/* snap to screen right border */
+	if ( abs( (c->x + c->width + c->border) - (screen_origin_x + screen_width) ) < border_snap )
+		c->x = screen_origin_x + screen_width - (c->width + c->border);
+	/* snap to screen bottom border */
+	if ( abs( (c->y + c->height + c->border) - (screen_origin_y + screen_height) ) < border_snap)
+		c->y = screen_origin_y + screen_height - (c->height + c->border);
 
 	/* snap to other windows */
 	dx = dy = border_snap;
@@ -303,9 +313,9 @@ static void snap_client(Client *c) {
 		c->x += dx;
 	if (abs(dy) < border_snap)
 		c->y += dy;
-	if (abs(c->x) == c->border && c->width == dpy_width)
+	if (abs(c->x) == c->border && c->width == screen_width)
 		c->x = 0;
-	if (abs(c->y) == c->border && c->height == dpy_height)
+	if (abs(c->y) == c->border && c->height == screen_height)
 		c->y = 0;
 }
 
