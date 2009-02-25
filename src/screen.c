@@ -413,8 +413,8 @@ void maximise_client(Client *c, int hv) {
 		} else {
 			c->oldx = c->x;
 			c->oldw = c->width;
-			c->x = xinerama_screen_origin_x();
-			c->width = xinerama_screen_width();
+			c->x = xinerama_screen_origin_x() + c->border;
+			c->width = xinerama_screen_width() - c->border * 2;
 		}
 	}
 	if (hv & MAXIMISE_VERT) {
@@ -425,8 +425,8 @@ void maximise_client(Client *c, int hv) {
 		} else {
 			c->oldy = c->y;
 			c->oldh = c->height;
-			c->y = xinerama_screen_origin_y();
-			c->height = xinerama_screen_height();
+			c->y = xinerama_screen_origin_y() + c->border;
+			c->height = xinerama_screen_height() - c->border * 2;
 		}
 	}
 	moveresize(c);
