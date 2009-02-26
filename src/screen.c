@@ -395,8 +395,9 @@ void moveresize(Client *c) {
 }
 
 void maximise_client(Client *c, int hv) {
+  int maximised = client_maximised( c, hv );
 	if (hv & MAXIMISE_HORZ) {
-		if ( client_maximised( c, MAXIMISE_HORZ ) ) {
+		if ( maximised ) {
 			c->x = c->oldx;
 			c->width = c->oldw;
 		} else {
@@ -407,7 +408,7 @@ void maximise_client(Client *c, int hv) {
 		}
 	}
 	if (hv & MAXIMISE_VERT) {
-		if ( client_maximised( c, MAXIMISE_VERT ) ) {
+		if ( maximised ) {
 			c->y = c->oldy;
 			c->height = c->oldh;
 		} else {
