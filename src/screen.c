@@ -377,40 +377,20 @@ void drag(Client *c) {
 	}
 }
 
-/** Set a client as not-maximised.
- * \param client The client window to set.
- * \param hv Set horizontal, vertical or both.
- * \todo Rename this function to something that implies a setting but not an
- * action.
- */
-static void unmaximise_client( Client *client, int hv )
-{ if ( hv & MAXIMISE_HORZ) client->oldw = 0;
-  if ( hv & MAXIMISE_VERT) client->oldh = 0;
-}
-
 /** Check whether the given client is maximised or not.
  * \param client The client window to be checked.
  * \param hv Check horizontal, vertical or both.
  * \return A boolean indicating if the client is maximised.
  */
 static int client_maximised( Client *client, int hv )
-{ return hv & MAXIMISE_HORZ ? client->oldw != 0 : 1 &&
-         hv & MAXIMISE_VERT ? client->oldh != 0 : 1; }
+{ return hv & MAXIMISE_HORZ ? (client->x == xinerama_screen_origin_x() + client->border) && (client->width == xinerama_screen_width() - client->border * 2) : 1 &&
+         hv & MAXIMISE_VERT ? (client->y == xinerama_screen_origin_y() + client->border) && (client->height == xinerama_screen_height() - client->border * 2) : 1; }
 
 void moveresize(Client *c) {
 	XRaiseWindow(dpy, c->parent);
 	XMoveResizeWindow(dpy, c->parent, c->x - c->border, c->y - c->border,
 			c->width, c->height);
 	XMoveResizeWindow(dpy, c->window, 0, 0, c->width, c->height);
-  /* FIXME Setting the client as unmaximised on a move causes auto-resizing
-   * clients (eg: gvim, xterm) to be marked as not maximized right after a
-   * maximising action has happened. Strictly speaking this is "correct" but
-   * some research needs to be done to figure out how to differentiate between a
-   * true resize and a subtle tweak for rendering purposes.
-   * see also: http://www.darkarts.co.za/projects/evilpoison/ticket/23
-   *
-   * unmaximise_client( c, MAXIMISE_VERT|MAXIMISE_HORZ );
-   */
 	send_config(c);
 }
 
@@ -419,7 +399,6 @@ void maximise_client(Client *c, int hv) {
 		if ( client_maximised( c, MAXIMISE_HORZ ) ) {
 			c->x = c->oldx;
 			c->width = c->oldw;
-      unmaximise_client( c, MAXIMISE_HORZ );
 		} else {
 			c->oldx = c->x;
 			c->oldw = c->width;
@@ -431,7 +410,6 @@ void maximise_client(Client *c, int hv) {
 		if ( client_maximised( c, MAXIMISE_VERT ) ) {
 			c->y = c->oldy;
 			c->height = c->oldh;
-      unmaximise_client( c, MAXIMISE_VERT );
 		} else {
 			c->oldy = c->y;
 			c->oldh = c->height;
