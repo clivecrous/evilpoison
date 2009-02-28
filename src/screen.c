@@ -489,43 +489,51 @@ void previous(void)
   nextprevious( newc );
 }
 
-void switch_virtual_desktop(ScreenInfo *s, int v) {
-	Client *c;
-#ifdef DEBUG
-	int hidden = 0, raised = 0;
-#endif
+void switch_virtual_desktop(ScreenInfo *screen, int virtual_desktop_wanted) {
 
-	if (v == s->virtual_desktop)
-		return;
+  /* Don't bother if nothing actually changes */
+	if (virtual_desktop_wanted == screen->virtual_desktop) return;
+
+	LOG_DEBUG("switch_virtual_desktop(): Switching screen %d's desktop to desktop %d\n", screen->screen, virtual_desktop_wanted);
+
+  /* Deselect current window unless it's sticky */
 	if (current && !is_sticky(current)) {
 		select_client(NULL);
 	}
-	LOG_DEBUG("switch_virtual_desktop(): Switching screen %d's desktop to desktop %d\n", s->screen, v);
-	for (c = head_client; c; c = c->next) {
-		if (c->screen != s)
-			continue;
-		if (is_sticky(c) && c->virtual_desktop != v) {
-			c->virtual_desktop = v;
-			update_net_wm_desktop(c);
+
+	for ( Client * client_iterator = head_client;
+        client_iterator;
+        client_iterator = client_iterator->next )
+  {
+
+    /* Skip this windows on other screens  */
+		if ( client_iterator->screen != screen ) continue;
+
+    /* Move sticky windows to the new virtual desktop */
+		if ( is_sticky(client_iterator) &&
+         client_iterator->virtual_desktop != virtual_desktop_wanted)
+    {
+			client_iterator->virtual_desktop = virtual_desktop_wanted;
+			update_net_wm_desktop(client_iterator);
 		}
-		if (c->virtual_desktop == s->virtual_desktop) {
-			hide(c);
-#ifdef DEBUG
-			hidden++;
-#endif
-		} else if (c->virtual_desktop == v) {
-			unhide(c, NO_RAISE);
-#ifdef DEBUG
-			raised++;
-#endif
+
+		if ( client_iterator->virtual_desktop == virtual_desktop_wanted )
+    {
+			unhide(client_iterator, NO_RAISE);
+    }
+    else
+    {
+			hide(client_iterator);
 		}
+
 	}
-	s->other_virtual_desktop = s->virtual_desktop;
-	s->virtual_desktop = v;
 
-  if ( !current || current->virtual_desktop != v ) next();
+  /* Save current to allow history.back and switch */
+	screen->other_virtual_desktop = screen->virtual_desktop;
+	screen->virtual_desktop = virtual_desktop_wanted;
 
-	LOG_DEBUG("\t(%d hidden, %d raised)\n", hidden, raised);
+  /* Ensure that we have a window active on the new virtual desktop */
+  if ( !current || current->virtual_desktop != virtual_desktop_wanted ) next();
 }
 
 ScreenInfo *find_screen(Window root) {
