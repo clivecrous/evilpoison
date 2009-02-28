@@ -39,9 +39,9 @@ void add_key_binding(KeySym k, unsigned int mask, char *cmd) {
 void free_key_bindings() {
   if (key_conversions) {
     // FIXME Inner allocations aren't freed yet.
-	  free(key_conversions);
-	  key_conversions = NULL;
-	  num_keyconvs = 0;
+    free(key_conversions);
+    key_conversions = NULL;
+    num_keyconvs = 0;
   }
 }
 
@@ -78,7 +78,7 @@ static void handle_key_event(XKeyEvent *e) {
 
   global_mode = mode_normal;
 
-	Client *c;
+  Client *c;
 
   ScreenInfo *current_screen;
 
@@ -130,29 +130,29 @@ static void handle_key_event(XKeyEvent *e) {
 
     } while ( (global_mode == mode_command) || modifier );
 
-		XUngrabKeyboard(dpy, CurrentTime);
-		XUngrabPointer(dpy, CurrentTime);
+    XUngrabKeyboard(dpy, CurrentTime);
+    XUngrabPointer(dpy, CurrentTime);
   }
 
 }
 
 static void handle_button_event(XButtonEvent *e) {
-	Client *c = find_client(e->window);
+  Client *c = find_client(e->window);
 
-	if (c) {
-		switch (e->button) {
-			case Button1:
+  if (c) {
+    switch (e->button) {
+      case Button1:
         command_execute( "window.move.mouse" );
         break;
-			case Button2:
+      case Button2:
         command_execute( "window.lower" );
         break;
-			case Button3:
+      case Button3:
         command_execute( "window.resize.mouse" );
         break;
-			default: break;
-		}
-	}
+      default: break;
+    }
+  }
   switch (e->button) {
     case Button4:
       command_execute( "window.next" );
@@ -164,173 +164,173 @@ static void handle_button_event(XButtonEvent *e) {
 }
 
 static void handle_configure_request(XConfigureRequestEvent *e) {
-	Client *c = find_client(e->window);
-	XWindowChanges wc;
-	unsigned int value_mask = e->value_mask;
+  Client *c = find_client(e->window);
+  XWindowChanges wc;
+  unsigned int value_mask = e->value_mask;
 
-	wc.sibling = e->above;
-	wc.stack_mode = e->detail;
-	wc.width = e->width;
-	wc.height = e->height;
-	if (c) {
-		ungravitate(c);
-		if (value_mask & CWWidth) c->width = e->width;
-		if (value_mask & CWHeight) c->height = e->height;
-		if (value_mask & CWX) c->x = e->x;
-		if (value_mask & CWY) c->y = e->y;
-		if (value_mask & CWStackMode && value_mask & CWSibling) {
-			Client *sibling = find_client(e->above);
-			if (sibling) {
-				wc.sibling = sibling->parent;
-			}
-		}
-		if (c->x == 0 && c->width >= DisplayWidth(dpy, c->screen->screen)) {
-			c->x -= c->border;
-		}
-		if (c->y == 0 && c->height >= DisplayHeight(dpy, c->screen->screen)) {
-			c->y -= c->border;
-		}
-		gravitate(c);
+  wc.sibling = e->above;
+  wc.stack_mode = e->detail;
+  wc.width = e->width;
+  wc.height = e->height;
+  if (c) {
+    ungravitate(c);
+    if (value_mask & CWWidth) c->width = e->width;
+    if (value_mask & CWHeight) c->height = e->height;
+    if (value_mask & CWX) c->x = e->x;
+    if (value_mask & CWY) c->y = e->y;
+    if (value_mask & CWStackMode && value_mask & CWSibling) {
+      Client *sibling = find_client(e->above);
+      if (sibling) {
+        wc.sibling = sibling->parent;
+      }
+    }
+    if (c->x == 0 && c->width >= DisplayWidth(dpy, c->screen->screen)) {
+      c->x -= c->border;
+    }
+    if (c->y == 0 && c->height >= DisplayHeight(dpy, c->screen->screen)) {
+      c->y -= c->border;
+    }
+    gravitate(c);
 
-		wc.x = c->x - c->border;
-		wc.y = c->y - c->border;
-		wc.border_width = c->border;
-		LOG_XDEBUG("XConfigureWindow(dpy, parent(%x), %lx, &wc);\n", (unsigned int)c->parent, value_mask);
-		XConfigureWindow(dpy, c->parent, value_mask, &wc);
-		XMoveResizeWindow(dpy, c->window, 0, 0, c->width, c->height);
-		if ((value_mask & (CWX|CWY)) && !(value_mask & (CWWidth|CWHeight))) {
-			send_config(c);
-		}
-		wc.border_width = 0;
-	} else {
-		wc.x = c ? 0 : e->x;
-		wc.y = c ? 0 : e->y;
-		LOG_XDEBUG("XConfigureWindow(dpy, window(%x), %lx, &wc);\n", (unsigned int)e->window, value_mask);
-		XConfigureWindow(dpy, e->window, value_mask, &wc);
-	}
+    wc.x = c->x - c->border;
+    wc.y = c->y - c->border;
+    wc.border_width = c->border;
+    LOG_XDEBUG("XConfigureWindow(dpy, parent(%x), %lx, &wc);\n", (unsigned int)c->parent, value_mask);
+    XConfigureWindow(dpy, c->parent, value_mask, &wc);
+    XMoveResizeWindow(dpy, c->window, 0, 0, c->width, c->height);
+    if ((value_mask & (CWX|CWY)) && !(value_mask & (CWWidth|CWHeight))) {
+      send_config(c);
+    }
+    wc.border_width = 0;
+  } else {
+    wc.x = c ? 0 : e->x;
+    wc.y = c ? 0 : e->y;
+    LOG_XDEBUG("XConfigureWindow(dpy, window(%x), %lx, &wc);\n", (unsigned int)e->window, value_mask);
+    XConfigureWindow(dpy, e->window, value_mask, &wc);
+  }
 }
 
 static void handle_map_request(XMapRequestEvent *e) {
-	Client *c = find_client(e->window);
+  Client *c = find_client(e->window);
 
-	if (c) {
-		if (c->virtual_desktop != c->screen->virtual_desktop)
-			switch_virtual_desktop(c->screen, c->virtual_desktop);
-		unhide(c, RAISE);
-	} else {
-		XWindowAttributes attr;
-		LOG_DEBUG("handle_map_request() : don't know this window, calling make_new_client();\n");
-		XGetWindowAttributes(dpy, e->window, &attr);
-		make_new_client(e->window, find_screen(attr.root));
-	}
+  if (c) {
+    if (c->virtual_desktop != c->screen->virtual_desktop)
+      switch_virtual_desktop(c->screen, c->virtual_desktop);
+    unhide(c, RAISE);
+  } else {
+    XWindowAttributes attr;
+    LOG_DEBUG("handle_map_request() : don't know this window, calling make_new_client();\n");
+    XGetWindowAttributes(dpy, e->window, &attr);
+    make_new_client(e->window, find_screen(attr.root));
+  }
 }
 
 static void handle_unmap_event(XUnmapEvent *e) {
-	Client *c = find_client(e->window);
+  Client *c = find_client(e->window);
 
-	LOG_DEBUG("handle_unmap_event():\n");
-	if (c) {
-		if (c->ignore_unmap) {
-			c->ignore_unmap--;
-			LOG_DEBUG("\tignored (%d ignores remaining)\n", c->ignore_unmap);
-		} else {
-			LOG_DEBUG("\tflagging client for removal\n");
-			c->remove = 1;
-			need_client_tidy = 1;
-		}
-	} else {
-		LOG_DEBUG("\tunknown client!\n");
-	}
+  LOG_DEBUG("handle_unmap_event():\n");
+  if (c) {
+    if (c->ignore_unmap) {
+      c->ignore_unmap--;
+      LOG_DEBUG("\tignored (%d ignores remaining)\n", c->ignore_unmap);
+    } else {
+      LOG_DEBUG("\tflagging client for removal\n");
+      c->remove = 1;
+      need_client_tidy = 1;
+    }
+  } else {
+    LOG_DEBUG("\tunknown client!\n");
+  }
 }
 
 static void handle_colormap_change(XColormapEvent *e) {
-	Client *c = find_client(e->window);
+  Client *c = find_client(e->window);
 
-	if (c && e->new) {
-		c->cmap = e->colormap;
-		XInstallColormap(dpy, c->cmap);
-	}
+  if (c && e->new) {
+    c->cmap = e->colormap;
+    XInstallColormap(dpy, c->cmap);
+  }
 }
 
 static void handle_property_change(XPropertyEvent *e) {
-	Client *c = find_client(e->window);
+  Client *c = find_client(e->window);
 
-	if (c) {
-		if (e->atom == XA_WM_NORMAL_HINTS) {
-			get_wm_normal_hints(c);
-		}
-	}
+  if (c) {
+    if (e->atom == XA_WM_NORMAL_HINTS) {
+      get_wm_normal_hints(c);
+    }
+  }
 }
 
 static void handle_enter_event(XCrossingEvent *e) {
-	Client *c;
+  Client *c;
 
-	if (!atoi(settings_get("mouse.focus"))) return;
+  if (!atoi(settings_get("mouse.focus"))) return;
 
-	if ((c = find_client(e->window))) {
-		if (c->virtual_desktop != c->screen->virtual_desktop)
-			return;
-		select_client(c);
-	}
+  if ((c = find_client(e->window))) {
+    if (c->virtual_desktop != c->screen->virtual_desktop)
+      return;
+    select_client(c);
+  }
 }
 
 static void handle_mappingnotify_event(XMappingEvent *e) {
-	XRefreshKeyboardMapping(e);
-	if (e->request == MappingKeyboard) {
-		int i;
-		for (i = 0; i < num_screens; i++) {
-			grab_keys_for_screen(&screens[i]);
-		}
-	}
+  XRefreshKeyboardMapping(e);
+  if (e->request == MappingKeyboard) {
+    int i;
+    for (i = 0; i < num_screens; i++) {
+      grab_keys_for_screen(&screens[i]);
+    }
+  }
 }
 
 static void handle_shape_event(XShapeEvent *e) {
-	Client *c = find_client(e->window);
-	if (c)
-		set_shape(c);
+  Client *c = find_client(e->window);
+  if (c)
+    set_shape(c);
 }
 
 void event_main_loop(void) {
-	XEvent ev;
-	/* main event loop here */
-	for (;;) {
-		XNextEvent(dpy, &ev);
-		switch (ev.type) {
-			case KeyPress:
-				handle_key_event(&ev.xkey); break;
-			case ButtonPress:
-				handle_button_event(&ev.xbutton); break;
-			case ConfigureRequest:
-				handle_configure_request(&ev.xconfigurerequest); break;
-			case MapRequest:
-				handle_map_request(&ev.xmaprequest); break;
-			case ColormapNotify:
-				handle_colormap_change(&ev.xcolormap); break;
-			case EnterNotify:
-				handle_enter_event(&ev.xcrossing); break;
-			case PropertyNotify:
-				handle_property_change(&ev.xproperty); break;
-			case UnmapNotify:
-				handle_unmap_event(&ev.xunmap); break;
-			case MappingNotify:
-				handle_mappingnotify_event(&ev.xmapping); break;
-			default:
-				if (have_shape && ev.type == shape_event) {
-					handle_shape_event((XShapeEvent *)&ev);
-				}
-		}
-		if (need_client_tidy) {
-			Client *c, *nc;
-			int donext = 0;
-			for (c = head_client; c; c = nc) {
-				nc = c->next;
-				if (c->remove) {
-				    if (c == current) donext = 1;
-					remove_client(c);
-				}
-			}
-			if (donext)
-			    next();
-		}
-	}
+  XEvent ev;
+  /* main event loop here */
+  for (;;) {
+    XNextEvent(dpy, &ev);
+    switch (ev.type) {
+      case KeyPress:
+        handle_key_event(&ev.xkey); break;
+      case ButtonPress:
+        handle_button_event(&ev.xbutton); break;
+      case ConfigureRequest:
+        handle_configure_request(&ev.xconfigurerequest); break;
+      case MapRequest:
+        handle_map_request(&ev.xmaprequest); break;
+      case ColormapNotify:
+        handle_colormap_change(&ev.xcolormap); break;
+      case EnterNotify:
+        handle_enter_event(&ev.xcrossing); break;
+      case PropertyNotify:
+        handle_property_change(&ev.xproperty); break;
+      case UnmapNotify:
+        handle_unmap_event(&ev.xunmap); break;
+      case MappingNotify:
+        handle_mappingnotify_event(&ev.xmapping); break;
+      default:
+        if (have_shape && ev.type == shape_event) {
+          handle_shape_event((XShapeEvent *)&ev);
+        }
+    }
+    if (need_client_tidy) {
+      Client *c, *nc;
+      int donext = 0;
+      for (c = head_client; c; c = nc) {
+        nc = c->next;
+        if (c->remove) {
+            if (c == current) donext = 1;
+          remove_client(c);
+        }
+      }
+      if (donext)
+          next();
+    }
+  }
 }

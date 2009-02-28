@@ -170,7 +170,7 @@ char *evilpoison_command_desktop_navigate_previous(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->virtual_desktop > 0 )
-	switch_virtual_desktop(current_screen, current_screen->virtual_desktop - 1);
+  switch_virtual_desktop(current_screen, current_screen->virtual_desktop - 1);
     return 0;
 }
 
@@ -178,7 +178,7 @@ char *evilpoison_command_desktop_navigate_next(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->virtual_desktop < 7 )
-	switch_virtual_desktop(current_screen, current_screen->virtual_desktop + 1);
+  switch_virtual_desktop(current_screen, current_screen->virtual_desktop + 1);
     return 0;
 }
 
@@ -186,7 +186,7 @@ char *evilpoison_command_desktop_history_back(char *UNUSED(commandline))
 {
     ScreenInfo *current_screen = find_current_screen();
     if (current_screen->virtual_desktop != current_screen->other_virtual_desktop)
-	switch_virtual_desktop(current_screen, current_screen->other_virtual_desktop);
+  switch_virtual_desktop(current_screen, current_screen->other_virtual_desktop);
     return 0;
 }
 

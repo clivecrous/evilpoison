@@ -65,14 +65,14 @@ static XineramaScreenInfo * xinerama_current_screen( void )
 {
   if ( ! xinerama_screens ) return NULL;
 
-	Window dummy_window;
+  Window dummy_window;
   int dummy_int;
-	unsigned int dummy_unsigned_int;
+  unsigned int dummy_unsigned_int;
 
-	int pointer_x_coordinate, pointer_y_coordinate;
+  int pointer_x_coordinate, pointer_y_coordinate;
   int head_counter;
 
-	XQueryPointer(
+  XQueryPointer(
       dpy, DefaultRootWindow( dpy ),
       &dummy_window, &dummy_window,
       &pointer_x_coordinate, &pointer_y_coordinate,

@@ -12,9 +12,9 @@
 #define MWM_DECOR_ALL           (1L << 0)
 #define MWM_DECOR_BORDER        (1L << 1)
 typedef struct {
-	unsigned long flags;
-	unsigned long functions;
-	unsigned long decorations;
+  unsigned long flags;
+  unsigned long functions;
+  unsigned long decorations;
 } PropMwmHints;
 
 /* default settings */
@@ -43,27 +43,27 @@ typedef enum {
 #define MouseMask       (ButtonMask|PointerMotionMask)
 
 #define grab_pointer(w, mask, curs) \
-	(XGrabPointer(dpy, w, False, mask, GrabModeAsync, GrabModeAsync, \
-	None, curs, CurrentTime) == GrabSuccess)
+  (XGrabPointer(dpy, w, False, mask, GrabModeAsync, GrabModeAsync, \
+  None, curs, CurrentTime) == GrabSuccess)
 #define grab_button(w, mask, button) do { \
-		XGrabButton(dpy, button, (mask), w, False, ButtonMask, \
-			    GrabModeAsync, GrabModeSync, None, None); \
-		XGrabButton(dpy, button, LockMask|(mask), w, False, ButtonMask,\
-			    GrabModeAsync, GrabModeSync, None, None); \
-		XGrabButton(dpy, button, numlockmask|(mask), w, False, \
-			    ButtonMask, GrabModeAsync, GrabModeSync, \
-			    None, None); \
-		XGrabButton(dpy, button, numlockmask|LockMask|(mask), w, False,\
-			    ButtonMask, GrabModeAsync, GrabModeSync, \
-			    None, None); \
-	} while (0)
+    XGrabButton(dpy, button, (mask), w, False, ButtonMask, \
+          GrabModeAsync, GrabModeSync, None, None); \
+    XGrabButton(dpy, button, LockMask|(mask), w, False, ButtonMask,\
+          GrabModeAsync, GrabModeSync, None, None); \
+    XGrabButton(dpy, button, numlockmask|(mask), w, False, \
+          ButtonMask, GrabModeAsync, GrabModeSync, \
+          None, None); \
+    XGrabButton(dpy, button, numlockmask|LockMask|(mask), w, False,\
+          ButtonMask, GrabModeAsync, GrabModeSync, \
+          None, None); \
+  } while (0)
 #define setmouse(w, x, y) XWarpPointer(dpy, None, w, 0, 0, 0, 0, x, y)
 #define get_mouse_position(xp,yp,root) do { \
-		Window dw; \
-		int di; \
-		unsigned int dui; \
-		XQueryPointer(dpy, root, &dw, &dw, xp, yp, &di, &di, &dui); \
-	} while (0)
+    Window dw; \
+    int di; \
+    unsigned int dui; \
+    XQueryPointer(dpy, root, &dw, &dw, xp, yp, &di, &di, &dui); \
+  } while (0)
 #define gravitate(c) gravitate_client(c, 1)
 #define ungravitate(c) gravitate_client(c, -1)
 
@@ -73,46 +73,46 @@ typedef enum {
 #define toggle_sticky(c) c->sticky = !c->sticky
 
 #define discard_enter_events() do { \
-		XEvent dummy; \
-		XSync(dpy, False); \
-		while (XCheckMaskEvent(dpy, EnterWindowMask, &dummy)); \
-	} while (0)
+    XEvent dummy; \
+    XSync(dpy, False); \
+    while (XCheckMaskEvent(dpy, EnterWindowMask, &dummy)); \
+  } while (0)
 
 /* screen structure */
 
 typedef struct ScreenInfo ScreenInfo;
 struct ScreenInfo {
-	int screen;
-	Window root;
-	int virtual_desktop;
-	int other_virtual_desktop;
-	char *display;
+  int screen;
+  Window root;
+  int virtual_desktop;
+  int other_virtual_desktop;
+  char *display;
 };
 
 /* client structure */
 
 typedef struct Client Client;
 struct Client {
-	Window  window;
-	Window  parent;
-	ScreenInfo      *screen;
-	Colormap        cmap;
-	int             ignore_unmap;
+  Window  window;
+  Window  parent;
+  ScreenInfo      *screen;
+  Colormap        cmap;
+  int             ignore_unmap;
 
-	int             x, y, width, height;
-	int             border;
-	int             oldx, oldy, oldw, oldh;  /* used when maximising */
+  int             x, y, width, height;
+  int             border;
+  int             oldx, oldy, oldw, oldh;  /* used when maximising */
 
-	int             min_width, min_height;
-	int             max_width, max_height;
-	int             width_inc, height_inc;
-	int             base_width, base_height;
-	int             win_gravity;
-	int             old_border;
-	int             virtual_desktop;
-	int             sticky;
-	int             remove;  /* set when client needs to be removed */
-	Client  *next;
+  int             min_width, min_height;
+  int             max_width, max_height;
+  int             width_inc, height_inc;
+  int             base_width, base_height;
+  int             win_gravity;
+  int             old_border;
+  int             virtual_desktop;
+  int             sticky;
+  int             remove;  /* set when client needs to be removed */
+  Client  *next;
 };
 
 /* Declarations for global variables in main.c */
