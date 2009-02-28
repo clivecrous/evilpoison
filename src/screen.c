@@ -492,12 +492,12 @@ void previous(void)
 void switch_virtual_desktop(ScreenInfo *screen, int virtual_desktop_wanted) {
 
   /* Don't bother if nothing actually changes */
-	if (virtual_desktop_wanted == screen->virtual_desktop) return;
+	if ( virtual_desktop_wanted == screen->virtual_desktop ) return;
 
 	LOG_DEBUG("switch_virtual_desktop(): Switching screen %d's desktop to desktop %d\n", screen->screen, virtual_desktop_wanted);
 
   /* Deselect current window unless it's sticky */
-	if (current && !is_sticky(current)) {
+	if ( current && !is_sticky(current) ) {
 		select_client(NULL);
 	}
 
@@ -506,7 +506,7 @@ void switch_virtual_desktop(ScreenInfo *screen, int virtual_desktop_wanted) {
         client_iterator = client_iterator->next )
   {
 
-    /* Skip this windows on other screens  */
+    /* Skip windows on other screens  */
 		if ( client_iterator->screen != screen ) continue;
 
     /* Move sticky windows to the new virtual desktop */
@@ -519,11 +519,11 @@ void switch_virtual_desktop(ScreenInfo *screen, int virtual_desktop_wanted) {
 
 		if ( client_iterator->virtual_desktop == virtual_desktop_wanted )
     {
-			unhide(client_iterator, NO_RAISE);
+			unhide( client_iterator, NO_RAISE );
     }
     else
     {
-			hide(client_iterator);
+			hide( client_iterator );
 		}
 
 	}
