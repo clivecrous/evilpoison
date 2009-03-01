@@ -521,7 +521,7 @@ void switch_virtual_desktop(ScreenInfo *screen, int virtual_desktop_wanted) {
     {
       unhide( client_iterator, NO_RAISE );
     }
-    else
+    else if ( client_iterator->virtual_desktop == screen->virtual_desktop )
     {
       hide( client_iterator );
     }
