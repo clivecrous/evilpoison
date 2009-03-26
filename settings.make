@@ -36,11 +36,11 @@ distname = evilpoison-$(version)
 DEFINES += -DVERSION=\"$(version)\" $(DEBIAN)
 
 # Optimize for size
-CFLAGS  += $(INCLUDES) $(DEFINES) -Os -Wall
+#CFLAGS  += $(INCLUDES) $(DEFINES) -Os -Wall
 # Optimize for speed
 #CFLAGS  += $(INCLUDES) $(DEFINES) -O3 -Wall
 # Debug build
-#CFLAGS  += $(INCLUDES) $(DEFINES) -g -Wall
+CFLAGS  += $(INCLUDES) $(DEFINES) -g -Wall
 
 CFLAGS  += -W -Wstrict-prototypes -Wpointer-arith -Wcast-align -Wcast-qual -Wshadow -Waggregate-return -Wnested-externs -Winline -Wwrite-strings -Wundef -Wsign-compare -Wmissing-prototypes -Wredundant-decls
 LDFLAGS += $(LDPATH) $(LIBS)
