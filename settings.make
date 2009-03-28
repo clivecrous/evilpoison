@@ -27,7 +27,7 @@ DEFINES += -DSTDIO
 
 # ----- You shouldn't need to change anything under this line ------ #
 
-version = 0.9.$(shell git-rev-list origin/master|wc -l)
+version = 0.9.$(shell git rev-list --all|wc -l)
 
 distname = evilpoison-$(version)
 
