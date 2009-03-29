@@ -89,6 +89,8 @@ void parse_rcfile(FILE *fp) {
 int main(int argc, char *argv[]) {
   struct sigaction act;
 
+  if (!XInitThreads()) { exit(-1); };
+
   settings_init();
 
   if ( !commandline_process( argc, argv ) ) exit( -1 );
