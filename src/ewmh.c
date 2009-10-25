@@ -9,7 +9,7 @@
 #include "log.h"
 
 void update_net_wm_desktop(Client *c) {
-  XChangeProperty(dpy, c->window, xa_net_wm_desktop,
+  XChangeProperty(dpy, c->xstuff->window, xa_net_wm_desktop,
       XA_CARDINAL, 32, PropModeReplace,
       (unsigned char *)&c->virtual_desktop, 1);
 }
@@ -19,7 +19,7 @@ void update_net_wm_state(Client *c) {
   int i = 0;
   if (is_sticky(c))
     state[i++] = xa_net_wm_state_sticky;
-  XChangeProperty(dpy, c->window, xa_net_wm_state,
+  XChangeProperty(dpy, c->xstuff->window, xa_net_wm_state,
       XA_ATOM, 32, PropModeReplace,
       (unsigned char *)&state, i);
 }

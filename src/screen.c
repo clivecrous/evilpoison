@@ -104,11 +104,11 @@ static Window create_info_window(Client *client) {
   XColor text_border_colour;
   XColor dummy;
 
-  XAllocNamedColor(dpy, DefaultColormap(dpy, client->screen->screen), settings_get( "text.colour.background" ), &text_colour_background, &dummy);
-  XAllocNamedColor(dpy, DefaultColormap(dpy, client->screen->screen), settings_get( "text.border.colour" ), &text_border_colour, &dummy);
+  XAllocNamedColor(dpy, DefaultColormap(dpy, client->xstuff->screen->screen), settings_get( "text.colour.background" ), &text_colour_background, &dummy);
+  XAllocNamedColor(dpy, DefaultColormap(dpy, client->xstuff->screen->screen), settings_get( "text.border.colour" ), &text_border_colour, &dummy);
 
   Window info_window = None;
-  info_window = XCreateSimpleWindow(dpy, client->screen->root, -4, -4, 2, 2,
+  info_window = XCreateSimpleWindow(dpy, client->xstuff->screen->root, -4, -4, 2, 2,
       atoi( settings_get( "text.border.width" ) ), text_border_colour.pixel, text_colour_background.pixel);
   XMapRaised(dpy, info_window);
   update_info_window(client, info_window);
@@ -130,7 +130,7 @@ static void update_info_window(Client *client, Window info_window) {
     (client->height-client->base_height)/height_inc, client->x, client->y);
   iwinw = XTextWidth(font, buf, strlen(buf)) + 2;
   iwinh = font->max_bounds.ascent + font->max_bounds.descent;
-  XFetchName(dpy, client->window, &name);
+  XFetchName(dpy, client->xstuff->window, &name);
   if (name) {
     namew = XTextWidth(font, name, strlen(name));
     if (namew > iwinw)
@@ -140,12 +140,12 @@ static void update_info_window(Client *client, Window info_window) {
   iwinb = atoi( settings_get( "text.border.width" ) )*2;
   iwinx = client->x + client->width + client->border - ( iwinw + iwinb );
   iwiny = client->y - client->border;
-  if (iwinx + iwinw + iwinb > DisplayWidth(dpy, client->screen->screen))
-    iwinx = DisplayWidth(dpy, client->screen->screen) - (iwinw + iwinb);
+  if (iwinx + iwinw + iwinb > DisplayWidth(dpy, client->xstuff->screen->screen))
+    iwinx = DisplayWidth(dpy, client->xstuff->screen->screen) - (iwinw + iwinb);
   if (iwinx < 0)
     iwinx = 0;
-  if (iwiny + iwinh > DisplayHeight(dpy, client->screen->screen))
-    iwiny = DisplayHeight(dpy, client->screen->screen) - iwinh;
+  if (iwiny + iwinh > DisplayHeight(dpy, client->xstuff->screen->screen))
+    iwiny = DisplayHeight(dpy, client->xstuff->screen->screen) - iwinh;
   if (iwiny < 0)
     iwiny = 0;
   XMoveResizeWindow(dpy, info_window, iwinx, iwiny, iwinw, iwinh);
@@ -155,7 +155,7 @@ static void update_info_window(Client *client, Window info_window) {
   GC gc;
   XColor text_colour_foreground, dummy;
 
-  XAllocNamedColor(dpy, DefaultColormap(dpy, client->screen->screen), settings_get( "text.colour.foreground" ), &text_colour_foreground, &dummy);
+  XAllocNamedColor(dpy, DefaultColormap(dpy, client->xstuff->screen->screen), settings_get( "text.colour.foreground" ), &text_colour_foreground, &dummy);
 
   gv.function = GXcopy;
   gv.subwindow_mode = IncludeInferiors;
@@ -163,7 +163,7 @@ static void update_info_window(Client *client, Window info_window) {
   gv.font = font->fid;
   gv.foreground = text_colour_foreground.pixel;
 
-  gc = XCreateGC(dpy, client->screen->root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont | GCForeground, &gv);
+  gc = XCreateGC(dpy, client->xstuff->screen->root, GCFunction | GCSubwindowMode | GCLineWidth | GCFont | GCForeground, &gv);
 
   if (name) {
     XDrawString(dpy, info_window, gc,
@@ -185,9 +185,9 @@ static void draw_outline(Client *c) {
   gv.subwindow_mode = IncludeInferiors;
   gv.line_width = atoi( settings_get( "border.width" ) );
 
-  gc = XCreateGC(dpy, c->screen->root, GCFunction | GCSubwindowMode | GCLineWidth, &gv);
+  gc = XCreateGC(dpy, c->xstuff->screen->root, GCFunction | GCSubwindowMode | GCLineWidth, &gv);
 
-  XDrawRectangle(dpy, c->screen->root, gc,
+  XDrawRectangle(dpy, c->xstuff->screen->root, gc,
     c->x - c->border, c->y - c->border,
     c->width + c->border, c->height + c->border);
 
@@ -212,14 +212,14 @@ void sweep(Client *c) {
   int old_cx = c->x;
   int old_cy = c->y;
 
-  if (!grab_pointer(c->screen->root, MouseMask, resize_curs)) return;
+  if (!grab_pointer(c->xstuff->screen->root, MouseMask, resize_curs)) return;
 
-  XRaiseWindow(dpy, c->parent);
+  XRaiseWindow(dpy, c->xstuff->parent);
   Window info_window = create_info_window(c);
   XGrabServer(dpy);
   draw_outline(c);
 
-  setmouse(c->window, c->width, c->height);
+  setmouse(c->xstuff->window, c->width, c->height);
   for (;;) {
     XMaskEvent(dpy, MouseMask, &ev);
     switch (ev.type) {
@@ -292,7 +292,7 @@ static void snap_client(Client *c) {
   dx = dy = border_snap;
   for (ci = head_client; ci; ci = ci->next) {
     if (ci != c
-        && (ci->screen == c->screen)
+        && (ci->xstuff->screen == c->xstuff->screen)
         && (ci->virtual_desktop == c->virtual_desktop)
         ) {
       if (ci->y - ci->border - c->border - c->height - c->y <= border_snap && c->y - c->border - ci->border - ci->height - ci->y <= border_snap) {
@@ -327,9 +327,9 @@ void drag(Client *c) {
 
   int move_display = atoi( settings_get( "window.move.display" ) );
 
-  if (!grab_pointer(c->screen->root, MouseMask, move_curs)) return;
-  XRaiseWindow(dpy, c->parent);
-  get_mouse_position(&x1, &y1, c->screen->root);
+  if (!grab_pointer(c->xstuff->screen->root, MouseMask, move_curs)) return;
+  XRaiseWindow(dpy, c->xstuff->parent);
+  get_mouse_position(&x1, &y1, c->xstuff->screen->root);
   Window info_window = create_info_window(c);
   if (!move_display) {
     XGrabServer(dpy);
@@ -355,7 +355,7 @@ void drag(Client *c) {
           XGrabServer(dpy);
           draw_outline(c);
         } else {
-          XMoveWindow(dpy, c->parent,
+          XMoveWindow(dpy, c->xstuff->parent,
               c->x - c->border,
               c->y - c->border);
           send_config(c);
@@ -387,10 +387,10 @@ static int client_maximised( Client *client, int hv )
          hv & MAXIMISE_VERT ? (client->y == xinerama_screen_origin_y() + client->border) && (client->height == xinerama_screen_height() - client->border * 2) : 1; }
 
 void moveresize(Client *c) {
-  XRaiseWindow(dpy, c->parent);
-  XMoveResizeWindow(dpy, c->parent, c->x - c->border, c->y - c->border,
+  XRaiseWindow(dpy, c->xstuff->parent);
+  XMoveResizeWindow(dpy, c->xstuff->parent, c->x - c->border, c->y - c->border,
       c->width, c->height);
-  XMoveResizeWindow(dpy, c->window, 0, 0, c->width, c->height);
+  XMoveResizeWindow(dpy, c->xstuff->window, 0, 0, c->width, c->height);
   send_config(c);
 }
 
@@ -427,12 +427,12 @@ void hide(Client *c) {
    * to ignore it. */
   c->ignore_unmap++;
   LOG_XDEBUG("screen:XUnmapWindow(parent);\n");
-  XUnmapWindow(dpy, c->parent);
+  XUnmapWindow(dpy, c->xstuff->parent);
   set_wm_state(c, IconicState);
 }
 
 void unhide(Client *c, int raise_win) {
-  raise_win ? XMapRaised(dpy, c->parent) : XMapWindow(dpy, c->parent);
+  raise_win ? XMapRaised(dpy, c->xstuff->parent) : XMapWindow(dpy, c->xstuff->parent);
   set_wm_state(c, NormalState);
 }
 
@@ -449,13 +449,42 @@ static void nextprevious( Client *change_to )
   select_client(change_to);
 
   if ( atoi( settings_get( "mouse.warp" ) ) ) {
-      setmouse(change_to->window, 0, 0);
-      setmouse(change_to->window, change_to->width + change_to->border - 1,
+      setmouse(change_to->xstuff->window, 0, 0);
+      setmouse(change_to->xstuff->window, change_to->width + change_to->border - 1,
       change_to->height + change_to->border - 1);
   }
 
   discard_enter_events();
 }
+
+/* move c to the head or to the end of clients list */
+void rechainclient(Client *c, int head)
+{
+    Client *prev = head_client;
+    if (!c || (head && (c == head_client))) return;
+
+    while (prev && prev != c && prev->next != c) prev = prev->next;
+
+    if (head) {
+	/* move c to the head of chain */
+	if (prev && prev != c)
+	    prev->next = c->next;
+	c->next = head_client;
+	head_client = c;
+    } else {
+	/* move c to the end of chain */
+	Client *last = head_client;
+	while (last->next) last = last->next;
+
+	if (last != c) {
+	    if (c->next && prev && prev != c)
+		prev->next = c->next;
+	    c->next = NULL;
+	    last->next = c;
+	}
+    }
+}
+
 
 void next(void)
 {
@@ -472,7 +501,11 @@ void next(void)
   if (newc && newc->virtual_desktop != current_screen->virtual_desktop)
     newc = NULL;
 
-  if (newc) nextprevious( newc );
+  if (newc) {
+      rechainclient(newc, 1);
+      rechainclient(current, 0);
+      nextprevious( newc );
+  }
 }
 
 void previous(void)
@@ -481,12 +514,19 @@ void previous(void)
   // involved.
   Client *newc = head_client;
 
+  Client *last = newc;
+  while (last->next) last = last->next;
+
   while (newc && newc->next != current ) newc = newc->next;
 
   if (!newc)
     for (newc = head_client; newc && newc->next; newc = newc->next );
 
-  nextprevious( newc );
+  if (newc) {
+      rechainclient(newc, 1);
+      rechainclient(current, 0);
+      nextprevious( newc );
+  }
 }
 
 void switch_virtual_desktop(ScreenInfo *screen, int virtual_desktop_wanted) {
@@ -507,7 +547,7 @@ void switch_virtual_desktop(ScreenInfo *screen, int virtual_desktop_wanted) {
   {
 
     /* Skip windows on other screens  */
-    if ( client_iterator->screen != screen ) continue;
+    if ( client_iterator->xstuff->screen != screen ) continue;
 
     /* Move sticky windows to the new virtual desktop */
     if ( is_sticky(client_iterator) &&
@@ -533,7 +573,17 @@ void switch_virtual_desktop(ScreenInfo *screen, int virtual_desktop_wanted) {
   screen->virtual_desktop = virtual_desktop_wanted;
 
   /* Ensure that we have a window active on the new virtual desktop */
-  if ( !current || current->virtual_desktop != virtual_desktop_wanted ) next();
+  if (!current || current->virtual_desktop != virtual_desktop_wanted) {
+      Client *tmpc = head_client;
+      while (tmpc && tmpc->virtual_desktop != virtual_desktop_wanted) {
+	  tmpc = tmpc->next;
+      }
+
+      if (tmpc) {
+	  nextprevious(tmpc);
+      }
+  }
+  /*if ( !current || current->virtual_desktop != virtual_desktop_wanted ) next();*/
 }
 
 ScreenInfo *find_screen(Window root) {

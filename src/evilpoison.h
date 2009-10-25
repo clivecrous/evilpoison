@@ -91,12 +91,16 @@ struct ScreenInfo {
 
 /* client structure */
 
-typedef struct Client Client;
-struct Client {
+struct Client_xstuff {
   Window  window;
   Window  parent;
   ScreenInfo      *screen;
   Colormap        cmap;
+};
+
+typedef struct Client Client;
+struct Client {
+  struct Client_xstuff *xstuff;
   int             ignore_unmap;
 
   int             x, y, width, height;
@@ -189,6 +193,7 @@ void maximise_client(Client *c, int hv);
 void show_info(Client *c);
 void sweep(Client *c);
 void unhide(Client *c, int raise_win);
+void rechainclient(Client *c, int head);
 void next(void);
 void previous(void);
 void hide(Client *c);

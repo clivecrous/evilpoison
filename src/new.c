@@ -64,8 +64,10 @@ void make_new_client(Window w, ScreenInfo *s) {
   c->next = head_client;
   head_client = c;
 
-  c->screen = s;
-  c->window = w;
+  c->xstuff = malloc(sizeof(struct Client_xstuff));
+
+  c->xstuff->screen = s;
+  c->xstuff->window = w;
   c->ignore_unmap = 0;
   c->remove = 0;
 
@@ -93,12 +95,12 @@ void make_new_client(Window w, ScreenInfo *s) {
   if (atoi(settings_get("mouse.focus")))
       eventmask |= EnterWindowMask;
 
-  XSelectInput(dpy, c->window,  eventmask);
+  XSelectInput(dpy, c->xstuff->window,  eventmask);
 
   reparent(c);
 
   if (have_shape) {
-      XShapeSelectInput(dpy, c->window, ShapeNotifyMask);
+      XShapeSelectInput(dpy, c->xstuff->window, ShapeNotifyMask);
       set_shape(c);
   }
 
@@ -130,7 +132,7 @@ static void init_geometry(Client *c) {
   unsigned long *lprop;
   Atom *aprop;
 
-  if ( (mprop = get_property(c->window, mwm_hints, mwm_hints, &nitems)) ) {
+  if ( (mprop = get_property(c->xstuff->window, mwm_hints, mwm_hints, &nitems)) ) {
     if (nitems >= PROP_MWM_HINTS_ELEMENTS
         && (mprop->flags & MWM_HINTS_DECORATIONS)
         && !(mprop->decorations & MWM_DECOR_ALL)
@@ -140,14 +142,14 @@ static void init_geometry(Client *c) {
     XFree(mprop);
   }
 
-  c->virtual_desktop = c->screen->virtual_desktop;
-  if ( (lprop = get_property(c->window, xa_net_wm_desktop, XA_CARDINAL, &nitems)) ) {
+  c->virtual_desktop = c->xstuff->screen->virtual_desktop;
+  if ( (lprop = get_property(c->xstuff->window, xa_net_wm_desktop, XA_CARDINAL, &nitems)) ) {
     if (nitems && lprop[0] >=1 && lprop[0] <= 8)
       c->virtual_desktop = lprop[0];
     XFree(lprop);
   }
   remove_sticky(c);
-  if ( (aprop = get_property(c->window, xa_net_wm_state, XA_ATOM, &nitems)) ) {
+  if ( (aprop = get_property(c->xstuff->window, xa_net_wm_state, XA_ATOM, &nitems)) ) {
     for (i = 0; i < nitems; i++) {
       if (aprop[i] == xa_net_wm_state_sticky)
         add_sticky(c);
@@ -157,11 +159,11 @@ static void init_geometry(Client *c) {
 
   /* Get current window attributes */
   LOG_XDEBUG("XGetWindowAttributes()\n");
-  XGetWindowAttributes(dpy, c->window, &attr);
+  XGetWindowAttributes(dpy, c->xstuff->window, &attr);
   LOG_XDEBUG("\t(%s) %dx%d+%d+%d, bw = %d\n", map_state_string(attr.map_state), attr.width, attr.height, attr.x, attr.y, attr.border_width);
   c->old_border = attr.border_width;
   c->oldw = c->oldh = 0;
-  c->cmap = attr.colormap;
+  c->xstuff->cmap = attr.colormap;
 
   size_flags = get_wm_normal_hints(c);
 
@@ -179,10 +181,10 @@ static void init_geometry(Client *c) {
     c->x = attr.x;
     c->y = attr.y;
   } else {
-    int xmax = DisplayWidth(dpy, c->screen->screen);
-    int ymax = DisplayHeight(dpy, c->screen->screen);
+    int xmax = DisplayWidth(dpy, c->xstuff->screen->screen);
+    int ymax = DisplayHeight(dpy, c->xstuff->screen->screen);
     int x, y;
-    get_mouse_position(&x, &y, c->screen->root);
+    get_mouse_position(&x, &y, c->xstuff->screen->root);
     c->x = (x * (xmax - c->border - c->width)) / xmax;
     c->y = (y * (ymax - c->border - c->height)) / ymax;
     send_config(c);
@@ -201,7 +203,7 @@ static void reparent(Client *c) {
   XColor border_colour_inactive;
   XColor dummy;
 
-  XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.inactive" ), &border_colour_inactive, &dummy);
+  XAllocNamedColor(dpy, DefaultColormap(dpy, c->xstuff->screen->screen), settings_get( "border.colour.inactive" ), &border_colour_inactive, &dummy);
 
   p_attr.border_pixel = border_colour_inactive.pixel;
   p_attr.override_redirect = True;
@@ -210,17 +212,17 @@ static void reparent(Client *c) {
   if (atoi(settings_get("mouse.focus")))
       p_attr.event_mask |= EnterWindowMask;
 
-  c->parent = XCreateWindow(dpy, c->screen->root, c->x-c->border, c->y-c->border,
+  c->xstuff->parent = XCreateWindow(dpy, c->xstuff->screen->root, c->x-c->border, c->y-c->border,
     c->width, c->height, c->border,
-    DefaultDepth(dpy, c->screen->screen), CopyFromParent,
-    DefaultVisual(dpy, c->screen->screen),
+    DefaultDepth(dpy, c->xstuff->screen->screen), CopyFromParent,
+    DefaultVisual(dpy, c->xstuff->screen->screen),
     CWOverrideRedirect | CWBorderPixel | CWEventMask, &p_attr);
 
-  XAddToSaveSet(dpy, c->window);
-  XSetWindowBorderWidth(dpy, c->window, 0);
-  XReparentWindow(dpy, c->window, c->parent, 0, 0);
-  XMapWindow(dpy, c->window);
-  grab_button(c->parent, grabmask2, AnyButton);
+  XAddToSaveSet(dpy, c->xstuff->window);
+  XSetWindowBorderWidth(dpy, c->xstuff->window, 0);
+  XReparentWindow(dpy, c->xstuff->window, c->xstuff->parent, 0, 0);
+  XMapWindow(dpy, c->xstuff->window);
+  grab_button(c->xstuff->parent, grabmask2, AnyButton);
 }
 
 /* Get WM_NORMAL_HINTS property */
@@ -230,7 +232,7 @@ long get_wm_normal_hints(Client *c) {
   long dummy;
   size = XAllocSizeHints();
   LOG_XDEBUG("XGetWMNormalHints()\n");
-  XGetWMNormalHints(dpy, c->window, size, &dummy);
+  XGetWMNormalHints(dpy, c->xstuff->window, size, &dummy);
   debug_wm_normal_hints(size);
   flags = size->flags;
   if (flags & PMinSize) {

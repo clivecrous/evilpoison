@@ -19,7 +19,7 @@ Client *find_client(Window w) {
   Client *c;
 
   for (c = head_client; c; c = c->next)
-    if (w == c->parent || w == c->window)
+      if (c->xstuff && ((w == c->xstuff->parent) || (w == c->xstuff->window)))
       return c;
   return NULL;
 }
@@ -32,7 +32,7 @@ void set_wm_state(Client *c, int state) {
   long data[2];
   data[0] = state;
   data[1] = None;
-  XChangeProperty(dpy, c->window, xa_wm_state, xa_wm_state, 32,
+  XChangeProperty(dpy, c->xstuff->window, xa_wm_state, xa_wm_state, 32,
       PropModeReplace, (unsigned char *)data, 2);
 }
 
@@ -40,8 +40,8 @@ void send_config(Client *c) {
   XConfigureEvent ce;
 
   ce.type = ConfigureNotify;
-  ce.event = c->window;
-  ce.window = c->window;
+  ce.event = c->xstuff->window;
+  ce.window = c->xstuff->window;
   ce.x = c->x;
   ce.y = c->y;
   ce.width = c->width;
@@ -50,7 +50,7 @@ void send_config(Client *c) {
   ce.above = None;
   ce.override_redirect = False;
 
-  XSendEvent(dpy, c->window, False, StructureNotifyMask, (XEvent *)&ce);
+  XSendEvent(dpy, c->xstuff->window, False, StructureNotifyMask, (XEvent *)&ce);
 }
 
 /* Support for 'gravitating' clients based on their original
@@ -104,24 +104,24 @@ void select_client(Client *c) {
 
   if (current)
   {
-    XAllocNamedColor(dpy, DefaultColormap(dpy, current->screen->screen), settings_get( "border.colour.inactive" ), &border_colour_inactive, &dummy);
-    XAllocNamedColor(dpy, DefaultColormap(dpy, current->screen->screen), settings_get( "border.colour.float.inactive" ), &border_colour_float_inactive, &dummy);
+    XAllocNamedColor(dpy, DefaultColormap(dpy, current->xstuff->screen->screen), settings_get( "border.colour.inactive" ), &border_colour_inactive, &dummy);
+    XAllocNamedColor(dpy, DefaultColormap(dpy, current->xstuff->screen->screen), settings_get( "border.colour.float.inactive" ), &border_colour_float_inactive, &dummy);
     if (is_sticky(current))
       bpixel = border_colour_float_inactive.pixel;
     else
       bpixel = border_colour_inactive.pixel;
-    XSetWindowBorder(dpy, current->parent, bpixel);
+    XSetWindowBorder(dpy, current->xstuff->parent, bpixel);
   }
   if (c) {
-    XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.active" ), &border_colour_active, &dummy);
-    XAllocNamedColor(dpy, DefaultColormap(dpy, c->screen->screen), settings_get( "border.colour.float.active" ), &border_colour_float_active, &dummy);
+    XAllocNamedColor(dpy, DefaultColormap(dpy, c->xstuff->screen->screen), settings_get( "border.colour.active" ), &border_colour_active, &dummy);
+    XAllocNamedColor(dpy, DefaultColormap(dpy, c->xstuff->screen->screen), settings_get( "border.colour.float.active" ), &border_colour_float_active, &dummy);
     if (is_sticky(c))
       bpixel = border_colour_float_active.pixel;
     else
       bpixel = border_colour_active.pixel;
-    XSetWindowBorder(dpy, c->parent, bpixel);
-    XInstallColormap(dpy, c->cmap);
-    XSetInputFocus(dpy, c->window, RevertToPointerRoot, CurrentTime);
+    XSetWindowBorder(dpy, c->xstuff->parent, bpixel);
+    XInstallColormap(dpy, c->xstuff->cmap);
+    XSetInputFocus(dpy, c->xstuff->window, RevertToPointerRoot, CurrentTime);
   }
   current = c;
 }
@@ -152,16 +152,16 @@ void remove_client(Client *c) {
   if (c->remove) {
     LOG_DEBUG("\tremove_client() : setting WithdrawnState\n");
     set_wm_state(c, WithdrawnState);
-    XDeleteProperty(dpy, c->window, xa_net_wm_desktop);
-    XDeleteProperty(dpy, c->window, xa_net_wm_state);
+    XDeleteProperty(dpy, c->xstuff->window, xa_net_wm_desktop);
+    XDeleteProperty(dpy, c->xstuff->window, xa_net_wm_state);
   }
 
   ungravitate(c);
-  XReparentWindow(dpy, c->window, c->screen->root, c->x, c->y);
-  XSetWindowBorderWidth(dpy, c->window, c->old_border);
-  XRemoveFromSaveSet(dpy, c->window);
-  if (c->parent)
-    XDestroyWindow(dpy, c->parent);
+  XReparentWindow(dpy, c->xstuff->window, c->xstuff->screen->root, c->x, c->y);
+  XSetWindowBorderWidth(dpy, c->xstuff->window, c->old_border);
+  XRemoveFromSaveSet(dpy, c->xstuff->window);
+  if (c->xstuff->parent)
+    XDestroyWindow(dpy, c->xstuff->parent);
 
   if (head_client == c) head_client = c->next;
   else for (p = head_client; p && p->next; p = p->next)
@@ -169,6 +169,8 @@ void remove_client(Client *c) {
 
   if (current == c)
     current = NULL;  /* an enter event should set this up again */
+
+  free(c->xstuff);
   free(c);
 #ifdef DEBUG
   {
@@ -190,16 +192,16 @@ void send_wm_delete(Client *c, int kill_client) {
   int i, n, found = 0;
   Atom *protocols;
 
-  if (!kill_client && XGetWMProtocols(dpy, c->window, &protocols, &n)) {
+  if (!kill_client && XGetWMProtocols(dpy, c->xstuff->window, &protocols, &n)) {
     for (i = 0; i < n; i++)
       if (protocols[i] == xa_wm_delete)
         found++;
     XFree(protocols);
   }
   if (found)
-    send_xmessage(c->window, xa_wm_protos, xa_wm_delete);
+    send_xmessage(c->xstuff->window, xa_wm_protos, xa_wm_delete);
   else
-    XKillClient(dpy, c->window);
+    XKillClient(dpy, c->xstuff->window);
 }
 
 static int send_xmessage(Window w, Atom a, long x) {
@@ -223,10 +225,10 @@ void set_shape(Client *c) {
   /* Logic to decide if we have a shaped window cribbed from fvwm-2.5.10.
    * Previous method (more than one rectangle returned from
    * XShapeGetRectangles) worked _most_ of the time. */
-  if (XShapeQueryExtents(dpy, c->window, &bounding_shaped, &i, &i,
+  if (XShapeQueryExtents(dpy, c->xstuff->window, &bounding_shaped, &i, &i,
         &u, &u, &b, &i, &i, &u, &u) && bounding_shaped) {
     LOG_DEBUG("%d shape extents\n", bounding_shaped);
-    XShapeCombineShape(dpy, c->parent, ShapeBounding, 0, 0,
-        c->window, ShapeBounding, ShapeSet);
+    XShapeCombineShape(dpy, c->xstuff->parent, ShapeBounding, 0, 0,
+        c->xstuff->window, ShapeBounding, ShapeSet);
   }
 }

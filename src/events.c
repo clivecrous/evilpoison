@@ -181,13 +181,13 @@ static void handle_configure_request(XConfigureRequestEvent *e) {
     if (value_mask & CWStackMode && value_mask & CWSibling) {
       Client *sibling = find_client(e->above);
       if (sibling) {
-        wc.sibling = sibling->parent;
+        wc.sibling = sibling->xstuff->parent;
       }
     }
-    if (c->x == 0 && c->width >= DisplayWidth(dpy, c->screen->screen)) {
+    if (c->x == 0 && c->width >= DisplayWidth(dpy, c->xstuff->screen->screen)) {
       c->x -= c->border;
     }
-    if (c->y == 0 && c->height >= DisplayHeight(dpy, c->screen->screen)) {
+    if (c->y == 0 && c->height >= DisplayHeight(dpy, c->xstuff->screen->screen)) {
       c->y -= c->border;
     }
     gravitate(c);
@@ -195,9 +195,9 @@ static void handle_configure_request(XConfigureRequestEvent *e) {
     wc.x = c->x - c->border;
     wc.y = c->y - c->border;
     wc.border_width = c->border;
-    LOG_XDEBUG("XConfigureWindow(dpy, parent(%x), %lx, &wc);\n", (unsigned int)c->parent, value_mask);
-    XConfigureWindow(dpy, c->parent, value_mask, &wc);
-    XMoveResizeWindow(dpy, c->window, 0, 0, c->width, c->height);
+    LOG_XDEBUG("XConfigureWindow(dpy, parent(%x), %lx, &wc);\n", (unsigned int)c->xstuff->parent, value_mask);
+    XConfigureWindow(dpy, c->xstuff->parent, value_mask, &wc);
+    XMoveResizeWindow(dpy, c->xstuff->window, 0, 0, c->width, c->height);
     if ((value_mask & (CWX|CWY)) && !(value_mask & (CWWidth|CWHeight))) {
       send_config(c);
     }
@@ -205,7 +205,7 @@ static void handle_configure_request(XConfigureRequestEvent *e) {
   } else {
     wc.x = c ? 0 : e->x;
     wc.y = c ? 0 : e->y;
-    LOG_XDEBUG("XConfigureWindow(dpy, window(%x), %lx, &wc);\n", (unsigned int)e->window, value_mask);
+    LOG_XDEBUG("XConfigureWindow(dpy, window(%x), %lx, &wc);\n", (unsigned int)e->xstuff->window, value_mask);
     XConfigureWindow(dpy, e->window, value_mask, &wc);
   }
 }
@@ -214,8 +214,8 @@ static void handle_map_request(XMapRequestEvent *e) {
   Client *c = find_client(e->window);
 
   if (c) {
-    if (c->virtual_desktop != c->screen->virtual_desktop)
-      switch_virtual_desktop(c->screen, c->virtual_desktop);
+    if (c->virtual_desktop != c->xstuff->screen->virtual_desktop)
+      switch_virtual_desktop(c->xstuff->screen, c->virtual_desktop);
     unhide(c, RAISE);
   } else {
     XWindowAttributes attr;
@@ -247,8 +247,8 @@ static void handle_colormap_change(XColormapEvent *e) {
   Client *c = find_client(e->window);
 
   if (c && e->new) {
-    c->cmap = e->colormap;
-    XInstallColormap(dpy, c->cmap);
+    c->xstuff->cmap = e->colormap;
+    XInstallColormap(dpy, c->xstuff->cmap);
   }
 }
 
@@ -268,7 +268,7 @@ static void handle_enter_event(XCrossingEvent *e) {
   if (!atoi(settings_get("mouse.focus"))) return;
 
   if ((c = find_client(e->window))) {
-    if (c->virtual_desktop != c->screen->virtual_desktop)
+    if (c->virtual_desktop != c->xstuff->screen->virtual_desktop)
       return;
     select_client(c);
   }

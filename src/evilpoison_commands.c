@@ -193,7 +193,7 @@ char *evilpoison_command_desktop_history_back(char *UNUSED(commandline))
 static void apply_client_position(Client *client) {
     moveresize(client);
     if ( atoi( settings_get( "mouse.warp" ) ) )
-      setmouse( client->window,
+      setmouse( client->xstuff->window,
           client->width + client->border - 1,
           client->height + client->border - 1);
     discard_enter_events();
@@ -365,7 +365,7 @@ char *evilpoison_command_window_kill(char *UNUSED(commandline))
 
 char *evilpoison_command_window_lower(char *UNUSED(commandline))
 {
-  if ( current ) XLowerWindow(dpy, current->parent);
+  if ( current ) XLowerWindow(dpy, current->xstuff->parent);
   return 0;
 }
 
