@@ -502,8 +502,10 @@ void next(void)
     newc = NULL;
 
   if (newc) {
-      rechainclient(newc, 1);
-      rechainclient(current, 0);
+      if (newc != current) {
+	  rechainclient(newc, 1);
+	  rechainclient(current, 0);
+      }
       nextprevious( newc );
   }
 }
@@ -523,8 +525,10 @@ void previous(void)
     for (newc = head_client; newc && newc->next; newc = newc->next );
 
   if (newc) {
-      rechainclient(newc, 1);
-      rechainclient(current, 0);
+      if (newc != current) {
+	  rechainclient(newc, 1);
+	  rechainclient(current, 0);
+      }
       nextprevious( newc );
   }
 }
