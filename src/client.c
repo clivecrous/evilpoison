@@ -137,6 +137,8 @@ void remove_client(Client *c) {
 
   LOG_DEBUG("remove_client() : Removing...\n");
 
+  if (!c || !c->xstuff) return;
+
   XGrabServer(dpy);
   ignore_xerror = 1;
 
@@ -149,6 +151,7 @@ void remove_client(Client *c) {
    *  window is withdrawn but it should leave the property in
    *  place when it is shutting down." (both _NET_WM_DESKTOP and
    *  _NET_WM_STATE) */
+
   if (c->remove) {
     LOG_DEBUG("\tremove_client() : setting WithdrawnState\n");
     set_wm_state(c, WithdrawnState);
@@ -157,7 +160,8 @@ void remove_client(Client *c) {
   }
 
   ungravitate(c);
-  XReparentWindow(dpy, c->xstuff->window, c->xstuff->screen->root, c->x, c->y);
+  if (c->xstuff->screen)
+      XReparentWindow(dpy, c->xstuff->window, c->xstuff->screen->root, c->x, c->y);
   XSetWindowBorderWidth(dpy, c->xstuff->window, c->old_border);
   XRemoveFromSaveSet(dpy, c->xstuff->window);
   if (c->xstuff->parent)

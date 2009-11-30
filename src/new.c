@@ -106,14 +106,14 @@ void make_new_client(Window w, ScreenInfo *s) {
 
   /* Only map the window frame (and thus the window) if it's supposed
    * to be visible on this virtual desktop. */
-  if (s->virtual_desktop == c->virtual_desktop)
-  {
-    unhide(c, RAISE);
-    if (!atoi(settings_get("mouse.focus")))
-        select_client(c);
-  }
-  else {
-    set_wm_state(c, IconicState);
+  if (s) {
+      if (s->virtual_desktop == c->virtual_desktop) {
+	  unhide(c, RAISE);
+	  if (!atoi(settings_get("mouse.focus")))
+	      select_client(c);
+      } else {
+	  set_wm_state(c, IconicState);
+      }
   }
   update_net_wm_desktop(c);
 }
@@ -132,6 +132,8 @@ static void init_geometry(Client *c) {
   unsigned long *lprop;
   Atom *aprop;
 
+  if (!c || !c->xstuff) return;
+
   if ( (mprop = get_property(c->xstuff->window, mwm_hints, mwm_hints, &nitems)) ) {
     if (nitems >= PROP_MWM_HINTS_ELEMENTS
         && (mprop->flags & MWM_HINTS_DECORATIONS)
@@ -141,6 +143,8 @@ static void init_geometry(Client *c) {
     }
     XFree(mprop);
   }
+
+  if (!c->xstuff->screen) return;
 
   c->virtual_desktop = c->xstuff->screen->virtual_desktop;
   if ( (lprop = get_property(c->xstuff->window, xa_net_wm_desktop, XA_CARDINAL, &nitems)) ) {
@@ -202,6 +206,8 @@ static void reparent(Client *c) {
   XSetWindowAttributes p_attr;
   XColor border_colour_inactive;
   XColor dummy;
+
+  if (!c || !c->xstuff || !c->xstuff->screen) return;
 
   XAllocNamedColor(dpy, DefaultColormap(dpy, c->xstuff->screen->screen), settings_get( "border.colour.inactive" ), &border_colour_inactive, &dummy);
 
