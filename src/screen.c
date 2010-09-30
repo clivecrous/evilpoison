@@ -19,6 +19,22 @@ static Window create_info_window(Client *client);
 static void update_info_window(Client *c, Window info_window);
 static void grab_keysym(Window w, unsigned int mask, KeySym keysym);
 
+/* is client on screen, and same vdesk (==client visible) */
+int is_client_on_screen(Client *c, ScreenInfo *s) {
+    if ( c->xstuff->screen != s ) return 0;
+    if ( strcmp(c->xstuff->screen->display, s->display) ) return 0;
+    if ( c->virtual_desktop != s->virtual_desktop ) return 0;
+    return 1;
+}
+
+/* is client on screen, ignoring vdesk */
+int is_client_on_screen_vdesk(Client *c, ScreenInfo *s) {
+    if ( c->xstuff->screen != s ) return 0;
+    if ( strcmp(c->xstuff->screen->display, s->display) ) return 0;
+    return 1;
+}
+
+
 void remove_text_window(Window window);
 void remove_text_window(Window window) {
   if ( window ) XDestroyWindow(dpy, window);
@@ -443,7 +459,7 @@ static void nextprevious( Client *change_to )
 
   // Disallow changing across virtual_desktops.
   ScreenInfo *current_screen = find_current_screen();
-  if ( !current_screen || change_to->virtual_desktop != current_screen->virtual_desktop ) return;
+  if ( !current_screen || !is_client_on_screen(change_to, current_screen) ) return;
 
   unhide(change_to, RAISE);
   select_client(change_to);
@@ -492,13 +508,13 @@ void next(void)
   ScreenInfo *current_screen = find_current_screen();
 
   if (newc) newc = newc->next;
-  while ( newc && newc->virtual_desktop != current_screen->virtual_desktop )
+  while ( newc && !is_client_on_screen(newc, current_screen) )
     newc = newc->next;
   if (!newc) newc = head_client;
-  while ( newc && newc->virtual_desktop != current_screen->virtual_desktop )
+  while ( newc && !is_client_on_screen(newc, current_screen) )
     newc = newc->next;
 
-  if (newc && newc->virtual_desktop != current_screen->virtual_desktop)
+  if (newc && !is_client_on_screen(newc, current_screen) )
     newc = NULL;
 
   if (newc) {
@@ -551,7 +567,7 @@ void switch_virtual_desktop(ScreenInfo *screen, int virtual_desktop_wanted) {
   {
 
     /* Skip windows on other screens  */
-    if ( client_iterator->xstuff->screen != screen ) continue;
+      if (!is_client_on_screen_vdesk(client_iterator, screen)) continue;
 
     /* Move sticky windows to the new virtual desktop */
     if ( is_sticky(client_iterator) &&
