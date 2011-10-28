@@ -536,7 +536,7 @@ void switch_virtual_desktop(ScreenInfo *s, int v) {
 	s->other_virtual_desktop = s->virtual_desktop;
 	s->virtual_desktop = v;
 
-  if ( !current || current->virtual_desktop != v ) next();
+  if ( !current || current->virtual_desktop != v ) next( 1 );
 
 	LOG_DEBUG("\t(%d hidden, %d raised)\n", hidden, raised);
 }
