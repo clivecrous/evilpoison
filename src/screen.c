@@ -19,21 +19,18 @@ static Window create_info_window(Client *client);
 static void update_info_window(Client *c, Window info_window);
 static void grab_keysym(Window w, unsigned int mask, KeySym keysym);
 
-/* is client on screen, and same vdesk (==client visible) */
-int is_client_on_screen(Client *c, ScreenInfo *s) {
-    if ( c->xstuff->screen != s ) return 0;
-    if ( c->xstuff->screen->display != s->display ) return 0;
-    if ( c->virtual_desktop != s->virtual_desktop ) return 0;
-    return 1;
-}
-
 /* is client on screen, ignoring vdesk */
 int is_client_on_screen_vdesk(Client *c, ScreenInfo *s) {
     if ( c->xstuff->screen != s ) return 0;
-    if ( strcmp(c->xstuff->screen->display, s->display) ) return 0;
+    if ( c->xstuff->screen->display != s->display ) return 0;
     return 1;
 }
 
+/* is client on screen, and same vdesk (==client visible) */
+int is_client_on_screen(Client *c, ScreenInfo *s) {
+    if ( !is_client_on_screen_vdesk( c, s ) || ( c->virtual_desktop != s->virtual_desktop ) ) return 0;
+    return 1;
+}
 
 void remove_text_window(Window window);
 void remove_text_window(Window window) {
