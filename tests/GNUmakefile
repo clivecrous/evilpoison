@@ -17,7 +17,7 @@ epobjs:
 	make -C ../src $(EPOBJS)
 
 tests: epobjs $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(EPOBJS) -o $@ $(LDFLAGS) -lcheck
+	$(CC) $(CFLAGS) $(OBJS) $(EPOBJS) -o $@ $(LDFLAGS) -lcheck -lm -lrt -lsubunit
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -I../src -L../src
