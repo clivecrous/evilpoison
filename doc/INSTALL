@@ -7,8 +7,17 @@ Using GNU make to build
 1) Edit settings.make to suit what you want.  Instructions are included by any
    user-editable option.
 
-2) Run 'make'
+2) Optionally (on Ubuntu) Run 'make ubuntu-dependencies'
+     Alternatively install the equivalent of the following packages on your distribution,
+     Build Requirements:
+       apt-get install -y libx11-dev libxext-dev libxinerama-dev
+     Unit Testing Requirements:
+       apt-get install -y check
+     Documentation Generation Requirements:
+       apt-get install -y doxygen
 
-3) Run 'make install'
+3) Run 'make'
+
+4) Run 'make install'
 
 That's it.  The README file has information on starting evilpoison.
